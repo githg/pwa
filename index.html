@@ -1125,11 +1125,17 @@
                 return;
             }
             
+            const now = new Date();
+            const hhmm = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+            const dd   = String(now.getDate()).padStart(2,'0');
+            const mm   = String(now.getMonth()+1).padStart(2,'0');
+            const yy   = String(now.getFullYear()).slice(-2);
+            const ts   = `${hhmm} ${dd}/${mm}/${yy}`;
             const entry = {
                 id: Date.now().toString(),
                 counterId: activeCounterId,
                 date: getLocalTodayStr(),
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                timestamp: ts,
                 images: [],
                 isVoid: false,
                 cash: cashVal, qr: qrVal, ips: 0, pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0,
@@ -1205,8 +1211,12 @@
 
                 const db = await dbPromise;
 
-                // Push any locally-created entries that GAS doesn't know about yet
+                // Load local entries before clearing — to identify unsynced and to preserve base64 images
                 const localEntries = await loadEntriesFromIDB();
+                const localMap = {};
+                localEntries.forEach(e => { localMap[String(e.id)] = e; });
+
+                // Push any locally-created entries that GAS doesn't know about yet
                 const unsynced = localEntries.filter(e => !serverIds.has(String(e.id)));
                 for (const e of unsynced) {
                     try {
@@ -1216,12 +1226,19 @@
                     }
                 }
 
-                // Now merge: use GAS as the source of truth but keep unsynced local entries
+                // Merge: use GAS as source of truth, but preserve local base64 images
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
                 store.clear();
-                serverEntries.forEach(entry => store.put(entry));
-                // Re-add any still-unsynced local entries (keep them alive)
+                serverEntries.forEach(gasEntry => {
+                    const local = localMap[String(gasEntry.id)];
+                    // If local copy has base64 images, keep them (Drive thumbnails may not load immediately)
+                    if (local && local.images && local.images.some(img => img.startsWith('data:'))) {
+                        gasEntry = { ...gasEntry, images: local.images };
+                    }
+                    store.put(gasEntry);
+                });
+                // Re-add still-unsynced local entries
                 unsynced.forEach(entry => store.put(entry));
                 await new Promise((resolve) => { tx.oncomplete = resolve; });
 
@@ -2356,7 +2373,12 @@
             
             // If editing, preserve original counterId and timestamp
             let entryCounterId = activeCounterId;
-            let entryTimestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const _now = new Date();
+            const _hhmm = _now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false});
+            const _dd   = String(_now.getDate()).padStart(2,'0');
+            const _mm   = String(_now.getMonth()+1).padStart(2,'0');
+            const _yy   = String(_now.getFullYear()).slice(-2);
+            let entryTimestamp = `${_hhmm} ${_dd}/${_mm}/${_yy}`;
             let entryDate = getLocalTodayStr();
             
             const existingIndex = entries.findIndex(e => e.id === currentEditingId);
@@ -2538,7 +2560,7 @@
                         ${thumbHtml}
                         <div class="entry-details">
                             <div style="display:flex; justify-content: space-between;">
-                                <div style="font-size: 14px; font-weight: 700;">Capture ${entry.timestamp}</div>
+                                <div style="font-size: 14px; font-weight: 700;">${entry.timestamp || 'No time'}</div>
                             </div>
                             ${detailsHtml}
                             ${remarksHtml}
@@ -3319,7 +3341,7 @@
                 ${thumbHtml}
                 <div class="entry-details">
                     <div style="display:flex; justify-content: space-between;">
-                        <div style="font-size: 14px; font-weight: 700;">Capture ${entry.timestamp}</div>
+                        <div style="font-size: 14px; font-weight: 700;">${entry.timestamp || 'No time'}</div>
                     </div>
                     ${detailsHtml}
                     ${remarksHtml}
@@ -4290,7 +4312,7 @@
                 loadDenominations();
                 renderAdminEOD();
             } else {
-                // Past date: hide submit/sync/load/wipe – only show historical read
+                // Past date: hide submit/sync/load/wipe – show read-only historical or unclosed-session view
                 if (submitBtn) submitBtn.style.display = 'none';
                 if (syncBtn) syncBtn.style.display = 'none';
                 if (loadBtn) loadBtn.style.display = 'none';
@@ -4304,16 +4326,119 @@
 
                 const closure = historicalClosings.find(c => c.date === selectedEodDate);
                 if (closure) {
+                    // Fully closed day — read-only
                     banner.style.display = 'block';
                     banner.style.background = '#065f46';
                     banner.innerText = `🔒 HISTORICAL CLOSE-OUT RECORD LOCKED FOR ${selectedEodDate}`;
                     renderHistoricalEOD(closure);
                 } else {
-                    banner.style.display = 'block';
-                    banner.style.background = '#991b1b';
-                    banner.innerText = `⚠️ NO EOD CLOSING SUBMITTED FOR ${selectedEodDate}`;
-                    renderEmptyHistoricalEOD();
+                    // No closure for this date — check if there are entries (unclosed session)
+                    const pastEntries = entries.filter(e => e.date === selectedEodDate);
+                    if (pastEntries.length > 0) {
+                        banner.style.display = 'block';
+                        banner.style.background = '#92400e';
+                        banner.innerText = `⚠️ UNCLOSED SESSION FOR ${selectedEodDate} — Admin action required`;
+                        renderUnclosedPastSession(selectedEodDate);
+                    } else {
+                        banner.style.display = 'block';
+                        banner.style.background = '#1f2937';
+                        banner.innerText = `ℹ️ NO DATA FOR ${selectedEodDate}`;
+                        renderEmptyHistoricalEOD();
+                    }
                 }
+            }
+        }
+
+        function renderUnclosedPastSession(dateStr) {
+            // Clear EOD table — not relevant for unclosed sessions
+            document.getElementById('admin-opening-cash-display').innerText = 'Opening Cash: —';
+            document.getElementById('summary-total-sales').innerText = 'Pending';
+            document.getElementById('summary-cash-sales').innerText = '—';
+            document.getElementById('summary-other-sales').innerText = '—';
+            const tbody = document.getElementById('daily-table-body');
+            tbody.innerHTML = '';
+            const notes = ['denom-ic500','denom-1000','denom-500','denom-100','denom-50','denom-20','denom-10','denom-5'];
+            notes.forEach(n => { const el = document.getElementById(n); if (el) el.value = 0; });
+            document.getElementById('split-take-home').innerText = 'NPR 0';
+            document.getElementById('split-change').innerText = 'NPR 0';
+            document.getElementById('split-total-cash').innerText = 'NPR 0';
+
+            // Show unclosed entries for that date grouped by counter
+            renderUnclosedSessionEntries(dateStr);
+        }
+
+        function renderUnclosedSessionEntries(dateStr) {
+            const container = document.getElementById('historical-eod-sessions-content');
+            const wrapper = document.getElementById('historical-eod-sessions');
+            if (!container || !wrapper) return;
+            container.innerHTML = '';
+            wrapper.style.display = 'flex';
+
+            const dayEntries = entries.filter(e => e.date === dateStr);
+
+            if (dayEntries.length === 0) {
+                container.innerHTML = '<div style="color:#9ca3af; padding:16px;">No entries found for this date.</div>';
+                return;
+            }
+
+            // Group by counterId
+            const groups = {};
+            dayEntries.forEach(e => {
+                const cid = e.counterId || 'unknown';
+                if (!groups[cid]) groups[cid] = { closed: [], open: [] };
+                if (e.sessionStatus === 'closed') groups[cid].closed.push(e);
+                else groups[cid].open.push(e);
+            });
+
+            Object.keys(groups).sort().forEach(cid => {
+                const g = groups[cid];
+                const allClosed = g.open.length === 0;
+
+                const header = document.createElement('div');
+                header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding:8px 0; border-bottom:1px solid #374151;';
+                header.innerHTML = `
+                    <div style="font-weight:700; color:${allClosed ? '#10b981' : '#f59e0b'}; font-size:13px;">
+                        ${allClosed ? '✅' : '⚠️'} Counter ${cid} ${allClosed ? '(Closed)' : '(OPEN — not closed)'}
+                    </div>
+                    ${!allClosed ? `<button onclick="closePastSession('${cid}','${dateStr}')" style="background:#ef4444; color:#fff; border:none; border-radius:8px; padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer;">🔒 Close Now</button>` : ''}
+                `;
+                container.appendChild(header);
+
+                // Show open entries with edit capability
+                if (g.open.length > 0) {
+                    g.open.slice().reverse().forEach(entry => {
+                        const card = createAdminEntryCard(entry);
+                        container.appendChild(card);
+                    });
+                }
+
+                // Show closed entries (read-only)
+                if (g.closed.length > 0) {
+                    const closedLabel = document.createElement('div');
+                    closedLabel.style.cssText = 'font-size:11px; color:#6b7280; margin-top:8px; margin-bottom:4px;';
+                    closedLabel.innerText = 'Closed entries:';
+                    container.appendChild(closedLabel);
+                    g.closed.slice().reverse().forEach(entry => {
+                        const card = createAdminEntryCard(entry);
+                        card.style.opacity = '0.7';
+                        card.onclick = null; // read-only
+                        container.appendChild(card);
+                    });
+                }
+            });
+        }
+
+        async function closePastSession(cid, dateStr) {
+            if (!confirm(`Close Counter ${cid}'s session from ${dateStr}? All its entries will be marked closed.`)) return;
+            const remarks = prompt('Enter closing remarks (optional):', '') || '';
+            try {
+                await callGas('ARCHIVE_SESSION', { counterId: cid, remarks: `Past close ${dateStr}: ${remarks}` });
+                showToast(`Counter ${cid} session from ${dateStr} closed.`);
+                // Re-sync to reflect the closed status
+                await syncWithServer();
+                handleEodDateChange();
+            } catch(e) {
+                showMsg('Failed to close past session: ' + e.message);
             }
         }
 
@@ -4496,6 +4621,46 @@
             if (histSessions) histSessions.style.display = 'none';
         }
         
+        // ── Inactivity Auto-Lock ─────────────────────────────────────────────
+        let inactivityTimer = null;
+        const INACTIVITY_MS = 60 * 1000; // 1 minute
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            // Only auto-lock if a cashier or admin is actively on a session view
+            const mainActive  = document.getElementById('view-main')?.classList.contains('active');
+            const adminActive = document.getElementById('view-admin')?.classList.contains('active');
+            if (!mainActive && !adminActive) return;
+
+            inactivityTimer = setTimeout(() => {
+                // Dismiss any open sheets first
+                const captureSheet = document.getElementById('capture-sheet');
+                if (captureSheet && captureSheet.classList.contains('expanded')) return; // Don't auto-lock mid-entry
+
+                // Save session state and return to calc view
+                document.getElementById('view-main')?.classList.remove('active');
+                document.getElementById('view-admin')?.classList.remove('active');
+                document.getElementById('view-calc').classList.add('active');
+
+                // Reset state
+                activeCounterId = null;
+                isAdmin = false;
+                activeAdminId = null;
+                currentSequence = "";
+                document.getElementById('calc-display').innerText = "";
+                document.documentElement.style.setProperty('--primary', '#6366f1');
+                document.documentElement.style.setProperty('--primary-text', '#ffffff');
+
+                showToast('🔒 Screen locked due to inactivity.');
+            }, INACTIVITY_MS);
+        }
+
+        // Reset timer on any user interaction
+        ['touchstart', 'touchend', 'mousedown', 'keydown', 'click'].forEach(evt => {
+            document.addEventListener(evt, resetInactivityTimer, { passive: true });
+        });
+        // ── End Inactivity Auto-Lock ────────────────────────────────────────────
+
         document.addEventListener('touchstart', function (event) {
             if (event.touches.length > 1) {
                 event.preventDefault();
