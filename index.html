@@ -1775,7 +1775,24 @@
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readonly');
                 const req = tx.objectStore(STORE_NAME).getAll();
-                req.onsuccess = () => resolve(req.result);
+                req.onsuccess = () => {
+                    const result = req.result || [];
+                    result.forEach(e => {
+                        if (!e.date && e.timestamp) {
+                            const parts = e.timestamp.split(" ");
+                            if (parts.length === 2 && parts[1].includes("/")) {
+                                const dateParts = parts[1].split("/");
+                                if (dateParts.length === 3) {
+                                    const dd = dateParts[0].padStart(2, "0");
+                                    const mm = dateParts[1].padStart(2, "0");
+                                    const yy = dateParts[2].length === 2 ? "20" + dateParts[2] : dateParts[2];
+                                    e.date = `${yy}-${mm}-${dd}`;
+                                }
+                            }
+                        }
+                    });
+                    resolve(result);
+                };
                 req.onerror = reject;
             });
         }
@@ -1865,11 +1882,25 @@
             }
         }
 
-        function openImageEditor(idx) {
-            const dataUrl = currentImages[idx];
+        async function openImageEditor(idx) {
+            let dataUrl = currentImages[idx];
             if (!dataUrl) return;
 
             editorImagesIdx = idx;
+            
+            // Fetch base64 via Apps Script proxy for Drive URLs to bypass canvas CORS taint
+            if (dataUrl.startsWith('http')) {
+                const fileId = getFileIdFromUrl(dataUrl);
+                if (fileId) {
+                    try {
+                        const base64 = await callGas('GET_FILE_BASE64', { fileId });
+                        if (base64) dataUrl = base64;
+                    } catch(err) {
+                        console.warn("Failed to load editor image via base64 fallback:", err);
+                    }
+                }
+            }
+
             const img = new Image();
             img.onload = function() {
                 originalEditorImage = img;
@@ -2083,6 +2114,32 @@
                     };
                 }
             });
+        }
+
+        function getFileIdFromUrl(url) {
+            if (!url) return null;
+            if (url.startsWith('data:')) return null;
+            let match = url.match(/[?&]id=([^&]+)/);
+            if (match) return match[1];
+            match = url.match(/\/d\/([^=/#?]+)/);
+            if (match) return match[1];
+            return null;
+        }
+
+        async function loadImgFallback(imgEl, url) {
+            const fileId = getFileIdFromUrl(url);
+            if (!fileId) return;
+            imgEl.style.opacity = '0.5';
+            try {
+                const base64 = await callGas('GET_FILE_BASE64', { fileId });
+                if (base64) {
+                    imgEl.src = base64;
+                }
+            } catch (err) {
+                console.warn('Image base64 fallback fetch failed:', err);
+            } finally {
+                imgEl.style.opacity = '1';
+            }
         }
 
         function getDeviceId() {
@@ -2459,7 +2516,7 @@
                 const div = document.createElement('div');
                 div.className = 'preview-thumb-wrap';
                 div.innerHTML = `
-                    <img src="${img}" onclick="openImageEditor(${idx})" style="cursor:pointer;" title="Tap to annotate image">
+                    <img src="${img}" onerror="loadImgFallback(this, '${img}')" onclick="openImageEditor(${idx})" style="cursor:pointer;" title="Tap to annotate image">
                     ${isReadOnly ? '' : `<div class="remove" onclick="removeImage(${idx})">x</div>`}
                 `;
                 strip.insertBefore(div, addBtn);
@@ -2842,7 +2899,7 @@
 
                     let thumbHtml = `<div class="entry-thumb" style="display:flex; justify-content:center; align-items:center; color:#9ca3af; background:#374151; border:1px solid var(--border); border-radius:8px;"><span class="material-icons" style="font-size:28px;">receipt</span></div>`;
                     if (entry.images && entry.images.length > 0) {
-                        thumbHtml = `<div class="entry-thumb"><img src="${entry.images[0]}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`;
+                        thumbHtml = `<div class="entry-thumb"><img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`;
                     }
 
                     let detailsHtml = '';
@@ -3234,6 +3291,7 @@
                 const tbody = table.querySelector(`.active-sess-tbody-${cid}`);
                 groups[cid].slice().reverse().forEach(e => {
                     const tr = document.createElement('tr');
+                    tr.dataset.entryId = e.id;
                     if (e.isVoid) {
                         tr.style.opacity = '0.5';
                         tr.style.textDecoration = 'line-through';
@@ -3247,17 +3305,17 @@
 
                     tr.innerHTML = `
                         <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
-                        <td style="padding:6px; text-align:right;">${(e.cash || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.qr || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.pos || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.ips || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.esewa || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.online || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;">${totCash.toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.cheque || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.credit || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">${totCredit.toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; font-weight:700;">${totSales.toLocaleString()}</td>
+                        <td style="padding:4px;"><input type="number" value="${e.cash || ''}" oninput="updateActiveEntryField('${e.id}', 'cash', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:4px;"><input type="number" value="${e.qr || ''}" oninput="updateActiveEntryField('${e.id}', 'qr', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:4px;"><input type="number" value="${e.pos || ''}" oninput="updateActiveEntryField('${e.id}', 'pos', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:4px;"><input type="number" value="${e.ips || ''}" oninput="updateActiveEntryField('${e.id}', 'ips', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:4px;"><input type="number" value="${e.esewa || ''}" oninput="updateActiveEntryField('${e.id}', 'esewa', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:4px;"><input type="number" value="${e.online || ''}" oninput="updateActiveEntryField('${e.id}', 'online', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
+                        <td style="padding:4px;"><input type="number" value="${e.cheque || ''}" oninput="updateActiveEntryField('${e.id}', 'cheque', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:4px;"><input type="number" value="${e.credit || ''}" oninput="updateActiveEntryField('${e.id}', 'credit', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                        <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right; font-weight:700;" class="tot-sales-cell">${totSales.toLocaleString()}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -3322,6 +3380,50 @@
             
             document.getElementById('view-main').classList.remove('active');
             document.getElementById('view-admin').classList.add('active');
+        }
+
+        async function updateActiveEntryField(entryId, field, value) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+
+            const val = parseFloat(value) || 0;
+            entry[field] = val;
+
+            entry.totalIn = (entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0);
+            entry.totalCredit = (entry.credit || 0);
+            
+            if (!entry.history) entry.history = [];
+            const timestamp = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' ' + getLocalTodayStr();
+            entry.history.push({
+                timestamp,
+                user: 'Admin',
+                changes: [`In-row edit of ${field} to ${val}`]
+            });
+
+            const db = await dbPromise;
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            tx.objectStore(STORE_NAME).put(entry);
+            await new Promise(r => tx.oncomplete = r);
+
+            callGas('SYNC_ENTRIES', { data: entry }).catch(e => console.warn('Admin background sync failed:', e));
+
+            const tr = document.querySelector(`.active-sess-tbody-${entry.counterId} tr[data-entry-id="${entry.id}"]`);
+            if (tr) {
+                const totCash = (entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0);
+                const totCredit = (entry.cheque || 0) + (entry.credit || 0);
+                const totSales = totCash + totCredit;
+
+                const totCashEl = tr.querySelector('.tot-cash-cell');
+                if (totCashEl) totCashEl.innerText = totCash.toLocaleString();
+
+                const totCreditEl = tr.querySelector('.tot-credit-cell');
+                if (totCreditEl) totCreditEl.innerText = totCredit.toLocaleString();
+
+                const totSalesEl = tr.querySelector('.tot-sales-cell');
+                if (totSalesEl) totSalesEl.innerText = totSales.toLocaleString();
+            }
+
+            renderAdminEOD();
         }
 
         function clearSearchFilters() {
@@ -3697,7 +3799,7 @@
             if (entry.images && entry.images.length > 0) {
                 thumbHtml = `
                     <div class="entry-thumb">
-                        <img src="${entry.images[0]}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                        <img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
                         ${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}
                     </div>
                 `;
