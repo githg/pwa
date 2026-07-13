@@ -1200,19 +1200,31 @@
                 const serverEntries = await callGas('GET_ENTRIES');
                 if (!serverEntries || !Array.isArray(serverEntries)) return;
 
+                // Build a set of IDs that GAS knows about
+                const serverIds = new Set(serverEntries.map(e => String(e.id)));
+
                 const db = await dbPromise;
+
+                // Push any locally-created entries that GAS doesn't know about yet
+                const localEntries = await loadEntriesFromIDB();
+                const unsynced = localEntries.filter(e => !serverIds.has(String(e.id)));
+                for (const e of unsynced) {
+                    try {
+                        await callGas('SYNC_ENTRIES', { data: e });
+                    } catch(uploadErr) {
+                        console.warn('Could not push local entry to GAS:', uploadErr);
+                    }
+                }
+
+                // Now merge: use GAS as the source of truth but keep unsynced local entries
                 const tx = db.transaction(STORE_NAME, 'readwrite');
                 const store = tx.objectStore(STORE_NAME);
-                
-                // Clear local IndexedDB store to ensure deleted/wiped entries are properly removed
                 store.clear();
-                
-                serverEntries.forEach(entry => {
-                    store.put(entry);
-                });
-                
+                serverEntries.forEach(entry => store.put(entry));
+                // Re-add any still-unsynced local entries (keep them alive)
+                unsynced.forEach(entry => store.put(entry));
                 await new Promise((resolve) => { tx.oncomplete = resolve; });
-                
+
                 // Refresh local memory and lists
                 entries = await loadEntriesFromIDB();
                 renderList();
@@ -1879,7 +1891,8 @@
                     
                     document.getElementById('admin-title').innerText = `Admin Portal (Admin ${adminId})`;
                     
-                    const openingCash = localStorage.getItem('adminOpeningCash');
+                    const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                    const openingCash = localStorage.getItem(todayKey);
                     // Fetch permissions from GAS but don't block admin login on it
                     fetchCounterPermissions().catch(e => console.warn('Perms fetch failed:', e)).finally(() => {
                         if (!openingCash) {
@@ -3346,7 +3359,8 @@
 
         // EOD CLOSING ENGINE
         function promptResetOpeningCash() {
-            const current = localStorage.getItem('adminOpeningCash') || '0';
+            const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+            const current = localStorage.getItem(todayKey) || '0';
             const val = prompt("Enter new Opening Cash amount:", current);
             if (val !== null) {
                 const parsed = parseFloat(val);
@@ -3360,11 +3374,13 @@
         }
 
         function submitOpeningCash() {
+            const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
             const val = parseFloat(document.getElementById('inp-opening-cash').value);
             if (isNaN(val) || val < 0) {
                 showMsg("Please enter a valid opening cash amount.");
                 return;
             }
+            localStorage.setItem(todayKey, val);
             localStorage.setItem('adminOpeningCash', val);
             document.getElementById('opening-cash-modal').classList.remove('active');
             renderAdminPortal();
@@ -3386,7 +3402,8 @@
         }
 
         function renderAdminEOD() {
-            const openingCash = parseFloat(localStorage.getItem('adminOpeningCash')) || 0;
+            const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+            const openingCash = parseFloat(localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash')) || 0;
             document.getElementById('admin-opening-cash-display').innerText = `Opening Cash: NPR ${openingCash.toLocaleString()}`;
 
             // Calculate expected sums separating Sales (Counters 1-5) vs Collections (Counter 0)
@@ -3877,6 +3894,8 @@
                 await syncWithServer();
                 
                 // 3. Set actual inputs in localStorage
+                const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                localStorage.setItem(todayKey, '16750');
                 localStorage.setItem('adminOpeningCash', '16750');
                 localStorage.setItem('eod_out_total_qr', '554890');
                 localStorage.setItem('eod_out_total_ips', '0');
@@ -4271,11 +4290,12 @@
                 loadDenominations();
                 renderAdminEOD();
             } else {
+                // Past date: hide submit/sync/load/wipe – only show historical read
                 if (submitBtn) submitBtn.style.display = 'none';
                 if (syncBtn) syncBtn.style.display = 'none';
-                if (loadBtn) loadBtn.style.display = 'block';
-                if (wipeBtn) wipeBtn.style.display = 'block';
-                
+                if (loadBtn) loadBtn.style.display = 'none';
+                if (wipeBtn) wipeBtn.style.display = 'none';
+
                 const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
                 notes.forEach(n => {
                     const el = document.getElementById(n);
@@ -4287,13 +4307,11 @@
                     banner.style.display = 'block';
                     banner.style.background = '#065f46';
                     banner.innerText = `🔒 HISTORICAL CLOSE-OUT RECORD LOCKED FOR ${selectedEodDate}`;
-                    
                     renderHistoricalEOD(closure);
                 } else {
                     banner.style.display = 'block';
                     banner.style.background = '#991b1b';
                     banner.innerText = `⚠️ NO EOD CLOSING SUBMITTED FOR ${selectedEodDate}`;
-                    
                     renderEmptyHistoricalEOD();
                 }
             }
