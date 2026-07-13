@@ -82,9 +82,32 @@
         .page-badge { position: absolute; top: -6px; right: -6px; background: var(--primary); color: #fff; font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--surface); }
         .entry-details { flex: 1; }
         .entry-totals { display: flex; gap: 12px; font-size: 13px; font-weight: 600; margin-top: 4px; }
-        
         .bottom-summary-bar { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--surface); padding: 16px 20px; box-shadow: 0 -4px 12px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .btn-close-session { background: #f3f4f6; color: var(--negative); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
+
+        /* Sync dot status indicators */
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+        .sync-dot.pending {
+            background-color: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+            animation: pulse-red 1.5s infinite;
+        }
+        .sync-dot.synced {
+            background-color: #10b981;
+            box-shadow: 0 0 6px #10b981;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
 
         .capture-sheet { height: 100vh; height: 100dvh; transform: translateY(100%); z-index: 30; border-radius: 0; }
         .capture-sheet.expanded { transform: translateY(0); }
@@ -813,19 +836,19 @@
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                     <div style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px;">Daily Reconciliation</div>
                     
-                    <!-- Double Calendar View B.S. & A.D. Hidden, replacing with static Today Label -->
-                    <div style="display:inline-flex; align-items:center; gap:6px; background:#1f2937; padding:6px 12px; border-radius:8px; border:1px solid #374151; margin-left:8px;">
-                        <span class="material-icons" style="font-size:16px; color:#FF5A5F;">today</span>
-                        <span id="eod-today-label" style="font-size:12px; font-weight:700; color:#fff;"></span>
-                        <input type="date" id="eod-select-date" onchange="handleEodDateChange()" style="display: none;">
-                        <div style="display: none;">
-                            <select id="bs-year" onchange="handleBsSelectChange()"></select>
-                            <select id="bs-month" onchange="handleBsSelectChange()"></select>
-                            <select id="bs-day" onchange="handleBsSelectChange()"></select>
+                    <!-- Double Calendar View B.S. & A.D. -->
+                    <div style="display:inline-flex; align-items:center; gap:8px; background:#1f2937; padding:6px 12px; border-radius:8px; border:1px solid #374151; flex-wrap: wrap;">
+                        <span class="material-icons" style="font-size:16px; color:#FF5A5F;">calendar_month</span>
+                        <span style="font-size:12px; font-weight:700; color:#9ca3af;">BS Date:</span>
+                        <div style="display: inline-flex; align-items: center; gap: 4px;">
+                            <select id="bs-year" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
+                            <select id="bs-month" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
+                            <select id="bs-day" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
                         </div>
+                        <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD Date:</span>
+                        <input type="date" id="eod-select-date" onchange="handleEodDateChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none; font-family:inherit;">
                     </div>
                     
-                    <button onclick="loadTestData()" id="btn-load-test" style="background:#2563eb; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer;">Load 2083/03/27 Test Data</button>
                     <button onclick="wipeDatabase()" id="btn-wipe-db" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer;">Wipe Database (Reset to 0)</button>
                 </div>
                 <div style="font-size:12px; color:#9ca3af; font-weight:600; cursor:pointer;" id="admin-opening-cash-display" onclick="promptResetOpeningCash()">Opening Cash: NPR 0</div>
@@ -904,7 +927,10 @@
                 </div>
             </div>
             
-            <button onclick="submitDailyEod()" id="btn-submit-eod" style="background:#10b981; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; width:100%; text-transform:uppercase; margin-top:16px; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Submit & Lock Daily EOD Closing</button>
+            <div style="display: flex; gap: 8px; margin-top: 16px; width: 100%;">
+                <button onclick="submitDailyEod()" id="btn-submit-eod" style="background:#10b981; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 2; text-transform:uppercase; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Submit & Lock Daily EOD</button>
+                <button onclick="closeEodLater()" id="btn-close-later-eod" style="background:#4b5563; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 1; text-transform:uppercase; box-shadow:0 4px 12px rgba(75,85,99,0.3);">Close Later</button>
+            </div>
             <button onclick="forceSync()" id="btn-force-sync" style="background:#3b82f6; color:#fff; border:none; padding:10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; width:100%; text-transform:uppercase; margin-top:8px; box-shadow:0 4px 12px rgba(59,130,246,0.3);">☁️ Force Sync to Cloud Now</button>
 
             <!-- Historical Counter Sessions Section -->
@@ -1176,6 +1202,9 @@
         });
 
         async function saveEntryToIDB(entry) {
+            if (entry.synced === undefined) {
+                entry.synced = false;
+            }
             const db = await dbPromise;
             await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -1186,6 +1215,17 @@
             
             // Background push to central server for multi-device synchronization
             callGas('SYNC_ENTRIES', { data: entry })
+                .then(async () => {
+                    entry.synced = true;
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).put(entry);
+                    await new Promise(r => tx.oncomplete = r);
+                    
+                    // Refresh memory array and render PWA lists
+                    entries = await loadEntriesFromIDB();
+                    renderList();
+                    if (isAdmin) renderAdminPortal();
+                })
                 .catch(err => console.warn("Background upload sync failed (cached locally):", err));
         }
 
@@ -1221,6 +1261,7 @@
                 for (const e of unsynced) {
                     try {
                         await callGas('SYNC_ENTRIES', { data: e });
+                        e.synced = true;
                     } catch(uploadErr) {
                         console.warn('Could not push local entry to GAS:', uploadErr);
                     }
@@ -1231,6 +1272,7 @@
                 const store = tx.objectStore(STORE_NAME);
                 store.clear();
                 serverEntries.forEach(gasEntry => {
+                    gasEntry.synced = true;
                     const local = localMap[String(gasEntry.id)];
                     // If local copy has base64 images, keep them (Drive thumbnails may not load immediately)
                     if (local && local.images && local.images.some(img => img.startsWith('data:'))) {
@@ -1238,8 +1280,11 @@
                     }
                     store.put(gasEntry);
                 });
-                // Re-add still-unsynced local entries
-                unsynced.forEach(entry => store.put(entry));
+                // Re-add still-unsynced local entries (which are still pending)
+                unsynced.forEach(entry => {
+                    if (entry.synced === undefined) entry.synced = false;
+                    store.put(entry);
+                });
                 await new Promise((resolve) => { tx.oncomplete = resolve; });
 
                 // Refresh local memory and lists
@@ -2527,7 +2572,10 @@
                             <span class="material-icons" style="font-size:28px;">payments</span>
                         </div>
                         <div class="entry-details">
-                            <div style="font-size: 14px; font-weight: 700; color:#fff;">${entry.remarks || 'Unknown'}</div>
+                            <div style="display:flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 14px; font-weight: 700; color:#fff;">${entry.remarks || 'Unknown'}</div>
+                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced to Cloud' : 'Pending Sync'}"></span>
+                            </div>
                             <div style="font-size: 12px; color: #10b981; font-weight: 600; margin-top:2px;">Total: NPR ${(entry.totalIn||0).toLocaleString()}</div>
                             <div style="font-size: 11px; color: #9ca3af; margin-top:3px;">${parts.join(' &nbsp;|&nbsp; ')}</div>
                             ${entry.isVoid ? '<div style="font-size:11px; color:#ef4444; font-weight:700;">VOIDED</div>' : ''}
@@ -2559,8 +2607,9 @@
                     card.innerHTML = `
                         ${thumbHtml}
                         <div class="entry-details">
-                            <div style="display:flex; justify-content: space-between;">
+                            <div style="display:flex; justify-content: space-between; align-items: center;">
                                 <div style="font-size: 14px; font-weight: 700;">${entry.timestamp || 'No time'}</div>
+                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced to Cloud' : 'Pending Sync'}"></span>
                             </div>
                             ${detailsHtml}
                             ${remarksHtml}
@@ -3340,8 +3389,9 @@
             card.innerHTML = `
                 ${thumbHtml}
                 <div class="entry-details">
-                    <div style="display:flex; justify-content: space-between;">
+                    <div style="display:flex; justify-content: space-between; align-items: center;">
                         <div style="font-size: 14px; font-weight: 700;">${entry.timestamp || 'No time'}</div>
+                        <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced to Cloud' : 'Pending Sync'}"></span>
                     </div>
                     ${detailsHtml}
                     ${remarksHtml}
@@ -3415,21 +3465,26 @@
 
         // We store actual values in localStorage to persist EOD states
         function getEodOut(id) {
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            const val = localStorage.getItem('eod_out_' + dateKey + '_' + id);
+            if (val !== null) return parseFloat(val);
             return parseFloat(localStorage.getItem('eod_out_' + id)) || 0;
         }
 
         function setEodOut(id, val) {
-            localStorage.setItem('eod_out_' + id, val);
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            localStorage.setItem('eod_out_' + dateKey + '_' + id, val);
             renderAdminEOD();
         }
 
         function renderAdminEOD() {
-            const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            const todayKey = 'adminOpeningCash_' + dateKey;
             const openingCash = parseFloat(localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash')) || 0;
             document.getElementById('admin-opening-cash-display').innerText = `Opening Cash: NPR ${openingCash.toLocaleString()}`;
 
             // Calculate expected sums separating Sales (Counters 1-5) vs Collections (Counter 0)
-            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed' && !e.isVoid);
+            const activeEntries = entries.filter(e => e.date === dateKey && !e.isVoid);
             
             let expSalesC = 0, expSalesQr = 0, expSalesIps = 0;
             let expCollC = 0, expCollQr = 0, expCollIps = 0;
@@ -3571,7 +3626,8 @@
         // Live EOD input handler (Updates variances & totals in-place to prevent losing input focus)
         function handleEodInput(id, inputEl) {
             const val = parseFloat(inputEl.value) || 0;
-            localStorage.setItem('eod_out_' + id, val);
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            localStorage.setItem('eod_out_' + dateKey + '_' + id, val);
             
             const expected = parseFloat(inputEl.dataset.expected) || 0;
             const variance = val - expected;
@@ -3821,13 +3877,15 @@
             document.getElementById('split-total-cash').innerText = `NPR ${totalCash.toLocaleString()}`;
 
             // Trigger table update (to propagate calculated Cash OUT value to Total C row)
-            localStorage.setItem('eod_out_total_c', totalCash);
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            localStorage.setItem('eod_out_' + dateKey + '_total_c', totalCash);
             renderAdminEOD();
         }
 
         // Load Denominations from LocalStorage on load
         function loadDenominations() {
-            const dataStr = localStorage.getItem('adminDenoms');
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            const dataStr = localStorage.getItem('adminDenoms_' + dateKey);
             if (dataStr) {
                 try {
                     const data = JSON.parse(dataStr);
@@ -3840,112 +3898,14 @@
                     document.getElementById('denom-10').value = data.n10 || 0;
                     document.getElementById('denom-5').value = data.n5 || 0;
                 } catch(e) {}
+            } else {
+                const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
+                notes.forEach(n => {
+                    const el = document.getElementById(n);
+                    if (el) el.value = 0;
+                });
             }
             calculateDenominations();
-        }
-
-        async function loadTestData() {
-            try {
-                const mockEntries = [
-                  {
-                    "id": "c0_1", "counterId": "0", "timestamp": "11:00 AM", "images": [], "isVoid": false,
-                    "cash": 0, "qr": 57000, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Collection QR", "totalIn": 57000, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c1_1", "counterId": "1", "timestamp": "12:10 PM", "images": [], "isVoid": false,
-                    "cash": 49870, "qr": 55570, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 79400, "credit": 0,
-                    "remarks": "Entry 1.1", "totalIn": 105440, "totalCredit": 79400, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c1_2", "counterId": "1", "timestamp": "12:15 PM", "images": [], "isVoid": false,
-                    "cash": 23945, "qr": 94350, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Entry 1.2", "totalIn": 118295, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c1_3", "counterId": "1", "timestamp": "12:20 PM", "images": [], "isVoid": false,
-                    "cash": 0, "qr": 26000, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Entry 1.3", "totalIn": 26000, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c2_1", "counterId": "2", "timestamp": "01:10 PM", "images": [], "isVoid": false,
-                    "cash": 4960, "qr": 950, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Entry 2.1", "totalIn": 5910, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c3_1", "counterId": "3", "timestamp": "02:10 PM", "images": [], "isVoid": false,
-                    "cash": 79780, "qr": 74040, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Entry 3.1", "totalIn": 153820, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c3_2", "counterId": "3", "timestamp": "02:15 PM", "images": [], "isVoid": false,
-                    "cash": 41100, "qr": 57450, "ips": 0, "pos": 0, "esewa": 0, "online": 5800, "cheque": 0, "credit": 10205,
-                    "remarks": "Entry 3.2", "totalIn": 104350, "totalCredit": 10205, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c3_3", "counterId": "3", "timestamp": "02:20 PM", "images": [], "isVoid": false,
-                    "cash": 4625, "qr": 11790, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Entry 3.3", "totalIn": 16415, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c4_1", "counterId": "4", "timestamp": "03:10 PM", "images": [], "isVoid": false,
-                    "cash": 36365, "qr": 63320, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 18000, "credit": 0,
-                    "remarks": "Entry 4.1", "totalIn": 99685, "totalCredit": 18000, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c4_2", "counterId": "4", "timestamp": "03:15 PM", "images": [], "isVoid": false,
-                    "cash": 39145, "qr": 31125, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 0,
-                    "remarks": "Entry 4.2", "totalIn": 70270, "totalCredit": 0, "sessionStatus": "active"
-                  },
-                  {
-                    "id": "c4_3", "counterId": "4", "timestamp": "03:20 PM", "images": [], "isVoid": false,
-                    "cash": 45030, "qr": 77495, "ips": 0, "pos": 0, "esewa": 0, "online": 0, "cheque": 0, "credit": 10755,
-                    "remarks": "Entry 4.3", "totalIn": 122525, "totalCredit": 10755, "sessionStatus": "active"
-                  }
-                ];
-
-                await callGas('LOAD_TEST_DATA', { data: mockEntries });
-                
-                // Clear local IndexedDB store and reload from server
-                const db = await dbPromise;
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                tx.objectStore(STORE_NAME).clear();
-                await new Promise(resolve => tx.oncomplete = resolve);
-                
-                // Trigger client sync (this repopulates client memory with the new test data)
-                await syncWithServer();
-                
-                // 3. Set actual inputs in localStorage
-                const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
-                localStorage.setItem(todayKey, '16750');
-                localStorage.setItem('adminOpeningCash', '16750');
-                localStorage.setItem('eod_out_total_qr', '554890');
-                localStorage.setItem('eod_out_total_ips', '0');
-                localStorage.setItem('eod_out_esewa', '0');
-                localStorage.setItem('eod_out_pos', '0');
-                localStorage.setItem('eod_out_cheque', '97400');
-                localStorage.setItem('eod_out_credit', '20960');
-                
-                const denoms = { ic500: 0, n1000: 284, n500: 106, n100: 6, n50: 52, n20: 33, n10: 39, n5: 44 };
-                localStorage.setItem('adminDenoms', JSON.stringify(denoms));
-                
-                // 4. Update note input elements in the DOM
-                document.getElementById('denom-ic500').value = 0;
-                document.getElementById('denom-1000').value = 284;
-                document.getElementById('denom-500').value = 106;
-                document.getElementById('denom-100').value = 6;
-                document.getElementById('denom-50').value = 52;
-                document.getElementById('denom-20').value = 33;
-                document.getElementById('denom-10').value = 39;
-                document.getElementById('denom-5').value = 44;
-                
-                // 5. Re-run calculations and render the EOD UI
-                calculateDenominations();
-                
-                showToast("Loaded 2083/03/27 reconciliation test data and counter entries!");
-            } catch (err) {
-                showMsg("Failed to load test data: " + err.message);
-            }
         }
 
         const bsData = {
@@ -4097,7 +4057,8 @@
                 return;
             }
 
-            const openingCash = parseFloat(localStorage.getItem('adminOpeningCash')) || 0;
+            const todayKey = 'adminOpeningCash_' + selectedEodDate;
+            const openingCash = parseFloat(localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash')) || 0;
             if (openingCash === 0) {
                 showMsg("Opening cash must be set before submitting EOD.");
                 return;
@@ -4105,7 +4066,7 @@
             
             if (!confirm(`Are you sure you want to SUBMIT and LOCK the EOD Closing reconciliation for today (${selectedEodDate})? This record will be archived forever.`)) return;
 
-            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed' && !e.isVoid);
+            const activeEntries = entries.filter(e => e.date === selectedEodDate && !e.isVoid);
             let expSalesC = 0, expSalesQr = 0, expSalesIps = 0;
             let expCollC = 0, expCollQr = 0, expCollIps = 0;
             let expEsewa = 0, expPos = 0, expOnline = 0;
@@ -4188,8 +4149,8 @@
             try {
                 await callGas('SAVE_EOD_CLOSING', { data: closureRecord });
 
-                // Auto-close all active counter sessions
-                const activeCounterIds = [...new Set(activeEntries.map(e => e.counterId))];
+                // Auto-close active counter sessions for the selected date
+                const activeCounterIds = [...new Set(activeEntries.filter(e => e.sessionStatus !== 'closed').map(e => e.counterId))];
                 for (const cid of activeCounterIds) {
                     try {
                         await callGas('ARCHIVE_SESSION', { counterId: cid, remarks: `EOD auto-close ${selectedEodDate}` });
@@ -4207,6 +4168,18 @@
             } catch(e) {
                 showMsg("Submission failed: " + e.message);
             }
+        }
+
+        function closeEodLater() {
+            showToast("EOD reconciliation progress saved. You can complete it later.");
+            // Reset selected date to today
+            const picker = document.getElementById('eod-select-date');
+            if (picker) {
+                picker.value = getLocalTodayStr();
+                handleEodDateChange();
+            }
+            // Navigate to active tab
+            switchAdminTab('active');
         }
 
         async function forceSync() {
@@ -4273,8 +4246,8 @@
             const banner = document.getElementById('historical-banner');
             const submitBtn = document.getElementById('btn-submit-eod');
             const syncBtn = document.getElementById('btn-force-sync');
-            const loadBtn = document.getElementById('btn-load-test');
             const wipeBtn = document.getElementById('btn-wipe-db');
+            const closeLaterBtn = document.getElementById('btn-close-later-eod');
             
             if (selectedEodDate === todayStr) {
                 const closure = historicalClosings.find(c => c.date === todayStr);
@@ -4284,8 +4257,8 @@
                     banner.innerText = `🔒 EOD CLOSING RECONCILIATION SUBMITTED & LOCKED FOR TODAY (${todayStr})`;
                     if (submitBtn) submitBtn.style.display = 'none';
                     if (syncBtn) syncBtn.style.display = 'none';
-                    if (loadBtn) loadBtn.style.display = 'block';
                     if (wipeBtn) wipeBtn.style.display = 'block';
+                    if (closeLaterBtn) closeLaterBtn.style.display = 'none';
                     
                     const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
                     notes.forEach(n => {
@@ -4300,8 +4273,8 @@
                 banner.style.display = 'none';
                 if (submitBtn) submitBtn.style.display = 'block';
                 if (syncBtn) syncBtn.style.display = 'block';
-                if (loadBtn) loadBtn.style.display = 'block';
                 if (wipeBtn) wipeBtn.style.display = 'block';
+                if (closeLaterBtn) closeLaterBtn.style.display = 'block';
                 
                 const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
                 notes.forEach(n => {
@@ -4312,17 +4285,9 @@
                 loadDenominations();
                 renderAdminEOD();
             } else {
-                // Past date: hide submit/sync/load/wipe – show read-only historical or unclosed-session view
-                if (submitBtn) submitBtn.style.display = 'none';
+                // Past date: hide sync/wipe
                 if (syncBtn) syncBtn.style.display = 'none';
-                if (loadBtn) loadBtn.style.display = 'none';
                 if (wipeBtn) wipeBtn.style.display = 'none';
-
-                const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
-                notes.forEach(n => {
-                    const el = document.getElementById(n);
-                    if (el) el.setAttribute('disabled', 'true');
-                });
 
                 const closure = historicalClosings.find(c => c.date === selectedEodDate);
                 if (closure) {
@@ -4330,6 +4295,14 @@
                     banner.style.display = 'block';
                     banner.style.background = '#065f46';
                     banner.innerText = `🔒 HISTORICAL CLOSE-OUT RECORD LOCKED FOR ${selectedEodDate}`;
+                    if (submitBtn) submitBtn.style.display = 'none';
+                    if (closeLaterBtn) closeLaterBtn.style.display = 'none';
+                    
+                    const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
+                    notes.forEach(n => {
+                        const el = document.getElementById(n);
+                        if (el) el.setAttribute('disabled', 'true');
+                    });
                     renderHistoricalEOD(closure);
                 } else {
                     // No closure for this date — check if there are entries (unclosed session)
@@ -4337,12 +4310,26 @@
                     if (pastEntries.length > 0) {
                         banner.style.display = 'block';
                         banner.style.background = '#92400e';
-                        banner.innerText = `⚠️ UNCLOSED SESSION FOR ${selectedEodDate} — Admin action required`;
-                        renderUnclosedPastSession(selectedEodDate);
+                        banner.innerText = `⚠️ UNCLOSED SESSION FOR ${selectedEodDate} — EOD closing required`;
+                        
+                        if (submitBtn) submitBtn.style.display = 'block';
+                        if (closeLaterBtn) closeLaterBtn.style.display = 'block';
+                        
+                        const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
+                        notes.forEach(n => {
+                            const el = document.getElementById(n);
+                            if (el) el.removeAttribute('disabled');
+                        });
+
+                        loadDenominations();
+                        renderAdminEOD();
+                        renderUnclosedSessionEntries(selectedEodDate);
                     } else {
                         banner.style.display = 'block';
                         banner.style.background = '#1f2937';
                         banner.innerText = `ℹ️ NO DATA FOR ${selectedEodDate}`;
+                        if (submitBtn) submitBtn.style.display = 'none';
+                        if (closeLaterBtn) closeLaterBtn.style.display = 'none';
                         renderEmptyHistoricalEOD();
                     }
                 }
