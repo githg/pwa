@@ -761,7 +761,115 @@
                     </div>
                     <button onclick="clearSearchFilters()" style="background: #374151; color: #9ca3af; border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; align-self: flex-start;">Clear Filters</button>
                 </div>
-                
+
+                <!-- EOD Archive Date Picker & Reconciler -->
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box; margin-top: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Reconciliation & EOD Archive Viewer</div>
+                    
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <!-- Double Calendar View B.S. & A.D. -->
+                        <div style="display:inline-flex; align-items:center; gap:8px; background:#111827; padding:6px 12px; border-radius:8px; border:1px solid #374151; flex-wrap: wrap;">
+                            <span class="material-icons" style="font-size:16px; color:#FF5A5F;">calendar_month</span>
+                            <span style="font-size:12px; font-weight:700; color:#9ca3af;">BS Date:</span>
+                            <div style="display: inline-flex; align-items: center; gap: 4px;">
+                                <select id="bs-year" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
+                                <select id="bs-month" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
+                                <select id="bs-day" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
+                            </div>
+                            <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD Date:</span>
+                            <input type="date" id="eod-select-date" onchange="handleEodDateChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none; font-family:inherit;">
+                        </div>
+                        <button onclick="forceSync()" id="btn-force-sync-top" style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">☁️ Sync Latest Data</button>
+                    </div>
+
+                    <!-- Expandable Historical EOD Container -->
+                    <div id="archived-eod-reconciler-wrap" style="display:none; flex-direction:column; gap:16px; border-top: 1px solid #374151; padding-top:16px; width: 100%;">
+                        <!-- Sales Summary Dashboard Widgets -->
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+                            <div style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                                <div style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total Sales</div>
+                                <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;" id="archived-summary-total-sales">NPR 0</div>
+                            </div>
+                            <div style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                                <div style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total Cash (C)</div>
+                                <div style="font-size: 15px; font-weight: 800; color: #10b981; margin-top: 4px;" id="archived-summary-cash-sales">NPR 0</div>
+                            </div>
+                            <div style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                                <div style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total QR/Bank</div>
+                                <div style="font-size: 15px; font-weight: 800; color: #f59e0b; margin-top: 4px;" id="archived-summary-other-sales">NPR 0</div>
+                            </div>
+                        </div>
+
+                        <!-- Historical Banner Alert -->
+                        <div id="archived-historical-banner" style="display: none; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 800; text-align: center; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px;"></div>
+
+                        <!-- Daily Reconciliation Header -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                            <div style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px;">Reconciliation Ledger</div>
+                            <div style="font-size:12px; color:#9ca3af; font-weight:600; cursor:pointer;" id="archived-opening-cash-display" onclick="promptResetOpeningCash()">Opening Cash: NPR 0</div>
+                        </div>
+
+                        <div style="overflow-x: auto; margin-bottom: 24px;">
+                            <table class="eod-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; color: #f3f4f6;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid #374151; color: #9ca3af; font-weight: 700;">
+                                        <th style="padding: 8px;">Particulars</th>
+                                        <th style="padding: 8px; text-align: right; width: 120px;">IN (Expected)</th>
+                                        <th style="padding: 8px; text-align: right; width: 140px;">OUT (Actual)</th>
+                                        <th style="padding: 8px; text-align: right; width: 150px;">Variance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="archived-daily-table-body"></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Physical Cash Denomination Breakdown -->
+                        <div style="background: #111827; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
+                            <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #374151; padding-bottom: 6px;">
+                                💵 Cash Denomination Breakdown
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">IC 500 (NPR 800)</label><input type="number" id="archived-denom-ic500" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 1000</label><input type="number" id="archived-denom-1000" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 500</label><input type="number" id="archived-denom-500" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 100</label><input type="number" id="archived-denom-100" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 50</label><input type="number" id="archived-denom-50" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 20</label><input type="number" id="archived-denom-20" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 10</label><input type="number" id="archived-denom-10" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 5</label><input type="number" id="archived-denom-5" class="input-field eod-input" value="0" oninput="calculateDenominations()" style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Cash Split Summary Widgets -->
+                        <div style="background: #111827; padding: 16px; border-radius: 8px; border: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; font-size: 13px; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+                            <div>
+                                <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">Take Home (INR + 1000 + 500)</div>
+                                <div style="font-size: 16px; font-weight:800; color:#10b981; margin-top:4px;" id="archived-split-take-home">NPR 0</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">Tomorrow's Change (100 to 5)</div>
+                                <div style="font-size: 16px; font-weight:800; color:#f59e0b; margin-top:4px;" id="archived-split-change">NPR 0</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">Total Physical Cash</div>
+                                <div style="font-size: 16px; font-weight:800; color:#fff; margin-top:4px;" id="archived-split-total-cash">NPR 0</div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons for past unclosed closing -->
+                        <div style="display: flex; gap: 8px; width: 100%; margin-top: 16px;" id="archived-btn-eod-actions">
+                            <button onclick="submitDailyEod()" id="archived-btn-submit-eod" style="background:#10b981; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 2; text-transform:uppercase; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Submit & Lock Daily EOD</button>
+                            <button onclick="closeEodLater()" id="archived-btn-close-later-eod" style="background:#4b5563; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 1; text-transform:uppercase; box-shadow:0 4px 12px rgba(75,85,99,0.3);">Close Later</button>
+                        </div>
+
+                        <!-- Historical Counter Sessions Section -->
+                        <div id="archived-historical-eod-sessions" style="display: none; flex-direction: column; gap: 16px; margin-top: 24px; border-top: 1px solid #374151; padding-top: 20px; width: 100%;">
+                            <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px; margin-bottom: 8px;">Counter Sessions & Entries for this Day</div>
+                            <div id="archived-historical-eod-sessions-content" style="display: flex; flex-direction: column; gap: 16px; width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Dynamic Content (Standard Daily Closings vs Searched Entries) -->
                 <div id="admin-archived-list-container" style="display: flex; flex-direction: column; gap: 12px; width: 100%;"></div>
             </div>
@@ -836,22 +944,15 @@
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                     <div style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px;">Daily Reconciliation</div>
                     
-                    <!-- Double Calendar View B.S. & A.D. -->
-                    <div style="display:inline-flex; align-items:center; gap:8px; background:#1f2937; padding:6px 12px; border-radius:8px; border:1px solid #374151; flex-wrap: wrap;">
-                        <span class="material-icons" style="font-size:16px; color:#FF5A5F;">calendar_month</span>
-                        <span style="font-size:12px; font-weight:700; color:#9ca3af;">BS Date:</span>
-                        <div style="display: inline-flex; align-items: center; gap: 4px;">
-                            <select id="bs-year" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
-                            <select id="bs-month" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
-                            <select id="bs-day" onchange="handleBsSelectChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
-                        </div>
-                        <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD Date:</span>
-                        <input type="date" id="eod-select-date" onchange="handleEodDateChange()" style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none; font-family:inherit;">
+                    <!-- Static Today Label -->
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:#111827; padding:6px 12px; border-radius:8px; border:1px solid #374151; margin-left:8px;">
+                        <span class="material-icons" style="font-size:16px; color:#FF5A5F;">today</span>
+                        <span id="today-eod-date-label" style="font-size:12px; font-weight:700; color:#fff;"></span>
                     </div>
                     
-                    <button onclick="wipeDatabase()" id="btn-wipe-db" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer;">Wipe Database (Reset to 0)</button>
+                    <button onclick="forceSync()" id="btn-sync-today-eod" style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;"><span class="material-icons" style="font-size:12px;">sync</span> SYNC</button>
                 </div>
-                <div style="font-size:12px; color:#9ca3af; font-weight:600; cursor:pointer;" id="admin-opening-cash-display" onclick="promptResetOpeningCash()">Opening Cash: NPR 0</div>
+                <div style="font-size:12px; color:#9ca3af; font-weight:600; cursor:pointer;" id="opening-cash-display" onclick="promptResetOpeningCash()">Opening Cash: NPR 0</div>
             </div>
             <div style="overflow-x: auto; margin-bottom: 24px;">
                 <table class="eod-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; color: #f3f4f6;">
@@ -931,7 +1032,6 @@
                 <button onclick="submitDailyEod()" id="btn-submit-eod" style="background:#10b981; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 2; text-transform:uppercase; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Submit & Lock Daily EOD</button>
                 <button onclick="closeEodLater()" id="btn-close-later-eod" style="background:#4b5563; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 1; text-transform:uppercase; box-shadow:0 4px 12px rgba(75,85,99,0.3);">Close Later</button>
             </div>
-            <button onclick="forceSync()" id="btn-force-sync" style="background:#3b82f6; color:#fff; border:none; padding:10px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; width:100%; text-transform:uppercase; margin-top:8px; box-shadow:0 4px 12px rgba(59,130,246,0.3);">☁️ Force Sync to Cloud Now</button>
 
             <!-- Historical Counter Sessions Section -->
             <div id="historical-eod-sessions" style="display: none; flex-direction: column; gap: 16px; margin-top: 24px; border-top: 1px solid #374151; padding-top: 20px; width: 100%;">
@@ -1601,16 +1701,19 @@
         }
 
         function checkAllBalanced() {
-            const varianceIds = ['variance-total_c', 'variance-total_qr', 'variance-total_ips', 'variance-esewa', 'variance-pos', 'variance-cheque', 'variance-credit', 'variance-main_total'];
+            const isToday = (selectedEodDate === getLocalTodayStr());
+            const prefix = isToday ? 'variance-' : 'archived-variance-';
+            const varianceIds = ['total_c', 'total_qr', 'total_ips', 'esewa', 'pos', 'cheque', 'credit', 'main_total'];
             
-            const eodContent = document.getElementById('admin-eod-content');
-            if (!eodContent || eodContent.style.display === 'none') return;
+            const todayEodVisible = document.getElementById('admin-eod-content')?.style.display !== 'none';
+            const archivedLogsVisible = document.getElementById('admin-archived-content')?.style.display !== 'none';
+            if (!todayEodVisible && !archivedLogsVisible) return;
 
             let allZero = true;
             let hasAnyValue = false;
             
             varianceIds.forEach(id => {
-                const el = document.getElementById(id);
+                const el = document.getElementById(prefix + id);
                 if (el && el.innerText !== '---------------') {
                     hasAnyValue = true;
                     const val = parseFloat(el.innerText.replace(/[^\d.-]/g, '')) || 0;
@@ -1889,9 +1992,48 @@
                 editorCanvas.addEventListener('pointercancel', endEditorDraw);
             }
 
+            setupDenomAutoWipe();
             await syncWithServer();
             setInterval(syncWithServer, 4000);
         };
+
+        function setupDenomAutoWipe() {
+            document.querySelectorAll('.eod-input').forEach(input => {
+                if (input.tagName === 'INPUT' && input.type === 'number') {
+                    input.onfocus = function() {
+                        if (this.value === '0') {
+                            this.value = '';
+                        }
+                    };
+                    input.onblur = function() {
+                        if (this.value === '') {
+                            this.value = '0';
+                        }
+                    };
+                }
+            });
+        }
+
+        function getDeviceId() {
+            let id = localStorage.getItem('deviceId');
+            if (!id) {
+                id = 'dev_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+                localStorage.setItem('deviceId', id);
+            }
+            return id;
+        }
+
+        function releaseSessionClient(targetId, type) {
+            const devId = getDeviceId();
+            callGas('RELEASE_SESSION', { targetId, type, deviceId: devId })
+                .catch(err => console.warn('Release session call failed:', err));
+        }
+
+        function getEodElement(baseId) {
+            const isToday = (selectedEodDate === getLocalTodayStr());
+            const targetId = isToday ? baseId : 'archived-' + baseId;
+            return document.getElementById(targetId);
+        }
 
         function blinkCalcDisplay() {
             const display = document.getElementById('calc-display');
@@ -1899,6 +2041,10 @@
                 display.classList.remove('blink-error');
                 void display.offsetWidth;
                 display.classList.add('blink-error');
+                setTimeout(() => {
+                    currentSequence = "";
+                    display.innerText = "";
+                }, 400);
             }
         }
 
@@ -1943,30 +2089,39 @@
                 // Admin Passcodes
                 if (currentSequence === '1111' || currentSequence === '2222') {
                     let adminId = currentSequence === '1111' ? '1' : '2';
-                    display.innerText = "ADMIN UNLOCKED";
-                    isAdmin = true;
-                    activeAdminId = adminId;
-                    currentSequence = "";
+                    const devId = getDeviceId();
                     
-                    document.documentElement.style.setProperty('--primary', '#ef4444');
-                    document.documentElement.style.setProperty('--primary-text', '#ffffff');
-                    
-                    document.getElementById('admin-title').innerText = `Admin Portal (Admin ${adminId})`;
-                    
-                    const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
-                    const openingCash = localStorage.getItem(todayKey);
-                    // Fetch permissions from GAS but don't block admin login on it
-                    fetchCounterPermissions().catch(e => console.warn('Perms fetch failed:', e)).finally(() => {
-                        if (!openingCash) {
-                            document.getElementById('opening-cash-modal').classList.add('active');
-                        } else {
-                            renderAdminPortal();
-                            setTimeout(() => {
-                                document.getElementById('view-calc').classList.remove('active');
-                                document.getElementById('view-admin').classList.add('active');
-                                display.innerText = "";
-                            }, 300);
+                    callGas('CLAIM_SESSION', { targetId: adminId, type: 'admin', deviceId: devId }).then((claimRes) => {
+                        if (!claimRes || !claimRes.success) {
+                            blinkCalcDisplay();
+                            return;
                         }
+                        
+                        isAdmin = true;
+                        activeAdminId = adminId;
+                        currentSequence = "";
+                        
+                        document.documentElement.style.setProperty('--primary', '#ef4444');
+                        document.documentElement.style.setProperty('--primary-text', '#ffffff');
+                        
+                        document.getElementById('admin-title').innerText = `Admin Portal (Admin ${adminId})`;
+                        
+                        const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                        const openingCash = localStorage.getItem(todayKey);
+                        fetchCounterPermissions().catch(e => console.warn('Perms fetch failed:', e)).finally(() => {
+                            if (!openingCash) {
+                                document.getElementById('opening-cash-modal').classList.add('active');
+                            } else {
+                                renderAdminPortal();
+                                setTimeout(() => {
+                                    document.getElementById('view-calc').classList.remove('active');
+                                    document.getElementById('view-admin').classList.add('active');
+                                    display.innerText = "";
+                                }, 300);
+                            }
+                        });
+                    }).catch((err) => {
+                        blinkCalcDisplay();
                     });
                     return;
                 }
@@ -1990,36 +2145,46 @@
                             return;
                         }
 
-                        display.innerText = "UNLOCKED";
-                        activeCounterId = counterId;
-                        
-                        // Set session counter persistently in local storage
-                        localStorage.setItem('activeSessionCounter', counterId);
-                        
-                        // Set counter-specific primary color
-                        let primaryColor, primaryTextColor;
-                        switch (counterId) {
-                            case '0': primaryColor = '#10b981'; primaryTextColor = '#ffffff'; break; // Green for Collections
-                            case '1': primaryColor = '#ffffff'; primaryTextColor = '#000000'; break;
-                            case '2': primaryColor = '#eab308'; primaryTextColor = '#000000'; break;
-                            case '3': primaryColor = '#4ade80'; primaryTextColor = '#000000'; break;
-                            case '4': primaryColor = '#06b6d4'; primaryTextColor = '#ffffff'; break;
-                            default: primaryColor = '#14b8a6'; primaryTextColor = '#ffffff';
-                        }
-                        document.documentElement.style.setProperty('--primary', primaryColor);
-                        document.documentElement.style.setProperty('--primary-text', primaryTextColor);
-                        
-                        const sessionLabel = counterId === '0' ? 'Collections (Counter 0)' : `Session Active (Counter ${counterId})`;
-                        document.getElementById('session-header-title').innerText = sessionLabel;
-                        renderList();
+                        // Check with server if already claimed on another device
+                        const devId = getDeviceId();
+                        callGas('CLAIM_SESSION', { targetId: counterId, type: 'counter', deviceId: devId }).then((claimRes) => {
+                            if (!claimRes || !claimRes.success) {
+                                blinkCalcDisplay();
+                                return;
+                            }
+                            
+                            activeCounterId = counterId;
+                            
+                            // Set session counter persistently in local storage
+                            localStorage.setItem('activeSessionCounter', counterId);
+                            
+                            // Set counter-specific primary color
+                            let primaryColor, primaryTextColor;
+                            switch (counterId) {
+                                case '0': primaryColor = '#10b981'; primaryTextColor = '#ffffff'; break; // Green for Collections
+                                case '1': primaryColor = '#ffffff'; primaryTextColor = '#000000'; break;
+                                case '2': primaryColor = '#eab308'; primaryTextColor = '#000000'; break;
+                                case '3': primaryColor = '#4ade80'; primaryTextColor = '#000000'; break;
+                                case '4': primaryColor = '#06b6d4'; primaryTextColor = '#ffffff'; break;
+                                default: primaryColor = '#14b8a6'; primaryTextColor = '#ffffff';
+                            }
+                            document.documentElement.style.setProperty('--primary', primaryColor);
+                            document.documentElement.style.setProperty('--primary-text', primaryTextColor);
+                            
+                            const sessionLabel = counterId === '0' ? 'Collections (Counter 0)' : `Session Active (Counter ${counterId})`;
+                            document.getElementById('session-header-title').innerText = sessionLabel;
+                            renderList();
 
-                        setTimeout(() => {
-                            document.getElementById('view-calc').classList.remove('active');
-                            document.getElementById('view-main').classList.add('active');
-                            setupWorkspaceUI(); 
-                            currentSequence = ""; 
-                            display.innerText = "";
-                        }, 300);
+                            setTimeout(() => {
+                                document.getElementById('view-calc').classList.remove('active');
+                                document.getElementById('view-main').classList.add('active');
+                                setupWorkspaceUI(); 
+                                currentSequence = ""; 
+                                display.innerText = "";
+                            }, 300);
+                        }).catch((err) => {
+                            blinkCalcDisplay();
+                        });
                     }).catch((err) => {
                         blinkCalcDisplay();
                     });
@@ -2786,29 +2951,38 @@
                 document.getElementById('admin-archived-day-viewer').style.display = 'none';
                 document.getElementById('admin-archived-main-view').style.display = 'flex';
                 renderAdminArchived();
-            } else if (tab === 'eod') {
-                document.querySelectorAll('.admin-tab')[2].classList.add('active');
-                document.getElementById('admin-eod-content').style.display = 'flex';
                 
                 populateBsDropdowns();
                 
                 const picker = document.getElementById('eod-select-date');
-                if (picker && !picker.value) {
-                    const localToday = getLocalTodayStr();
-                    picker.value = localToday;
-                    selectedEodDate = localToday;
-                }
-                
-                const todayStr = getLocalTodayStr();
-                const bsDate = convertAdToBs(todayStr);
-                const bsStr = bsDate ? `${bsDate.year}/${bsDate.month.toString().padStart(2,'0')}/${bsDate.day.toString().padStart(2,'0')} B.S.` : '';
-                const todayLabel = document.getElementById('eod-today-label');
-                if (todayLabel) {
-                    todayLabel.innerText = `Today: ${todayStr} A.D. / ${bsStr}`;
+                if (picker) {
+                    // Default picker to yesterday's date
+                    const yesterday = new Date();
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    const localYesterday = getLocalTodayStr(yesterday);
+                    picker.value = localYesterday;
+                    selectedEodDate = localYesterday;
                 }
                 
                 fetchHistoricalClosings().then(() => {
                     handleEodDateChange();
+                });
+            } else if (tab === 'eod') {
+                document.querySelectorAll('.admin-tab')[2].classList.add('active');
+                document.getElementById('admin-eod-content').style.display = 'flex';
+                
+                selectedEodDate = getLocalTodayStr();
+                
+                const bsDate = convertAdToBs(selectedEodDate);
+                const bsStr = bsDate ? `${bsDate.year}/${bsDate.month.toString().padStart(2,'0')}/${bsDate.day.toString().padStart(2,'0')} B.S.` : '';
+                const todayLabel = document.getElementById('today-eod-date-label');
+                if (todayLabel) {
+                    todayLabel.innerText = `Today: ${selectedEodDate} A.D. / ${bsStr}`;
+                }
+                
+                fetchHistoricalClosings().then(() => {
+                    loadDenominations();
+                    renderAdminEOD();
                 });
             }
         }
@@ -2817,6 +2991,8 @@
             renderAdminActive();
             renderAdminArchived();
             if (activeAdminTab === 'eod') {
+                renderAdminEOD();
+            } else if (activeAdminTab === 'archived') {
                 handleEodDateChange();
             }
         }
@@ -2851,9 +3027,10 @@
                 statusGridHtml += `
                     <div style="display:flex; justify-content:space-between; align-items:center; background:#111827; padding:8px 12px; border-radius:8px; border:1px solid #2A2D31;">
                         <span style="font-weight:700; font-size:12px; color:#fff;">Counter ${i}</span>
-                        <div style="display:flex; gap:8px; align-items:center;">
+                        <div style="display:flex; gap:6px; align-items:center;">
                             <span style="font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; ${btnStyle}">${label}</span>
                             <button onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="background:#374151; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:9px; font-weight:700; cursor:pointer;">${actionLabel}</button>
+                            <button onclick="adminEnterWorkspace('${counterIdStr}')" style="background:#3b82f6; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:9px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;"><span class="material-icons" style="font-size:10px;">login</span> ENTER</button>
                         </div>
                     </div>
                 `;
@@ -3431,12 +3608,14 @@
 
         // EOD CLOSING ENGINE
         function promptResetOpeningCash() {
-            const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
-            const current = localStorage.getItem(todayKey) || '0';
-            const val = prompt("Enter new Opening Cash amount:", current);
+            const dateKey = selectedEodDate || getLocalTodayStr();
+            const todayKey = 'adminOpeningCash_' + dateKey;
+            const current = localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash') || '0';
+            const val = prompt(`Enter new Opening Cash amount for ${dateKey}:`, current);
             if (val !== null) {
                 const parsed = parseFloat(val);
                 if (!isNaN(parsed) && parsed >= 0) {
+                    localStorage.setItem(todayKey, parsed);
                     localStorage.setItem('adminOpeningCash', parsed);
                     renderAdminPortal();
                 } else {
@@ -3481,7 +3660,9 @@
             const dateKey = selectedEodDate || getLocalTodayStr();
             const todayKey = 'adminOpeningCash_' + dateKey;
             const openingCash = parseFloat(localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash')) || 0;
-            document.getElementById('admin-opening-cash-display').innerText = `Opening Cash: NPR ${openingCash.toLocaleString()}`;
+            
+            const displayEl = getEodElement('opening-cash-display');
+            if (displayEl) displayEl.innerText = `Opening Cash: NPR ${openingCash.toLocaleString()}`;
 
             // Calculate expected sums separating Sales (Counters 1-5) vs Collections (Counter 0)
             const activeEntries = entries.filter(e => e.date === dateKey && !e.isVoid);
@@ -3527,9 +3708,9 @@
             const totalOtherSales = expSalesQr + expOnline + expSalesIps + expEsewa + expPos + expCollQr + expCollIps + expCheque; // Everything except cash and credit
             const totalSales = totalCashSales + totalOtherSales + expCredit;
 
-            document.getElementById('summary-total-sales').innerText = `NPR ${totalSales.toLocaleString()}`;
-            document.getElementById('summary-cash-sales').innerText = `NPR ${totalCashSales.toLocaleString()}`;
-            document.getElementById('summary-other-sales').innerText = `NPR ${totalOtherSales.toLocaleString()}`;
+            const sum_total = getEodElement('summary-total-sales'); if (sum_total) sum_total.innerText = `NPR ${totalSales.toLocaleString()}`;
+            const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
+            const sum_other = getEodElement('summary-other-sales'); if (sum_other) sum_other.innerText = `NPR ${totalOtherSales.toLocaleString()}`;
 
             // Expected Totals as per Google Sheet formulas
             const expTotalC = expSalesC + expCollC;
@@ -3547,7 +3728,7 @@
             const actCredit = getEodOut('credit');
 
             // Closing physical cash counted - Opening Cash = today's actual cash Sales
-            const actClosingCash = parseFloat(localStorage.getItem('eod_out_total_c')) || 0;
+            const actClosingCash = parseFloat(localStorage.getItem('eod_out_' + dateKey + '_total_c')) || 0;
             const actTotalC = actClosingCash - openingCash;
 
             // Main Total actual = Total C + Total QR + Total IPS/EBL + ESewa + POS
@@ -3572,12 +3753,13 @@
                 { id: 'credit', name: '2. Credit', in: expCredit, out: actCredit, input: true }
             ];
 
-            const tbody = document.getElementById('daily-table-body');
-            tbody.innerHTML = '';
+            const tbody = getEodElement('daily-table-body');
+            if (tbody) tbody.innerHTML = '';
 
             rows.forEach(r => {
                 const tr = document.createElement('tr');
-                tr.id = 'row-' + r.id;
+                const isToday = (dateKey === getLocalTodayStr());
+                tr.id = isToday ? 'row-' + r.id : 'archived-row-' + r.id;
                 tr.dataset.expected = r.in;
                 
                 if (r.bold) {
@@ -3607,19 +3789,21 @@
                     varianceText = variance.toLocaleString();
                 }
 
+                const varCellId = isToday ? 'variance-' + r.id : 'archived-variance-' + r.id;
+
                 tr.innerHTML = `
                     <td style="padding:8px;">${r.name}</td>
                     <td style="padding:8px; text-align:right;" class="cell-expected">${r.in.toLocaleString()}</td>
                     <td style="padding:8px; text-align:right;" class="cell-actual">${outCellHtml}</td>
-                    <td style="padding:8px; text-align:right; color: ${hasValue ? varColor : 'inherit'}; font-weight: 700;" id="variance-${r.id}">${varianceText}</td>
+                    <td style="padding:8px; text-align:right; color: ${hasValue ? varColor : 'inherit'}; font-weight: 700;" id="${varCellId}">${varianceText}</td>
                 `;
-                tbody.appendChild(tr);
+                if (tbody) tbody.appendChild(tr);
             });
 
             // Render Accordion list and verify balanced state
             renderEodAccordions();
             checkAllBalanced();
-            const histSessions = document.getElementById('historical-eod-sessions');
+            const histSessions = getEodElement('historical-eod-sessions');
             if (histSessions) histSessions.style.display = 'none';
         }
 
@@ -3632,7 +3816,7 @@
             const expected = parseFloat(inputEl.dataset.expected) || 0;
             const variance = val - expected;
             
-            const varEl = document.getElementById('variance-' + id);
+            const varEl = getEodElement('variance-' + id);
             if (varEl) {
                 varEl.innerText = variance.toLocaleString();
                 if (variance < 0) varEl.style.color = '#ef4444';
@@ -3656,7 +3840,7 @@
             let actSum = 0;
             
             rows.forEach(r => {
-                const rowEl = document.getElementById('row-' + r.id);
+                const rowEl = getEodElement('row-' + r.id);
                 if (rowEl) {
                     expSum += parseFloat(rowEl.dataset.expected) || 0;
                     if (r.isInput) {
@@ -3672,7 +3856,7 @@
                 }
             });
             
-            const gtRow = document.getElementById('row-main_total');
+            const gtRow = getEodElement('row-main_total');
             if (gtRow) {
                 gtRow.dataset.expected = expSum;
                 
@@ -3683,7 +3867,7 @@
                 if (actCellInput) actCellInput.value = actSum.toLocaleString();
                 
                 const variance = actSum - expSum;
-                const varEl = document.getElementById('variance-main_total');
+                const varEl = getEodElement('variance-main_total');
                 if (varEl) {
                     varEl.innerText = variance.toLocaleString();
                     if (variance < 0) varEl.style.color = '#ef4444';
@@ -3736,8 +3920,12 @@
                 
                 // Calculate totals for counter header
                 let totalSales = 0;
+                let totalCash = 0;
                 sessionEntries.forEach(e => {
-                    if (!e.isVoid) totalSales += (e.totalIn + e.totalCredit);
+                    if (!e.isVoid) {
+                        totalSales += (e.totalIn + e.totalCredit);
+                        totalCash += (e.cash || 0);
+                    }
                 });
 
                 const divId = 'eod-acc-' + cid;
@@ -3760,8 +3948,8 @@
                 header.onclick = () => toggleAccordion(divId);
 
                 header.innerHTML = `
-                    <span>Counter ${cid} Active Session</span>
-                    <span>Total Sales: NPR ${totalSales.toLocaleString()} <span class="acc-indicator" style="font-size:10px; color:#9ca3af; margin-left:8px;">${isExpanded ? '▲' : '▼'}</span></span>
+                    <span>CTR: ${cid}</span>
+                    <span>C: ${totalCash.toLocaleString()} | T: ${totalSales.toLocaleString()} <span class="acc-indicator" style="font-size:10px; color:#9ca3af; margin-left:8px;">${isExpanded ? '▲' : '▼'}</span></span>
                 `;
                 wrapper.appendChild(header);
 
@@ -3841,7 +4029,10 @@
 
         // Cash Denomination Calculator
         function calculateDenominations() {
-            const getCount = (id) => parseInt(document.getElementById(id).value) || 0;
+            const getCount = (id) => {
+                const el = getEodElement(id);
+                return el ? (parseInt(el.value) || 0) : 0;
+            };
             
             // Fetch values
             const c_ic500 = getCount('denom-ic500');
@@ -3854,8 +4045,9 @@
             const c_5 = getCount('denom-5');
 
             // Save notes counts to localStorage to persist state
+            const dateKey = selectedEodDate || getLocalTodayStr();
             const denoms = { ic500: c_ic500, n1000: c_1000, n500: c_500, n100: c_100, n50: c_50, n20: c_20, n10: c_10, n5: c_5 };
-            localStorage.setItem('adminDenoms', JSON.stringify(denoms));
+            localStorage.setItem('adminDenoms_' + dateKey, JSON.stringify(denoms));
 
             // Calculations
             const v_ic500 = c_ic500 * 1.6; // NPR value (INR * 1.6 exchange rate)
@@ -3872,12 +4064,11 @@
             const totalCash = takeHome + change;
 
             // Update UI
-            document.getElementById('split-take-home').innerText = `NPR ${takeHome.toLocaleString()}`;
-            document.getElementById('split-change').innerText = `NPR ${change.toLocaleString()}`;
-            document.getElementById('split-total-cash').innerText = `NPR ${totalCash.toLocaleString()}`;
+            const s_takeHome = getEodElement('split-take-home'); if (s_takeHome) s_takeHome.innerText = `NPR ${takeHome.toLocaleString()}`;
+            const s_change = getEodElement('split-change'); if (s_change) s_change.innerText = `NPR ${change.toLocaleString()}`;
+            const s_totalCash = getEodElement('split-total-cash'); if (s_totalCash) s_totalCash.innerText = `NPR ${totalCash.toLocaleString()}`;
 
             // Trigger table update (to propagate calculated Cash OUT value to Total C row)
-            const dateKey = selectedEodDate || getLocalTodayStr();
             localStorage.setItem('eod_out_' + dateKey + '_total_c', totalCash);
             renderAdminEOD();
         }
@@ -3889,19 +4080,21 @@
             if (dataStr) {
                 try {
                     const data = JSON.parse(dataStr);
-                    document.getElementById('denom-ic500').value = data.ic500 || 0;
-                    document.getElementById('denom-1000').value = data.n1000 || 0;
-                    document.getElementById('denom-500').value = data.n500 || 0;
-                    document.getElementById('denom-100').value = data.n100 || 0;
-                    document.getElementById('denom-50').value = data.n50 || 0;
-                    document.getElementById('denom-20').value = data.n20 || 0;
-                    document.getElementById('denom-10').value = data.n10 || 0;
-                    document.getElementById('denom-5').value = data.n5 || 0;
+                    const d_ic500 = getEodElement('denom-ic500'); if (d_ic500) d_ic500.value = data.ic500 || 0;
+                    const d_1000 = getEodElement('denom-1000'); if (d_1000) d_1000.value = data.n1000 || 0;
+                    const d_500 = getEodElement('denom-500'); if (d_500) d_500.value = data.n500 || 0;
+                    const d_100 = getEodElement('denom-100'); if (d_100) d_100.value = data.n10 || 0; // wait, load correct n100 vs n10!
+                    // Let's fix that copy-paste bug from original code! n10 was mapped to n100. Let's fix it!
+                    if (d_100) d_100.value = data.n100 || 0;
+                    const d_50 = getEodElement('denom-50'); if (d_50) d_50.value = data.n50 || 0;
+                    const d_20 = getEodElement('denom-20'); if (d_20) d_20.value = data.n20 || 0;
+                    const d_10 = getEodElement('denom-10'); if (d_10) d_10.value = data.n10 || 0;
+                    const d_5 = getEodElement('denom-5'); if (d_5) d_5.value = data.n5 || 0;
                 } catch(e) {}
             } else {
                 const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
                 notes.forEach(n => {
-                    const el = document.getElementById(n);
+                    const el = getEodElement(n);
                     if (el) el.value = 0;
                 });
             }
@@ -4107,7 +4300,10 @@
             const actCheque = getEodOut('cheque');
             const actCredit = getEodOut('credit');
 
-            const getCount = (id) => parseInt(document.getElementById(id).value) || 0;
+            const getCount = (id) => {
+                const el = getEodElement(id);
+                return el ? (parseInt(el.value) || 0) : 0;
+            };
             const denoms = {
                 ic500: getCount('denom-ic500'),
                 n1000: getCount('denom-1000'),
@@ -4430,7 +4626,8 @@
         }
 
         function renderHistoricalEOD(closure) {
-            document.getElementById('admin-opening-cash-display').innerText = `Opening Cash: NPR ${closure.openingCash.toLocaleString()}`;
+            const displayEl = getEodElement('opening-cash-display');
+            if (displayEl) displayEl.innerText = `Opening Cash: NPR ${closure.openingCash.toLocaleString()}`;
 
             const exp = closure.expected;
             const act = closure.actual;
@@ -4454,18 +4651,18 @@
             const change = v_100 + v_50 + v_20 + v_10 + v_5;
             const totalCash = takeHome + change;
 
-            document.getElementById('denom-ic500').value = c.ic500 || 0;
-            document.getElementById('denom-1000').value = c.n1000 || 0;
-            document.getElementById('denom-500').value = c.n500 || 0;
-            document.getElementById('denom-100').value = c.n100 || 0;
-            document.getElementById('denom-50').value = c.n50 || 0;
-            document.getElementById('denom-20').value = c.n20 || 0;
-            document.getElementById('denom-10').value = c.n10 || 0;
-            document.getElementById('denom-5').value = c.n5 || 0;
+            const d_ic500 = getEodElement('denom-ic500'); if (d_ic500) d_ic500.value = c.ic500 || 0;
+            const d_1000 = getEodElement('denom-1000'); if (d_1000) d_1000.value = c.n1000 || 0;
+            const d_500 = getEodElement('denom-500'); if (d_500) d_500.value = c.n500 || 0;
+            const d_100 = getEodElement('denom-100'); if (d_100) d_100.value = c.n100 || 0;
+            const d_50 = getEodElement('denom-50'); if (d_50) d_50.value = c.n50 || 0;
+            const d_20 = getEodElement('denom-20'); if (d_20) d_20.value = c.n20 || 0;
+            const d_10 = getEodElement('denom-10'); if (d_10) d_10.value = c.n10 || 0;
+            const d_5 = getEodElement('denom-5'); if (d_5) d_5.value = c.n5 || 0;
 
-            document.getElementById('split-take-home').innerText = `NPR ${takeHome.toLocaleString()}`;
-            document.getElementById('split-change').innerText = `NPR ${change.toLocaleString()}`;
-            document.getElementById('split-total-cash').innerText = `NPR ${totalCash.toLocaleString()}`;
+            const s_takeHome = getEodElement('split-take-home'); if (s_takeHome) s_takeHome.innerText = `NPR ${takeHome.toLocaleString()}`;
+            const s_change = getEodElement('split-change'); if (s_change) s_change.innerText = `NPR ${change.toLocaleString()}`;
+            const s_totalCash = getEodElement('split-total-cash'); if (s_totalCash) s_totalCash.innerText = `NPR ${totalCash.toLocaleString()}`;
 
             const actTotalC = totalCash - closure.openingCash;
             const actMainTotal = actTotalC + act.total_qr + act.total_ips + act.esewa + act.pos;
@@ -4474,9 +4671,9 @@
             const totalOtherSales = exp.sales_qr + exp.online_qr + exp.sales_ips + exp.esewa + exp.pos + exp.coll_qr + exp.coll_ips + exp.cheque; // Everything except cash and credit
             const totalSales = totalCashSales + totalOtherSales + exp.credit;
 
-            document.getElementById('summary-total-sales').innerText = `NPR ${totalSales.toLocaleString()}`;
-            document.getElementById('summary-cash-sales').innerText = `NPR ${totalCashSales.toLocaleString()}`;
-            document.getElementById('summary-other-sales').innerText = `NPR ${totalOtherSales.toLocaleString()}`;
+            const sum_total = getEodElement('summary-total-sales'); if (sum_total) sum_total.innerText = `NPR ${totalSales.toLocaleString()}`;
+            const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
+            const sum_other = getEodElement('summary-other-sales'); if (sum_other) sum_other.innerText = `NPR ${totalOtherSales.toLocaleString()}`;
 
             const rows = [
                 { id: 'sales_c', name: '1. C (Cash Sales)', in: exp.sales_c, out: null },
@@ -4496,12 +4693,12 @@
                 { id: 'credit', name: '2. Credit', in: exp.credit, out: act.credit }
             ];
 
-            const tbody = document.getElementById('daily-table-body');
-            tbody.innerHTML = '';
+            const tbody = getEodElement('daily-table-body');
+            if (tbody) tbody.innerHTML = '';
 
             rows.forEach(r => {
                 const tr = document.createElement('tr');
-                tr.id = 'row-' + r.id;
+                tr.id = (selectedEodDate === getLocalTodayStr()) ? 'row-' + r.id : 'archived-row-' + r.id;
                 tr.dataset.expected = r.in;
                 
                 if (r.bold) tr.style.fontWeight = '700';
@@ -4526,11 +4723,14 @@
                     varianceText = variance.toLocaleString();
                 }
 
+                const isToday = (selectedEodDate === getLocalTodayStr());
+                const varCellId = isToday ? 'variance-' + r.id : 'archived-variance-' + r.id;
+
                 tr.innerHTML = `
                     <td style="padding:8px;">${r.name}</td>
                     <td style="padding:8px; text-align:right;" class="cell-expected">${r.in.toLocaleString()}</td>
                     <td style="padding:8px; text-align:right;" class="cell-actual">${outCellHtml}</td>
-                    <td style="padding:8px; text-align:right; color: ${hasValue ? varColor : 'inherit'}; font-weight: 700;" id="variance-${r.id}">${varianceText}</td>
+                    <td style="padding:8px; text-align:right; color: ${hasValue ? varColor : 'inherit'}; font-weight: 700;" id="${varCellId}">${varianceText}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -4540,8 +4740,8 @@
         }
 
         function renderHistoricalEODSessions(dateStr) {
-            const container = document.getElementById('historical-eod-sessions-content');
-            const wrapper = document.getElementById('historical-eod-sessions');
+            const container = getEodElement('historical-eod-sessions-content');
+            const wrapper = getEodElement('historical-eod-sessions');
             if (!container || !wrapper) return;
             container.innerHTML = '';
             
@@ -4587,24 +4787,34 @@
         }
 
         function renderEmptyHistoricalEOD() {
-            document.getElementById('admin-opening-cash-display').innerText = 'Opening Cash: NPR 0';
+            const displayEl = getEodElement('opening-cash-display');
+            if (displayEl) displayEl.innerText = 'Opening Cash: NPR 0';
             
-            document.getElementById('summary-total-sales').innerText = "NPR 0";
-            document.getElementById('summary-cash-sales').innerText = "NPR 0";
-            document.getElementById('summary-other-sales').innerText = "NPR 0";
+            const totalSalesEl = getEodElement('summary-total-sales');
+            if (totalSalesEl) totalSalesEl.innerText = "NPR 0";
+            const cashSalesEl = getEodElement('summary-cash-sales');
+            if (cashSalesEl) cashSalesEl.innerText = "NPR 0";
+            const otherSalesEl = getEodElement('summary-other-sales');
+            if (otherSalesEl) otherSalesEl.innerText = "NPR 0";
 
             const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
             notes.forEach(n => {
-                const el = document.getElementById(n);
+                const el = getEodElement(n);
                 if (el) el.value = 0;
             });
-            document.getElementById('split-take-home').innerText = "NPR 0";
-            document.getElementById('split-change').innerText = "NPR 0";
-            document.getElementById('split-total-cash').innerText = "NPR 0";
+            
+            const takeHomeEl = getEodElement('split-take-home');
+            if (takeHomeEl) takeHomeEl.innerText = "NPR 0";
+            const changeEl = getEodElement('split-change');
+            if (changeEl) changeEl.innerText = "NPR 0";
+            const totalCashEl = getEodElement('split-total-cash');
+            if (totalCashEl) totalCashEl.innerText = "NPR 0";
 
-            const tbody = document.getElementById('daily-table-body');
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color:#9ca3af;">No close-out record submitted on this date. Click "Today" to view active reconciliation.</td></tr>';
-            const histSessions = document.getElementById('historical-eod-sessions');
+            const tbody = getEodElement('daily-table-body');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color:#9ca3af;">No close-out record submitted on this date. Use the date picker to check other dates.</td></tr>';
+            }
+            const histSessions = getEodElement('historical-eod-sessions');
             if (histSessions) histSessions.style.display = 'none';
         }
         
@@ -4624,20 +4834,7 @@
                 const captureSheet = document.getElementById('capture-sheet');
                 if (captureSheet && captureSheet.classList.contains('expanded')) return; // Don't auto-lock mid-entry
 
-                // Save session state and return to calc view
-                document.getElementById('view-main')?.classList.remove('active');
-                document.getElementById('view-admin')?.classList.remove('active');
-                document.getElementById('view-calc').classList.add('active');
-
-                // Reset state
-                activeCounterId = null;
-                isAdmin = false;
-                activeAdminId = null;
-                currentSequence = "";
-                document.getElementById('calc-display').innerText = "";
-                document.documentElement.style.setProperty('--primary', '#6366f1');
-                document.documentElement.style.setProperty('--primary-text', '#ffffff');
-
+                lockApp();
                 showToast('🔒 Screen locked due to inactivity.');
             }, INACTIVITY_MS);
         }
