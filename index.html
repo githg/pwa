@@ -1329,6 +1329,36 @@
                 .catch(err => console.warn("Background upload sync failed (cached locally):", err));
         }
 
+        function hasEntriesChanged(oldList, newList) {
+            if (!oldList || !newList) return true;
+            if (oldList.length !== newList.length) return true;
+            for (let i = 0; i < oldList.length; i++) {
+                const a = oldList[i];
+                const b = newList[i];
+                if (a.id !== b.id ||
+                    a.isVoid !== b.isVoid ||
+                    a.sessionStatus !== b.sessionStatus ||
+                    a.cash !== b.cash ||
+                    a.qr !== b.qr ||
+                    a.ips !== b.ips ||
+                    a.pos !== b.pos ||
+                    a.esewa !== b.esewa ||
+                    a.online !== b.online ||
+                    a.cheque !== b.cheque ||
+                    a.credit !== b.credit ||
+                    a.remarks !== b.remarks ||
+                    (a.images && a.images.length) !== (b.images && b.images.length)) {
+                    return true;
+                }
+                if (a.images && b.images) {
+                    for (let j = 0; j < a.images.length; j++) {
+                        if (a.images[j] !== b.images[j]) return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         async function syncWithServer() {
             try {
                 // Fetch permissions separately – don't let it block the full sync
@@ -1368,9 +1398,7 @@
                 }
 
                 // Merge: use GAS as source of truth, but preserve local base64 images
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                store.clear();
+                const mergedEntries = [];
                 serverEntries.forEach(gasEntry => {
                     gasEntry.synced = true;
                     const local = localMap[String(gasEntry.id)];
@@ -1378,20 +1406,30 @@
                     if (local && local.images && local.images.some(img => img.startsWith('data:'))) {
                         gasEntry = { ...gasEntry, images: local.images };
                     }
-                    store.put(gasEntry);
+                    mergedEntries.push(gasEntry);
                 });
+                
                 // Re-add still-unsynced local entries (which are still pending)
                 unsynced.forEach(entry => {
                     if (entry.synced === undefined) entry.synced = false;
-                    store.put(entry);
+                    mergedEntries.push(entry);
                 });
-                await new Promise((resolve) => { tx.oncomplete = resolve; });
 
-                // Refresh local memory and lists
-                entries = await loadEntriesFromIDB();
-                renderList();
-                if (isAdmin) renderAdminPortal();
-                setupWorkspaceUI();
+                // Check if anything has actually changed before writing to database or re-rendering
+                const changed = hasEntriesChanged(entries, mergedEntries);
+                if (changed) {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(STORE_NAME);
+                    store.clear();
+                    mergedEntries.forEach(item => store.put(item));
+                    await new Promise((resolve) => { tx.oncomplete = resolve; });
+
+                    // Refresh local memory and lists
+                    entries = mergedEntries;
+                    renderList();
+                    if (isAdmin) renderAdminPortal();
+                    setupWorkspaceUI();
+                }
             } catch (err) {
                 console.warn("Background poll sync failed (working offline):", err);
             }
@@ -1955,6 +1993,37 @@
                 document.body.classList.remove('theme-modern');
             }
 
+            // Initialize PWA router state
+            window.history.replaceState({ view: 'calc' }, '');
+            
+            window.onpopstate = function(event) {
+                const state = event.state;
+                if (!state) return;
+
+                if (state.view === 'calc') {
+                    const calcActive = document.getElementById('view-calc').classList.contains('active');
+                    if (!calcActive) {
+                        lockApp();
+                    }
+                } else if (state.view === 'admin') {
+                    if (document.getElementById('capture-sheet')?.classList.contains('expanded')) {
+                        executeCancelCapture();
+                    }
+                    document.getElementById('view-main').classList.remove('active');
+                    document.getElementById('view-calc').classList.remove('active');
+                    document.getElementById('view-admin').classList.add('active');
+                    renderAdminPortal();
+                } else if (state.view === 'main') {
+                    if (document.getElementById('capture-sheet')?.classList.contains('expanded')) {
+                        executeCancelCapture();
+                    }
+                    document.getElementById('view-admin').classList.remove('active');
+                    document.getElementById('view-calc').classList.remove('active');
+                    document.getElementById('view-main').classList.add('active');
+                    renderList();
+                }
+            };
+
             await fetchCounterPermissions();
             entries = await loadEntriesFromIDB();
             renderList();
@@ -1978,6 +2047,8 @@
                 
                 document.getElementById('session-header-title').innerText = `Session Active (Counter ${activeCounterId})`;
                 setupWorkspaceUI();
+
+                window.history.pushState({ view: 'main' }, '');
             }
 
             // Initialize image editor elements
@@ -2091,37 +2162,40 @@
                     let adminId = currentSequence === '1111' ? '1' : '2';
                     const devId = getDeviceId();
                     
+                    // Optimistic transition
+                    isAdmin = true;
+                    activeAdminId = adminId;
+                    
+                    document.documentElement.style.setProperty('--primary', '#ef4444');
+                    document.documentElement.style.setProperty('--primary-text', '#ffffff');
+                    document.getElementById('admin-title').innerText = `Admin Portal (Admin ${adminId})`;
+                    
+                    const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                    const openingCash = localStorage.getItem(todayKey);
+                    
+                    if (!openingCash) {
+                        document.getElementById('opening-cash-modal').classList.add('active');
+                    } else {
+                        renderAdminPortal();
+                        document.getElementById('view-calc').classList.remove('active');
+                        document.getElementById('view-admin').classList.add('active');
+                    }
+                    
+                    display.innerText = "";
+                    currentSequence = "";
+
+                    // Register view state for Android back button routing
+                    window.history.pushState({ view: 'admin' }, '');
+
+                    // Server check in background
                     callGas('CLAIM_SESSION', { targetId: adminId, type: 'admin', deviceId: devId }).then((claimRes) => {
                         if (!claimRes || !claimRes.success) {
+                            lockApp();
                             blinkCalcDisplay();
-                            return;
+                            showMsg("Access Denied.\n\nThis Admin session is already active on another device.");
                         }
-                        
-                        isAdmin = true;
-                        activeAdminId = adminId;
-                        currentSequence = "";
-                        
-                        document.documentElement.style.setProperty('--primary', '#ef4444');
-                        document.documentElement.style.setProperty('--primary-text', '#ffffff');
-                        
-                        document.getElementById('admin-title').innerText = `Admin Portal (Admin ${adminId})`;
-                        
-                        const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
-                        const openingCash = localStorage.getItem(todayKey);
-                        fetchCounterPermissions().catch(e => console.warn('Perms fetch failed:', e)).finally(() => {
-                            if (!openingCash) {
-                                document.getElementById('opening-cash-modal').classList.add('active');
-                            } else {
-                                renderAdminPortal();
-                                setTimeout(() => {
-                                    document.getElementById('view-calc').classList.remove('active');
-                                    document.getElementById('view-admin').classList.add('active');
-                                    display.innerText = "";
-                                }, 300);
-                            }
-                        });
                     }).catch((err) => {
-                        blinkCalcDisplay();
+                        console.warn("Background claim check failed:", err);
                     });
                     return;
                 }
@@ -2130,63 +2204,66 @@
                 if (match) {
                     let counterId = match[1];
 
+                    // Lockout: check if a session is already active for another counter
+                    let activeSession = localStorage.getItem('activeSessionCounter');
+                    if (activeSession && activeSession !== counterId) {
+                        showMsg(`Access Denied.\n\nCounter ${activeSession} session is active. You cannot log into other counters before closing the active session.`);
+                        currentSequence = "";
+                        display.innerText = "";
+                        return;
+                    }
+
+                    // Optimistic transition
+                    activeCounterId = counterId;
+                    localStorage.setItem('activeSessionCounter', counterId);
+
+                    let primaryColor, primaryTextColor;
+                    switch (counterId) {
+                        case '0': primaryColor = '#10b981'; primaryTextColor = '#ffffff'; break;
+                        case '1': primaryColor = '#ffffff'; primaryTextColor = '#000000'; break;
+                        case '2': primaryColor = '#eab308'; primaryTextColor = '#000000'; break;
+                        case '3': primaryColor = '#4ade80'; primaryTextColor = '#000000'; break;
+                        case '4': primaryColor = '#06b6d4'; primaryTextColor = '#ffffff'; break;
+                        default: primaryColor = '#14b8a6'; primaryTextColor = '#ffffff';
+                    }
+                    document.documentElement.style.setProperty('--primary', primaryColor);
+                    document.documentElement.style.setProperty('--primary-text', primaryTextColor);
+                    
+                    const sessionLabel = counterId === '0' ? 'Collections (Counter 0)' : `Session Active (Counter ${counterId})`;
+                    document.getElementById('session-header-title').innerText = sessionLabel;
+                    renderList();
+
+                    document.getElementById('view-calc').classList.remove('active');
+                    document.getElementById('view-main').classList.add('active');
+                    setupWorkspaceUI();
+
+                    display.innerText = "";
+                    currentSequence = "";
+
+                    // Register view state for Android back button routing
+                    window.history.pushState({ view: 'main' }, '');
+
+                    // Permissions and server claim checks in background
                     fetchCounterPermissions().then(() => {
                         if (counterPermissions && counterPermissions[counterId] === false) {
+                            lockApp();
                             blinkCalcDisplay();
+                            showMsg(`🔒 Counter ${counterId} Access is locked by Admin.`);
                             return;
                         }
 
-                        // Lockout: check if a session is already active for another counter
-                        let activeSession = localStorage.getItem('activeSessionCounter');
-                        if (activeSession && activeSession !== counterId) {
-                            showMsg(`Access Denied.\n\nCounter ${activeSession} session is active. You cannot log into other counters before closing the active session.`);
-                            currentSequence = "";
-                            display.innerText = "";
-                            return;
-                        }
-
-                        // Check with server if already claimed on another device
                         const devId = getDeviceId();
                         callGas('CLAIM_SESSION', { targetId: counterId, type: 'counter', deviceId: devId }).then((claimRes) => {
                             if (!claimRes || !claimRes.success) {
+                                lockApp();
                                 blinkCalcDisplay();
-                                return;
+                                showMsg(`Access Denied.\n\nCounter ${counterId} is already open on another device.`);
                             }
-                            
-                            activeCounterId = counterId;
-                            
-                            // Set session counter persistently in local storage
-                            localStorage.setItem('activeSessionCounter', counterId);
-                            
-                            // Set counter-specific primary color
-                            let primaryColor, primaryTextColor;
-                            switch (counterId) {
-                                case '0': primaryColor = '#10b981'; primaryTextColor = '#ffffff'; break; // Green for Collections
-                                case '1': primaryColor = '#ffffff'; primaryTextColor = '#000000'; break;
-                                case '2': primaryColor = '#eab308'; primaryTextColor = '#000000'; break;
-                                case '3': primaryColor = '#4ade80'; primaryTextColor = '#000000'; break;
-                                case '4': primaryColor = '#06b6d4'; primaryTextColor = '#ffffff'; break;
-                                default: primaryColor = '#14b8a6'; primaryTextColor = '#ffffff';
-                            }
-                            document.documentElement.style.setProperty('--primary', primaryColor);
-                            document.documentElement.style.setProperty('--primary-text', primaryTextColor);
-                            
-                            const sessionLabel = counterId === '0' ? 'Collections (Counter 0)' : `Session Active (Counter ${counterId})`;
-                            document.getElementById('session-header-title').innerText = sessionLabel;
-                            renderList();
-
-                            setTimeout(() => {
-                                document.getElementById('view-calc').classList.remove('active');
-                                document.getElementById('view-main').classList.add('active');
-                                setupWorkspaceUI(); 
-                                currentSequence = ""; 
-                                display.innerText = "";
-                            }, 300);
                         }).catch((err) => {
-                            blinkCalcDisplay();
+                            console.warn("Background claim check failed:", err);
                         });
                     }).catch((err) => {
-                        blinkCalcDisplay();
+                        console.warn("Background perms fetch failed:", err);
                     });
                     return;
                 }
@@ -2481,12 +2558,12 @@
             if (isReadOnly) {
                 saveBtns.forEach(b => b.style.display = 'none');
                 if (voidBtn) voidBtn.style.display = 'none';
-                if (deleteBtn) deleteBtn.style.display = 'none';
+                if (deleteBtn) deleteBtn.style.display = isAdmin ? 'inline-flex' : 'none';
                 if (addPageBtn) addPageBtn.style.display = 'none';
             } else {
                 saveBtns.forEach(b => b.style.display = '');
                 if (voidBtn) voidBtn.style.display = '';
-                if (deleteBtn) deleteBtn.style.display = (isAdmin && !isReadOnly) ? 'inline-flex' : 'none';
+                if (deleteBtn) deleteBtn.style.display = isAdmin ? 'inline-flex' : 'none';
                 if (addPageBtn) addPageBtn.style.display = '';
             }
             
@@ -2519,9 +2596,19 @@
             document.getElementById('btn-gallery-import').style.pointerEvents = 'none';
             document.getElementById('btn-admin-exit').style.opacity = '0';
             document.getElementById('btn-admin-exit').style.pointerEvents = 'none';
+
+            window.history.pushState({ view: 'sheet' }, '');
         }
 
         function cancelCapture() {
+            if (window.history.state && window.history.state.view === 'sheet') {
+                window.history.back();
+            } else {
+                executeCancelCapture();
+            }
+        }
+
+        function executeCancelCapture() {
             captureSheet.classList.remove('expanded');
             document.getElementById('default-camera-ui').style.opacity = '1';
             document.getElementById('btn-gallery-import').style.opacity = '1';
@@ -3025,12 +3112,14 @@
                 const actionLabel = enabled ? 'LOCK ACCESS' : 'ALLOW ACCESS';
                 
                 statusGridHtml += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; background:#111827; padding:8px 12px; border-radius:8px; border:1px solid #2A2D31;">
-                        <span style="font-weight:700; font-size:12px; color:#fff;">Counter ${i}</span>
-                        <div style="display:flex; gap:6px; align-items:center;">
+                    <div style="display:flex; flex-direction:column; gap:8px; background:#111827; padding:12px; border-radius:8px; border:1px solid #2A2D31;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:700; font-size:13px; color:#fff;">Counter ${i}</span>
                             <span style="font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; ${btnStyle}">${label}</span>
-                            <button onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="background:#374151; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:9px; font-weight:700; cursor:pointer;">${actionLabel}</button>
-                            <button onclick="adminEnterWorkspace('${counterIdStr}')" style="background:#3b82f6; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:9px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;"><span class="material-icons" style="font-size:10px;">login</span> ENTER</button>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="background:#374151; color:#fff; border:none; padding:6px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer; flex:1; text-align:center;">${actionLabel}</button>
+                            <button onclick="adminEnterWorkspace('${counterIdStr}')" style="background:#3b82f6; color:#fff; border:none; padding:6px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:2px; flex:1;"><span class="material-icons" style="font-size:11px;">login</span> ENTER</button>
                         </div>
                     </div>
                 `;
@@ -3040,7 +3129,7 @@
                 <div style="font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; border-bottom:1px solid #374151; padding-bottom:6px; margin-bottom:4px;">
                     🛡️ Counter Login Access Control
                 </div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
                     ${statusGridHtml}
                 </div>
             `;
@@ -3106,9 +3195,71 @@
                 headerWrapper.appendChild(enterBtn);
                 container.appendChild(headerWrapper);
 
-                groups[cid].slice().reverse().forEach(entry => {
-                    const card = createAdminEntryCard(entry);
-                    container.appendChild(card);
+                // Nested Table (investigation ledger layout)
+                const tableWrap = document.createElement('div');
+                tableWrap.style.overflowX = 'auto';
+                tableWrap.style.marginTop = '8px';
+                tableWrap.style.marginBottom = '16px';
+                tableWrap.style.borderRadius = '8px';
+                tableWrap.style.border = '1px solid #374151';
+
+                const table = document.createElement('table');
+                table.className = 'eod-table';
+                table.style.width = '100%';
+                table.style.borderCollapse = 'collapse';
+                table.style.fontSize = '11px';
+
+                table.innerHTML = `
+                    <thead>
+                        <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568; background: #1f2937;">
+                            <th style="padding:6px;">B.N (Time)</th>
+                            <th style="padding:6px; text-align:right;">C</th>
+                            <th style="padding:6px; text-align:right;">Q</th>
+                            <th style="padding:6px; text-align:right;">POS</th>
+                            <th style="padding:6px; text-align:right;">IPS</th>
+                            <th style="padding:6px; text-align:right;">Esewa</th>
+                            <th style="padding:6px; text-align:right;">Online</th>
+                            <th style="padding:6px; text-align:right; color:#10b981; font-weight:700;">Tot Cash</th>
+                            <th style="padding:6px; text-align:right;">Cheque</th>
+                            <th style="padding:6px; text-align:right;">Credit</th>
+                            <th style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">Tot Credit</th>
+                            <th style="padding:6px; text-align:right; font-weight:700;">Tot Sales</th>
+                        </tr>
+                    </thead>
+                    <tbody class="active-sess-tbody-${cid}"></tbody>
+                `;
+                tableWrap.appendChild(table);
+                container.appendChild(tableWrap);
+
+                const tbody = table.querySelector(`.active-sess-tbody-${cid}`);
+                groups[cid].slice().reverse().forEach(e => {
+                    const tr = document.createElement('tr');
+                    if (e.isVoid) {
+                        tr.style.opacity = '0.5';
+                        tr.style.textDecoration = 'line-through';
+                    }
+                    
+                    const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
+                    const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
+                    const totSales = totCash + totCredit;
+
+                    const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
+
+                    tr.innerHTML = `
+                        <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
+                        <td style="padding:6px; text-align:right;">${(e.cash || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.qr || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.pos || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.ips || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.esewa || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.online || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;">${totCash.toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.cheque || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right;">${(e.credit || 0).toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">${totCredit.toLocaleString()}</td>
+                        <td style="padding:6px; text-align:right; font-weight:700;">${totSales.toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(tr);
                 });
             });
         }
@@ -3584,10 +3735,15 @@
         async function executeAdminDelete() {
             const db = await dbPromise;
             const targetId = currentEditingId;
+            const numericId = Number(targetId);
             
             await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
-                tx.objectStore(STORE_NAME).delete(targetId);
+                const store = tx.objectStore(STORE_NAME);
+                store.delete(targetId);
+                if (!isNaN(numericId)) {
+                    store.delete(numericId);
+                }
                 tx.oncomplete = resolve;
                 tx.onerror = reject;
             });
@@ -4009,7 +4165,7 @@
                     const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
 
                     tr.innerHTML = `
-                        <td style="padding:6px; font-weight:600;">${e.timestamp}${remarksSpan}</td>
+                        <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
                         <td style="padding:6px; text-align:right;">${e.cash.toLocaleString()}</td>
                         <td style="padding:6px; text-align:right;">${e.qr.toLocaleString()}</td>
                         <td style="padding:6px; text-align:right;">${e.pos.toLocaleString()}</td>
@@ -4438,96 +4594,83 @@
             }
 
             const todayStr = getLocalTodayStr();
+            const isToday = (selectedEodDate === todayStr);
+
+            // Toggle Archived reconciler panel visibility
+            const reconcilerWrap = document.getElementById('archived-eod-reconciler-wrap');
+            if (reconcilerWrap) {
+                reconcilerWrap.style.display = isToday ? 'none' : 'flex';
+            }
             
-            const banner = document.getElementById('historical-banner');
-            const submitBtn = document.getElementById('btn-submit-eod');
-            const syncBtn = document.getElementById('btn-force-sync');
-            const wipeBtn = document.getElementById('btn-wipe-db');
-            const closeLaterBtn = document.getElementById('btn-close-later-eod');
+            const banner = getEodElement('historical-banner');
+            const submitBtn = getEodElement('btn-submit-eod');
+            const closeLaterBtn = getEodElement('btn-close-later-eod');
+            const forceSyncTopBtn = document.getElementById('btn-force-sync-top');
             
-            if (selectedEodDate === todayStr) {
-                const closure = historicalClosings.find(c => c.date === todayStr);
-                if (closure) {
+            const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
+            const closure = historicalClosings.find(c => c.date === selectedEodDate);
+            const dayEntries = entries.filter(e => e.date === selectedEodDate);
+
+            // Toggle top submit button next to Date Picker in Archived Tab
+            if (forceSyncTopBtn) {
+                if (!isToday && !closure && dayEntries.length > 0) {
+                    forceSyncTopBtn.style.display = 'block';
+                    forceSyncTopBtn.innerText = 'SUBMIT';
+                } else {
+                    forceSyncTopBtn.style.display = 'none';
+                }
+            }
+
+            if (closure) {
+                if (banner) {
                     banner.style.display = 'block';
                     banner.style.background = '#065f46';
-                    banner.innerText = `🔒 EOD CLOSING RECONCILIATION SUBMITTED & LOCKED FOR TODAY (${todayStr})`;
-                    if (submitBtn) submitBtn.style.display = 'none';
-                    if (syncBtn) syncBtn.style.display = 'none';
-                    if (wipeBtn) wipeBtn.style.display = 'block';
-                    if (closeLaterBtn) closeLaterBtn.style.display = 'none';
-                    
-                    const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
-                    notes.forEach(n => {
-                        const el = document.getElementById(n);
-                        if (el) el.setAttribute('disabled', 'true');
-                    });
-                    
-                    renderHistoricalEOD(closure);
-                    return;
+                    banner.innerText = isToday 
+                        ? `🔒 EOD CLOSING RECONCILIATION SUBMITTED & LOCKED FOR TODAY (${todayStr})`
+                        : `🔒 HISTORICAL CLOSE-OUT RECORD LOCKED FOR ${selectedEodDate}`;
                 }
-
-                banner.style.display = 'none';
-                if (submitBtn) submitBtn.style.display = 'block';
-                if (syncBtn) syncBtn.style.display = 'block';
-                if (wipeBtn) wipeBtn.style.display = 'block';
-                if (closeLaterBtn) closeLaterBtn.style.display = 'block';
+                if (submitBtn) submitBtn.style.display = 'none';
+                if (closeLaterBtn) closeLaterBtn.style.display = 'none';
                 
-                const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
                 notes.forEach(n => {
-                    const el = document.getElementById(n);
-                    if (el) el.removeAttribute('disabled');
+                    const el = getEodElement(n);
+                    if (el) el.setAttribute('disabled', 'true');
                 });
                 
-                loadDenominations();
-                renderAdminEOD();
+                renderHistoricalEOD(closure);
             } else {
-                // Past date: hide sync/wipe
-                if (syncBtn) syncBtn.style.display = 'none';
-                if (wipeBtn) wipeBtn.style.display = 'none';
-
-                const closure = historicalClosings.find(c => c.date === selectedEodDate);
-                if (closure) {
-                    // Fully closed day — read-only
-                    banner.style.display = 'block';
-                    banner.style.background = '#065f46';
-                    banner.innerText = `🔒 HISTORICAL CLOSE-OUT RECORD LOCKED FOR ${selectedEodDate}`;
-                    if (submitBtn) submitBtn.style.display = 'none';
-                    if (closeLaterBtn) closeLaterBtn.style.display = 'none';
+                if (isToday || dayEntries.length > 0) {
+                    if (banner) {
+                        if (isToday) {
+                            banner.style.display = 'none';
+                        } else {
+                            banner.style.display = 'block';
+                            banner.style.background = '#92400e';
+                            banner.innerText = `⚠️ UNCLOSED SESSION FOR ${selectedEodDate} — EOD closing required`;
+                        }
+                    }
+                    if (submitBtn) submitBtn.style.display = 'block';
+                    if (closeLaterBtn) closeLaterBtn.style.display = 'block';
                     
-                    const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
                     notes.forEach(n => {
-                        const el = document.getElementById(n);
-                        if (el) el.setAttribute('disabled', 'true');
+                        const el = getEodElement(n);
+                        if (el) el.removeAttribute('disabled');
                     });
-                    renderHistoricalEOD(closure);
-                } else {
-                    // No closure for this date — check if there are entries (unclosed session)
-                    const pastEntries = entries.filter(e => e.date === selectedEodDate);
-                    if (pastEntries.length > 0) {
-                        banner.style.display = 'block';
-                        banner.style.background = '#92400e';
-                        banner.innerText = `⚠️ UNCLOSED SESSION FOR ${selectedEodDate} — EOD closing required`;
-                        
-                        if (submitBtn) submitBtn.style.display = 'block';
-                        if (closeLaterBtn) closeLaterBtn.style.display = 'block';
-                        
-                        const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
-                        notes.forEach(n => {
-                            const el = document.getElementById(n);
-                            if (el) el.removeAttribute('disabled');
-                        });
-
-                        loadDenominations();
-                        renderAdminEOD();
+                    
+                    loadDenominations();
+                    renderAdminEOD();
+                    if (!isToday) {
                         renderUnclosedSessionEntries(selectedEodDate);
-                    } else {
+                    }
+                } else {
+                    if (banner) {
                         banner.style.display = 'block';
                         banner.style.background = '#1f2937';
-                        banner.innerText = `ℹ️ NO DATA FOR ${selectedEodDate}`;
-                        if (submitBtn) submitBtn.style.display = 'none';
-                        if (closeLaterBtn) closeLaterBtn.style.display = 'none';
-                        renderEmptyHistoricalEOD();
+                        banner.innerText = `ℹ️ NO DATA FOUND FOR ${selectedEodDate}`;
                     }
+                    if (submitBtn) submitBtn.style.display = 'none';
+                    if (closeLaterBtn) closeLaterBtn.style.display = 'none';
+                    renderEmptyHistoricalEOD();
                 }
             }
         }
