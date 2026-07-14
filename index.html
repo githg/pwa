@@ -3539,13 +3539,24 @@
         function toggleListSheet() {
             const isExpanded = sheetList.classList.toggle('expanded');
             if (isExpanded) {
-                if (stream) video.pause();
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
             } else {
-                if (stream) video.play();
+                const isColl = (activeCounterId === '0');
+                if (!isColl && !isSimulated && document.getElementById('view-main').classList.contains('active')) {
+                    startCamera();
+                }
             }
         }
 
         function openCaptureSheet(existingId = null) {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+
             if (isAdmin && document.getElementById('view-admin').classList.contains('active')) {
                 captureSheetOrigin = 'admin';
                 document.getElementById('view-admin').classList.remove('active');
@@ -3681,9 +3692,15 @@
                 document.getElementById('view-main').classList.remove('active');
                 document.getElementById('view-admin').classList.add('active');
                 renderAdminPortal();
-            } else if (isAdmin) {
-                document.getElementById('btn-admin-exit').style.opacity = '1';
-                document.getElementById('btn-admin-exit').style.pointerEvents = 'auto';
+            } else {
+                if (isAdmin) {
+                    document.getElementById('btn-admin-exit').style.opacity = '1';
+                    document.getElementById('btn-admin-exit').style.pointerEvents = 'auto';
+                }
+                const isColl = (activeCounterId === '0');
+                if (!isColl && !isSimulated && document.getElementById('view-main').classList.contains('active')) {
+                    startCamera();
+                }
             }
 
             // Restore elements to editable state if previously read-only
@@ -3817,11 +3834,21 @@
             document.getElementById('btn-gallery-import').style.pointerEvents = 'auto';
 
             if (captureSheetOrigin === 'admin') {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
                 document.getElementById('view-main').classList.remove('active');
                 document.getElementById('view-admin').classList.add('active');
-            } else if (isAdmin) {
-                document.getElementById('btn-admin-exit').style.opacity = '1';
-                document.getElementById('btn-admin-exit').style.pointerEvents = 'auto';
+            } else {
+                if (isAdmin) {
+                    document.getElementById('btn-admin-exit').style.opacity = '1';
+                    document.getElementById('btn-admin-exit').style.pointerEvents = 'auto';
+                }
+                const isColl = (activeCounterId === '0');
+                if (!isColl && !isSimulated && document.getElementById('view-main').classList.contains('active')) {
+                    startCamera();
+                }
             }
 
             renderList();
@@ -4146,6 +4173,105 @@
             }
         }
 
+        const activeSessionTableSortStates = {};
+
+        function sortActiveSessionTable(cid, column, forceDesc = false) {
+            const key = cid;
+            if (!activeSessionTableSortStates[key]) {
+                activeSessionTableSortStates[key] = { column: '', desc: false };
+            }
+            const state = activeSessionTableSortStates[key];
+            if (forceDesc) {
+                state.column = column;
+                state.desc = true;
+            } else {
+                if (state.column === column) {
+                    state.desc = !state.desc;
+                } else {
+                    state.column = column;
+                    state.desc = false;
+                }
+            }
+
+            const tbody = document.querySelector(`.active-sess-tbody-${cid}`);
+            if (!tbody) return;
+
+            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
+
+            activeEntries.sort((a, b) => {
+                let valA = 0;
+                let valB = 0;
+
+                const getTotCash = (x) => x.isVoid ? 0 : ((x.cash || 0) + (x.qr || 0) + (x.pos || 0) + (x.ips || 0) + (x.esewa || 0) + (x.online || 0));
+                const getTotCredit = (x) => x.isVoid ? 0 : ((x.cheque || 0) + (x.credit || 0));
+
+                switch (column) {
+                    case 'time':
+                        valA = a.id || '';
+                        valB = b.id || '';
+                        break;
+                    case 'cash': valA = a.cash || 0; valB = b.cash || 0; break;
+                    case 'qr': valA = a.qr || 0; valB = b.qr || 0; break;
+                    case 'pos': valA = a.pos || 0; valB = b.pos || 0; break;
+                    case 'ips': valA = a.ips || 0; valB = b.ips || 0; break;
+                    case 'esewa': valA = a.esewa || 0; valB = b.esewa || 0; break;
+                    case 'online': valA = a.online || 0; valB = b.online || 0; break;
+                    case 'totCash':
+                        valA = getTotCash(a);
+                        valB = getTotCash(b);
+                        break;
+                    case 'cheque': valA = a.cheque || 0; valB = b.cheque || 0; break;
+                    case 'credit': valA = a.credit || 0; valB = b.credit || 0; break;
+                    case 'totCredit':
+                        valA = getTotCredit(a);
+                        valB = getTotCredit(b);
+                        break;
+                    case 'totSales':
+                        valA = getTotCash(a) + getTotCredit(a);
+                        valB = getTotCash(b) + getTotCredit(b);
+                        break;
+                }
+
+                if (typeof valA === 'string') {
+                    return state.desc ? valB.localeCompare(valA) : valA.localeCompare(valB);
+                } else {
+                    return state.desc ? valB - valA : valA - valB;
+                }
+            });
+
+            tbody.innerHTML = '';
+            activeEntries.forEach(e => {
+                const tr = document.createElement('tr');
+                tr.dataset.entryId = e.id;
+                if (e.isVoid) {
+                    tr.style.opacity = '0.5';
+                    tr.style.textDecoration = 'line-through';
+                }
+
+                const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
+                const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
+                const totSales = totCash + totCredit;
+
+                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
+
+                tr.innerHTML = `
+                    <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.cash || ''}" oninput="updateActiveEntryField('${e.id}', 'cash', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.qr || ''}" oninput="updateActiveEntryField('${e.id}', 'qr', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.pos || ''}" oninput="updateActiveEntryField('${e.id}', 'pos', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.ips || ''}" oninput="updateActiveEntryField('${e.id}', 'ips', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.esewa || ''}" oninput="updateActiveEntryField('${e.id}', 'esewa', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.online || ''}" oninput="updateActiveEntryField('${e.id}', 'online', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.cheque || ''}" oninput="updateActiveEntryField('${e.id}', 'cheque', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.credit || ''}" oninput="updateActiveEntryField('${e.id}', 'credit', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; font-weight:700;" class="tot-sales-cell">${totSales.toLocaleString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function renderAdminActive() {
             const container = document.getElementById('admin-active-content');
             container.innerHTML = '';
@@ -4275,18 +4401,18 @@
                 table.innerHTML = `
                     <thead>
                         <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568; background: #1f2937;">
-                            <th style="padding:6px;">B.N (Time)</th>
-                            <th style="padding:6px; text-align:right;">C</th>
-                            <th style="padding:6px; text-align:right;">Q</th>
-                            <th style="padding:6px; text-align:right;">POS</th>
-                            <th style="padding:6px; text-align:right;">IPS</th>
-                            <th style="padding:6px; text-align:right;">Esewa</th>
-                            <th style="padding:6px; text-align:right;">Online</th>
-                            <th style="padding:6px; text-align:right; color:#10b981; font-weight:700;">Tot Cash</th>
-                            <th style="padding:6px; text-align:right;">Cheque</th>
-                            <th style="padding:6px; text-align:right;">Credit</th>
-                            <th style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">Tot Credit</th>
-                            <th style="padding:6px; text-align:right; font-weight:700;">Tot Sales</th>
+                            <th style="padding:6px; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')">B.N (Time) ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">C ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">Q ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'pos')">POS ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'ips')">IPS ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'esewa')">Esewa ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'online')">Online ⇅</th>
+                            <th style="padding:6px; text-align:right; color:#10b981; font-weight:700; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCash')">Tot Cash ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cheque')">Cheque ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'credit')">Credit ⇅</th>
+                            <th style="padding:6px; text-align:right; color:#ef4444; font-weight:700; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCredit')">Tot Credit ⇅</th>
+                            <th style="padding:6px; text-align:right; font-weight:700; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Tot Sales ⇅</th>
                         </tr>
                     </thead>
                     <tbody class="active-sess-tbody-${cid}"></tbody>
@@ -4294,37 +4420,9 @@
                 tableWrap.appendChild(table);
                 container.appendChild(tableWrap);
 
-                const tbody = table.querySelector(`.active-sess-tbody-${cid}`);
-                groups[cid].slice().reverse().forEach(e => {
-                    const tr = document.createElement('tr');
-                    tr.dataset.entryId = e.id;
-                    if (e.isVoid) {
-                        tr.style.opacity = '0.5';
-                        tr.style.textDecoration = 'line-through';
-                    }
-
-                    const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
-                    const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
-                    const totSales = totCash + totCredit;
-
-                    const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
-
-                    tr.innerHTML = `
-                        <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
-                        <td style="padding:4px;"><input type="number" value="${e.cash || ''}" oninput="updateActiveEntryField('${e.id}', 'cash', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:4px;"><input type="number" value="${e.qr || ''}" oninput="updateActiveEntryField('${e.id}', 'qr', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:4px;"><input type="number" value="${e.pos || ''}" oninput="updateActiveEntryField('${e.id}', 'pos', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:4px;"><input type="number" value="${e.ips || ''}" oninput="updateActiveEntryField('${e.id}', 'ips', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:4px;"><input type="number" value="${e.esewa || ''}" oninput="updateActiveEntryField('${e.id}', 'esewa', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:4px;"><input type="number" value="${e.online || ''}" oninput="updateActiveEntryField('${e.id}', 'online', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
-                        <td style="padding:4px;"><input type="number" value="${e.cheque || ''}" oninput="updateActiveEntryField('${e.id}', 'cheque', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:4px;"><input type="number" value="${e.credit || ''}" oninput="updateActiveEntryField('${e.id}', 'credit', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                        <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; font-weight:700;" class="tot-sales-cell">${totSales.toLocaleString()}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                // Initial render: sort by time newest first
+                activeSessionTableSortStates[cid] = { column: 'time', desc: true };
+                sortActiveSessionTable(cid, 'time', true);
             });
         }
 
@@ -5911,11 +6009,14 @@
 
         // ── Inactivity Auto-Lock ─────────────────────────────────────────────
         let inactivityTimer = null;
-        const INACTIVITY_MS = 60 * 1000; // 1 minute
+        const INACTIVITY_MS = 5 * 60 * 1000; // 5 minutes
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            // Only auto-lock if a cashier or admin is actively on a session view
+            
+            // Do not lock if camera stream is active (user is actively framing/taking picture)
+            if (stream) return;
+
             const mainActive = document.getElementById('view-main')?.classList.contains('active');
             const adminActive = document.getElementById('view-admin')?.classList.contains('active');
             if (!mainActive && !adminActive) return;
@@ -5930,8 +6031,8 @@
             }, INACTIVITY_MS);
         }
 
-        // Reset timer on any user interaction
-        ['touchstart', 'touchend', 'mousedown', 'keydown', 'click'].forEach(evt => {
+        // Reset timer on any active user interaction
+        ['touchstart', 'touchend', 'touchmove', 'mousedown', 'mousemove', 'keydown', 'keypress', 'click', 'scroll', 'input', 'change'].forEach(evt => {
             document.addEventListener(evt, resetInactivityTimer, { passive: true });
         });
         // ── End Inactivity Auto-Lock ────────────────────────────────────────────
