@@ -2266,32 +2266,12 @@
                     // Server check in background
                     callGas('CLAIM_SESSION', { targetId: adminId, type: 'admin', deviceId: devId }).then((claimRes) => {
                         if (!claimRes || !claimRes.success) {
-                            document.getElementById('opening-cash-modal').classList.remove('active');
-                            lockApp();
-                            blinkCalcDisplay();
-                            
-                            if (confirm("Admin session is already active on another device.\n\nDo you want to FORCE RESET and log in on this device?")) {
-                                callGas('RELEASE_SESSION', { targetId: adminId, type: 'admin', deviceId: devId }).then(() => {
-                                    // Retry login optimistically
-                                    isAdmin = true;
-                                    activeAdminId = adminId;
-                                    document.documentElement.style.setProperty('--primary', '#ef4444');
-                                    document.documentElement.style.setProperty('--primary-text', '#ffffff');
-                                    document.getElementById('admin-title').innerText = `Admin Portal (Admin ${adminId})`;
-                                    
-                                    const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
-                                    const openingCash = localStorage.getItem(todayKey);
-                                    if (!openingCash) {
-                                        document.getElementById('opening-cash-modal').classList.add('active');
-                                    } else {
-                                        renderAdminPortal();
-                                        document.getElementById('view-calc').classList.remove('active');
-                                        document.getElementById('view-admin').classList.add('active');
-                                    }
-                                    window.history.pushState({ view: 'admin' }, '');
-                                    
-                                    callGas('CLAIM_SESSION', { targetId: adminId, type: 'admin', deviceId: devId });
-                                });
+                            if (confirm("Admin session is already active on another device.\n\nDo you want to override and log in on this device?")) {
+                                callGas('RELEASE_SESSION', { targetId: adminId, type: 'admin', deviceId: devId });
+                            } else {
+                                document.getElementById('opening-cash-modal').classList.remove('active');
+                                lockApp();
+                                blinkCalcDisplay();
                             }
                         }
                     }).catch((err) => {
