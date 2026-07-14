@@ -2295,7 +2295,14 @@
                     fastLane.style.display = isViewingAsAdmin ? 'none' : 'flex';
                 }
 
-                startCamera();
+                if (document.getElementById('view-main').classList.contains('active')) {
+                    startCamera();
+                } else {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                        stream = null;
+                    }
+                }
             }
         }
 
@@ -4111,6 +4118,10 @@
         // Admin Portal JavaScript Helpers
         let activeAdminTab = 'active';
         function switchAdminTab(tab) {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
             activeAdminTab = tab;
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
 
@@ -4240,6 +4251,9 @@
             });
 
             tbody.innerHTML = '';
+            let sumC = 0, sumQ = 0, sumPos = 0, sumIps = 0, sumEsewa = 0, sumOnline = 0, sumTotCash = 0;
+            let sumCheque = 0, sumCredit = 0, sumTotCredit = 0, sumTotSales = 0;
+
             activeEntries.forEach(e => {
                 const tr = document.createElement('tr');
                 tr.dataset.entryId = e.id;
@@ -4251,6 +4265,20 @@
                 const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
                 const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
                 const totSales = totCash + totCredit;
+
+                if (!e.isVoid) {
+                    sumC += (e.cash || 0);
+                    sumQ += (e.qr || 0);
+                    sumPos += (e.pos || 0);
+                    sumIps += (e.ips || 0);
+                    sumEsewa += (e.esewa || 0);
+                    sumOnline += (e.online || 0);
+                    sumTotCash += totCash;
+                    sumCheque += (e.cheque || 0);
+                    sumCredit += (e.credit || 0);
+                    sumTotCredit += totCredit;
+                    sumTotSales += totSales;
+                }
 
                 const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
 
@@ -4270,6 +4298,24 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            const tfoot = document.getElementById(`tfoot-acc-active-${cid}`);
+            if (tfoot) {
+                tfoot.innerHTML = `
+                    <td style="padding:6px; font-weight:800; color:#9ca3af;">TOTAL</td>
+                    <td style="padding:6px; text-align:right;">${sumC.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumQ.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumPos.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumIps.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumEsewa.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumOnline.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; color:#10b981; font-weight:800;">${sumTotCash.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumCheque.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumCredit.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; color:#ef4444; font-weight:800;">${sumTotCredit.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; font-weight:800;">${sumTotSales.toLocaleString()}</td>
+                `;
+            }
         }
 
         function renderAdminActive() {
@@ -4416,6 +4462,9 @@
                         </tr>
                     </thead>
                     <tbody class="active-sess-tbody-${cid}"></tbody>
+                    <tfoot style="color: #fff; font-weight: 800; border-top: 2px solid #4a5568; background: #1f2937;">
+                        <tr id="tfoot-acc-active-${cid}"></tr>
+                    </tfoot>
                 `;
                 tableWrap.appendChild(table);
                 container.appendChild(tableWrap);
@@ -4997,6 +5046,9 @@
             });
 
             tbody.innerHTML = '';
+            let sumC = 0, sumQ = 0, sumPos = 0, sumIps = 0, sumEsewa = 0, sumOnline = 0, sumTotCash = 0;
+            let sumCheque = 0, sumCredit = 0, sumTotCredit = 0, sumTotSales = 0;
+
             counterEntries.forEach(e => {
                 const tr = document.createElement('tr');
                 if (e.isVoid) {
@@ -5007,6 +5059,20 @@
                 const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
                 const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
                 const totSales = totCash + totCredit;
+
+                if (!e.isVoid) {
+                    sumC += (e.cash || 0);
+                    sumQ += (e.qr || 0);
+                    sumPos += (e.pos || 0);
+                    sumIps += (e.ips || 0);
+                    sumEsewa += (e.esewa || 0);
+                    sumOnline += (e.online || 0);
+                    sumTotCash += totCash;
+                    sumCheque += (e.cheque || 0);
+                    sumCredit += (e.credit || 0);
+                    sumTotCredit += totCredit;
+                    sumTotSales += totSales;
+                }
 
                 const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
 
@@ -5026,6 +5092,24 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            const tfoot = document.getElementById(`tfoot-acc-${suffix}-${cid}`);
+            if (tfoot) {
+                tfoot.innerHTML = `
+                    <td style="padding:6px; font-weight:800; color:#9ca3af;">TOTAL</td>
+                    <td style="padding:6px; text-align:right;">${sumC.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumQ.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumPos.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumIps.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumEsewa.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumOnline.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; color:#10b981; font-weight:800;">${sumTotCash.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumCheque.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${sumCredit.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; color:#ef4444; font-weight:800;">${sumTotCredit.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; font-weight:800;">${sumTotSales.toLocaleString()}</td>
+                `;
+            }
         }
 
         function renderEodAccordions(dateStr = null, containerId = 'counters-accordion-container') {
@@ -5123,8 +5207,10 @@
                             <th style="padding:6px; text-align:right; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totSales')">Tot Sales ⇅</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody-acc-${suffix}-${cid}">
-                    </tbody>
+                    <tbody id="tbody-acc-${suffix}-${cid}"></tbody>
+                    <tfoot style="color: #fff; font-weight: 800; border-top: 2px solid #4a5568; background: #1a202c;">
+                        <tr id="tfoot-acc-${suffix}-${cid}"></tr>
+                    </tfoot>
                 `;
                 tableWrap.appendChild(table);
                 content.appendChild(tableWrap);
