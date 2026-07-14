@@ -610,8 +610,11 @@
         <div class="bottom-sheet sheet-list" id="sheet-list">
             <div class="sheet-header" onclick="toggleListSheet()">
                 <div class="sheet-handle"></div>
-                <div>
-                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" id="session-header-title">Session Active</div>
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" id="session-header-title">Session Active</span>
+                        <button id="btn-reg-biometrics" onclick="registerBiometricsCurrent(event)" style="background:#374151; color:#fff; border:1px solid #4b5563; padding:2px 6px; border-radius:4px; font-size:8px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;"><span class="material-icons" style="font-size:9px;">fingerprint</span> BIOMETRICS</button>
+                    </div>
                     <div style="font-size: 14px; font-weight: 700;"><span id="list-entry-count">0</span> Captures</div>
                 </div>
                 <div style="text-align: right;">
@@ -697,6 +700,7 @@
         <div class="admin-header">
             <div style="font-weight: 700; font-size: 18px;" id="admin-title">Admin Portal</div>
             <div style="display:flex; gap:8px; align-items:center;">
+                <button class="btn-history" onclick="registerBiometricsAdmin()" style="padding: 8px 12px; background: #374151; color: #e5e7eb; border: 1px solid #4b5563; font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><span class="material-icons" style="font-size:14px;">fingerprint</span> BIOMETRICS</button>
                 <button class="btn-history" onclick="toggleTheme()" style="padding: 8px 12px;"><span class="material-icons" style="font-size:16px;">palette</span> THEME</button>
                 <button class="btn-history" onclick="lockApp()" style="padding: 8px 16px;"><span class="material-icons" style="font-size:16px;">lock</span> LOCK</button>
             </div>
@@ -2158,6 +2162,205 @@
                 console.warn('Image base64 fallback fetch failed:', err);
             } finally {
                 imgEl.style.opacity = '1';
+        function registerBiometricsCurrent(event) {
+            if (event) event.stopPropagation();
+            if (activeCounterId) {
+                registerBiometrics(activeCounterId, 'counter');
+            } else {
+                showMsg("No active counter session found to register biometrics.");
+            }
+        }
+
+        function registerBiometricsAdmin() {
+            if (activeAdminId) {
+                registerBiometrics(activeAdminId, 'admin');
+            } else {
+                showMsg("No active admin session found to register biometrics.");
+            }
+        }
+
+        async function registerBiometrics(userId, userType) {
+            if (!window.PublicKeyCredential) {
+                showMsg("Biometric authentication (WebAuthn) is not supported on this browser or device.\n\nNote: Biometrics require a secure HTTPS connection.");
+                return;
+            }
+            
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+            
+            const userIdBuffer = new TextEncoder().encode(userId + "_" + userType);
+            
+            const publicKeyCredentialCreationOptions = {
+                challenge: challenge,
+                rp: {
+                    name: "Instant Capture PWA",
+                    id: window.location.hostname
+                },
+                user: {
+                    id: userIdBuffer,
+                    name: `${userType.toUpperCase()} ${userId}`,
+                    displayName: `${userType.toUpperCase()} ${userId}`
+                },
+                pubKeyCredParams: [{type: "public-key", alg: -7}],
+                authenticatorSelection: {
+                    authenticatorAttachment: "platform",
+                    userVerification: "required"
+                },
+                timeout: 60000,
+                attestation: "none"
+            };
+
+            try {
+                showToast("Scanning biometrics...");
+                const credential = await navigator.credentials.create({
+                    publicKey: publicKeyCredentialCreationOptions
+                });
+                
+                const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(credential.rawId)));
+                localStorage.setItem(`biometric_cred_${userType}_${userId}`, rawId);
+                showToast(`Biometrics successfully registered for ${userType.toUpperCase()} ${userId}!`);
+            } catch (err) {
+                console.error("Biometrics registration failed:", err);
+                showMsg("Registration cancelled or failed: " + err.message);
+            }
+        }
+
+        async function loginWithBiometrics() {
+            if (!window.PublicKeyCredential) {
+                showMsg("Biometric authentication is not supported on this browser or device.\n\nNote: Biometrics require a secure HTTPS connection.");
+                return;
+            }
+
+            const credentialsList = [];
+            for (let i = 0; i <= 5; i++) {
+                const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
+                if (cred) credentialsList.push({ targetId: i.toString(), type: 'counter', credId: cred });
+            }
+            for (let i = 1; i <= 2; i++) {
+                const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
+                if (cred) credentialsList.push({ targetId: i.toString(), type: 'admin', credId: cred });
+            }
+
+            if (credentialsList.length === 0) {
+                showMsg("No biometrics registered on this device yet.\n\nPlease log in manually using your passcode (e.g. 1..=) and tap the BIOMETRICS button to register.");
+                return;
+            }
+
+            const challenge = new Uint8Array(32);
+            window.crypto.getRandomValues(challenge);
+
+            const allowCredentials = credentialsList.map(c => {
+                const raw = Uint8Array.from(atob(c.credId), char => char.charCodeAt(0));
+                return {
+                    id: raw,
+                    type: "public-key"
+                };
+            });
+
+            const publicKeyCredentialRequestOptions = {
+                challenge: challenge,
+                allowCredentials: allowCredentials,
+                userVerification: "required",
+                timeout: 60000
+            };
+
+            try {
+                const assertion = await navigator.credentials.get({
+                    publicKey: publicKeyCredentialRequestOptions
+                });
+
+                const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(assertion.rawId)));
+                const matched = credentialsList.find(c => c.credId === rawId);
+
+                if (matched) {
+                    showToast(`Scanned: Welcome ${matched.type.toUpperCase()} ${matched.targetId}!`);
+                    executeBiometricLogin(matched.targetId, matched.type);
+                } else {
+                    showMsg("Scanned biometrics did not match any registered user on this device.");
+                }
+            } catch (err) {
+                console.error("Biometric authentication failed:", err);
+                showMsg("Biometric scan cancelled or failed. Please log in using manual passcodes.");
+            }
+        }
+
+        function executeBiometricLogin(targetId, type) {
+            if (type === 'admin') {
+                isAdmin = true;
+                activeAdminId = targetId;
+                document.documentElement.style.setProperty('--primary', '#ef4444');
+                document.documentElement.style.setProperty('--primary-text', '#ffffff');
+                document.getElementById('admin-title').innerText = `Admin Portal (Admin ${targetId})`;
+                
+                const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                const openingCash = localStorage.getItem(todayKey);
+                
+                if (!openingCash) {
+                    document.getElementById('opening-cash-modal').classList.add('active');
+                } else {
+                    renderAdminPortal();
+                    document.getElementById('view-calc').classList.remove('active');
+                    document.getElementById('view-admin').classList.add('active');
+                }
+                
+                window.history.pushState({ view: 'admin' }, '');
+                
+                const devId = getDeviceId();
+                callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId }).then((claimRes) => {
+                    if (!claimRes || !claimRes.success) {
+                        if (confirm("Admin session is already active on another device.\n\nDo you want to override and log in on this device?")) {
+                            callGas('RELEASE_SESSION', { targetId, type: 'admin', deviceId: devId });
+                        } else {
+                            document.getElementById('opening-cash-modal').classList.remove('active');
+                            lockApp();
+                            blinkCalcDisplay();
+                        }
+                    }
+                });
+            } else {
+                const counterId = targetId;
+                activeCounterId = counterId;
+                localStorage.setItem('activeSessionCounter', counterId);
+
+                let primaryColor, primaryTextColor;
+                switch (counterId) {
+                    case '0': primaryColor = '#10b981'; primaryTextColor = '#ffffff'; break;
+                    case '1': primaryColor = '#ffffff'; primaryTextColor = '#000000'; break;
+                    case '2': primaryColor = '#eab308'; primaryTextColor = '#000000'; break;
+                    case '3': primaryColor = '#4ade80'; primaryTextColor = '#000000'; break;
+                    case '4': primaryColor = '#06b6d4'; primaryTextColor = '#ffffff'; break;
+                    default: primaryColor = '#14b8a6'; primaryTextColor = '#ffffff';
+                }
+                document.documentElement.style.setProperty('--primary', primaryColor);
+                document.documentElement.style.setProperty('--primary-text', primaryTextColor);
+                
+                const sessionLabel = counterId === '0' ? 'Collections (Counter 0)' : `Session Active (Counter ${counterId})`;
+                document.getElementById('session-header-title').innerText = sessionLabel;
+                renderList();
+
+                document.getElementById('view-calc').classList.remove('active');
+                document.getElementById('view-main').classList.add('active');
+                setupWorkspaceUI();
+
+                window.history.pushState({ view: 'main' }, '');
+
+                fetchCounterPermissions().then(() => {
+                    if (counterPermissions && counterPermissions[counterId] === false) {
+                        lockApp();
+                        blinkCalcDisplay();
+                        showMsg(`🔒 Counter ${counterId} Access is locked by Admin.`);
+                        return;
+                    }
+
+                    const devId = getDeviceId();
+                    callGas('CLAIM_SESSION', { targetId, type: 'counter', deviceId: devId }).then((claimRes) => {
+                        if (!claimRes || !claimRes.success) {
+                            lockApp();
+                            blinkCalcDisplay();
+                            showMsg(`Access Denied.\n\nCounter ${counterId} is already open on another device.`);
+                        }
+                    });
+                });
             }
         }
 
@@ -2233,6 +2436,14 @@
             }
 
             if (val === '=') {
+                // Biometrics Login trigger
+                if (currentSequence === '..') {
+                    display.innerText = "";
+                    currentSequence = "";
+                    loginWithBiometrics();
+                    return;
+                }
+
                 // Admin Passcodes
                 if (currentSequence === '1111' || currentSequence === '2222') {
                     let adminId = currentSequence === '1111' ? '1' : '2';
