@@ -1292,15 +1292,8 @@
         <div class="bottom-sheet sheet-list" id="sheet-list">
             <div class="sheet-header" onclick="toggleListSheet()">
                 <div class="sheet-handle"></div>
-                <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <span
-                            style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;"
-                            id="session-header-title">Session Active</span>
-                        <button id="btn-reg-biometrics" onclick="registerBiometricsCurrent(event)"
-                            style="background:#374151; color:#fff; border:1px solid #4b5563; padding:2px 6px; border-radius:4px; font-size:8px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;"><span
-                                class="material-icons" style="font-size:9px;">fingerprint</span> BIOMETRICS</button>
-                    </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" id="session-header-title">Session Active</div>
                     <div style="font-size: 14px; font-weight: 700;"><span id="list-entry-count">0</span> Captures</div>
                 </div>
                 <div style="text-align: right;">
@@ -1420,35 +1413,34 @@
             <div class="admin-tab" onclick="switchAdminTab('archived')">Archived Logs</div>
             <div class="admin-tab" onclick="switchAdminTab('eod')">EOD Closing</div>
         </div>
-        <!-- Quick Counter Selection Bar for Admins -->
-        <div
-            style="background: #1f2937; padding: 12px; border-radius: 12px; margin: 8px 0 16px 0; border: 1px solid #374151;">
+        <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 12px; width: 100%;">
+            <!-- Quick Counter Selection Bar for Admins -->
             <div
-                style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 8px;">
-                Quick Counter Selector</div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="btn-void" onclick="adminEnterWorkspace('0')"
-                    style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                    0</button>
-                <button class="btn-void" onclick="adminEnterWorkspace('1')"
-                    style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                    1</button>
-                <button class="btn-void" onclick="adminEnterWorkspace('2')"
-                    style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                    2</button>
-                <button class="btn-void" onclick="adminEnterWorkspace('3')"
-                    style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                    3</button>
-                <button class="btn-void" onclick="adminEnterWorkspace('4')"
-                    style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                    4</button>
-                <button class="btn-void" onclick="adminEnterWorkspace('5')"
-                    style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                    5</button>
+                style="background: #1f2937; padding: 12px; border-radius: 12px; margin: 8px 0 16px 0; border: 1px solid #374151;">
+                <div
+                    style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 8px;">
+                    Quick Counter Selector</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn-void" onclick="adminEnterWorkspace('0')"
+                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
+                        0</button>
+                    <button class="btn-void" onclick="adminEnterWorkspace('1')"
+                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
+                        1</button>
+                    <button class="btn-void" onclick="adminEnterWorkspace('2')"
+                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
+                        2</button>
+                    <button class="btn-void" onclick="adminEnterWorkspace('3')"
+                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
+                        3</button>
+                    <button class="btn-void" onclick="adminEnterWorkspace('4')"
+                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
+                        4</button>
+                    <button class="btn-void" onclick="adminEnterWorkspace('5')"
+                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
+                        5</button>
+                </div>
             </div>
-        </div>
-
-        <div class="admin-content" id="admin-active-content">
             <!-- Active counter groups will load here -->
         </div>
         <div class="admin-content" id="admin-archived-content"
@@ -1475,11 +1467,14 @@
                                 <select id="bs-day" onchange="handleBsSelectChange()"
                                     style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
                             </div>
-                            <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD
-                                Date:</span>
+                            <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD Date:</span>
                             <input type="date" id="eod-select-date" onchange="handleEodDateChange()"
                                 style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none; font-family:inherit;">
                         </div>
+                        <button onclick="executeArchiveSearch()"
+                            style="background:#10b981; color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; box-shadow: 0 4px 10px rgba(16,185,129,0.2);">
+                            <span class="material-icons" style="font-size:14px;">search</span> SEARCH
+                        </button>
                         <button onclick="forceSync()" id="btn-force-sync-top"
                             style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">☁️
                             Sync Latest Data</button>
@@ -3029,7 +3024,9 @@
                 pubKeyCredParams: [{ type: "public-key", alg: -7 }],
                 authenticatorSelection: {
                     authenticatorAttachment: "platform",
-                    userVerification: "required"
+                    userVerification: "required",
+                    residentKey: "required",
+                    requireResidentKey: true
                 },
                 timeout: 60000,
                 attestation: "none"
@@ -3043,6 +3040,11 @@
 
                 const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(credential.rawId)));
                 localStorage.setItem(`biometric_cred_${userType}_${userId}`, rawId);
+
+                // Set a permanent, hardware-bound device ID derived from the credential rawId
+                const bioDevId = 'dev_bio_' + rawId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 24);
+                localStorage.setItem('deviceId', bioDevId);
+
                 showToast(`Biometrics successfully registered for ${userType.toUpperCase()} ${userId}!`);
             } catch (err) {
                 console.error("Biometrics registration failed:", err);
@@ -3056,53 +3058,64 @@
                 return;
             }
 
-            const credentialsList = [];
-            for (let i = 0; i <= 5; i++) {
-                const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
-                if (cred) credentialsList.push({ targetId: i.toString(), type: 'counter', credId: cred });
-            }
-            for (let i = 1; i <= 2; i++) {
-                const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
-                if (cred) credentialsList.push({ targetId: i.toString(), type: 'admin', credId: cred });
-            }
-
-            if (credentialsList.length === 0) {
-                showMsg("No biometrics registered on this device yet.\n\nPlease log in manually using your passcode (e.g. 1..=) and tap the BIOMETRICS button to register.");
-                return;
-            }
-
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
 
-            const allowCredentials = credentialsList.map(c => {
-                const raw = Uint8Array.from(atob(c.credId), char => char.charCodeAt(0));
-                return {
-                    id: raw,
-                    type: "public-key"
-                };
-            });
-
+            // Use discoverable credentials search (without allowCredentials) so it works even if local cookies/storage are cleared
             const publicKeyCredentialRequestOptions = {
                 challenge: challenge,
-                allowCredentials: allowCredentials,
                 userVerification: "required",
                 timeout: 60000
             };
 
             try {
+                showToast("Scanning biometrics...");
                 const assertion = await navigator.credentials.get({
                     publicKey: publicKeyCredentialRequestOptions
                 });
 
-                const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(assertion.rawId)));
-                const matched = credentialsList.find(c => c.credId === rawId);
+                const userHandle = assertion.response.userHandle;
+                let targetId = null;
+                let type = null;
 
-                if (matched) {
-                    showToast(`Scanned: Welcome ${matched.type.toUpperCase()} ${matched.targetId}!`);
-                    executeBiometricLogin(matched.targetId, matched.type);
-                } else {
-                    showMsg("Scanned biometrics did not match any registered user on this device.");
+                if (userHandle && userHandle.byteLength > 0) {
+                    try {
+                        const decoded = new TextDecoder().decode(userHandle);
+                        const parts = decoded.split("_");
+                        targetId = parts[0];
+                        type = parts[1];
+                    } catch (decErr) {
+                        console.warn("Failed to decode userHandle:", decErr);
+                    }
                 }
+
+                // Fallback to scanning locally stored credentials
+                if (!targetId || !type) {
+                    const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(assertion.rawId)));
+                    for (let i = 0; i <= 5; i++) {
+                        const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
+                        if (cred === rawId) { targetId = i.toString(); type = 'counter'; break; }
+                    }
+                    if (!targetId) {
+                        for (let i = 1; i <= 2; i++) {
+                            const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
+                            if (cred === rawId) { targetId = i.toString(); type = 'admin'; break; }
+                        }
+                    }
+                }
+
+                if (!targetId || !type) {
+                    showMsg("Scanned biometric key is recognized by the device but does not match any registered user on this app.");
+                    return;
+                }
+
+                // Restore/Set the hardware-bound device ID derived from the authenticated biometric credential
+                const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(assertion.rawId)));
+                const bioDevId = 'dev_bio_' + rawId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 24);
+                localStorage.setItem('deviceId', bioDevId);
+
+                showToast(`Scanned: Welcome ${type.toUpperCase()} ${targetId}!`);
+                executeBiometricLogin(targetId, type);
             } catch (err) {
                 console.error("Biometric authentication failed:", err);
                 showMsg("Biometric scan cancelled or failed. Please log in using manual passcodes.");
@@ -4085,8 +4098,6 @@
             } else if (tab === 'archived') {
                 document.querySelectorAll('.admin-tab')[1].classList.add('active');
                 document.getElementById('admin-archived-content').style.display = 'flex';
-                document.getElementById('admin-archived-day-viewer').style.display = 'none';
-                document.getElementById('admin-archived-main-view').style.display = 'flex';
                 renderAdminArchived();
 
                 populateBsDropdowns();
@@ -4103,6 +4114,7 @@
 
                 fetchHistoricalClosings().then(() => {
                     handleEodDateChange();
+                    executeArchiveSearchQuiet();
                 });
             } else if (tab === 'eod') {
                 document.querySelectorAll('.admin-tab')[2].classList.add('active');
@@ -4815,6 +4827,109 @@
             }
         }
 
+        const accordionTableSortStates = {};
+
+        function sortAccordionTable(suffix, cid, column, forceDesc = false) {
+            const key = `${suffix}-${cid}`;
+            if (!accordionTableSortStates[key]) {
+                accordionTableSortStates[key] = { column: '', desc: false };
+            }
+            const state = accordionTableSortStates[key];
+            if (forceDesc) {
+                state.column = column;
+                state.desc = true;
+            } else {
+                if (state.column === column) {
+                    state.desc = !state.desc;
+                } else {
+                    state.column = column;
+                    state.desc = false;
+                }
+            }
+
+            const tbody = document.getElementById(`tbody-acc-${suffix}-${cid}`);
+            if (!tbody) return;
+
+            const isToday = (suffix === 'today');
+            const dayEntries = selectedEodDate && !isToday
+                ? entries.filter(e => e.date === selectedEodDate)
+                : entries.filter(e => e.sessionStatus !== 'closed');
+
+            const counterEntries = dayEntries.filter(e => (e.counterId || 'unknown') === cid);
+
+            counterEntries.sort((a, b) => {
+                let valA = 0;
+                let valB = 0;
+
+                const getTotCash = (x) => x.isVoid ? 0 : ((x.cash || 0) + (x.qr || 0) + (x.pos || 0) + (x.ips || 0) + (x.esewa || 0) + (x.online || 0));
+                const getTotCredit = (x) => x.isVoid ? 0 : ((x.cheque || 0) + (x.credit || 0));
+
+                switch (column) {
+                    case 'time':
+                        valA = a.id || '';
+                        valB = b.id || '';
+                        break;
+                    case 'cash': valA = a.cash || 0; valB = b.cash || 0; break;
+                    case 'qr': valA = a.qr || 0; valB = b.qr || 0; break;
+                    case 'pos': valA = a.pos || 0; valB = b.pos || 0; break;
+                    case 'ips': valA = a.ips || 0; valB = b.ips || 0; break;
+                    case 'esewa': valA = a.esewa || 0; valB = b.esewa || 0; break;
+                    case 'online': valA = a.online || 0; valB = b.online || 0; break;
+                    case 'totCash':
+                        valA = getTotCash(a);
+                        valB = getTotCash(b);
+                        break;
+                    case 'cheque': valA = a.cheque || 0; valB = b.cheque || 0; break;
+                    case 'credit': valA = a.credit || 0; valB = b.credit || 0; break;
+                    case 'totCredit':
+                        valA = getTotCredit(a);
+                        valB = getTotCredit(b);
+                        break;
+                    case 'totSales':
+                        valA = getTotCash(a) + getTotCredit(a);
+                        valB = getTotCash(b) + getTotCredit(b);
+                        break;
+                }
+
+                if (typeof valA === 'string') {
+                    return state.desc ? valB.localeCompare(valA) : valA.localeCompare(valB);
+                } else {
+                    return state.desc ? valB - valA : valA - valB;
+                }
+            });
+
+            tbody.innerHTML = '';
+            counterEntries.forEach(e => {
+                const tr = document.createElement('tr');
+                if (e.isVoid) {
+                    tr.style.opacity = '0.5';
+                    tr.style.textDecoration = 'line-through';
+                }
+
+                const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
+                const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
+                const totSales = totCash + totCredit;
+
+                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
+
+                tr.innerHTML = `
+                    <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
+                    <td style="padding:6px; text-align:right;">${(e.cash || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.qr || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.pos || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.ips || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.esewa || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.online || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;">${totCash.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.cheque || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right;">${(e.credit || 0).toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">${totCredit.toLocaleString()}</td>
+                    <td style="padding:6px; text-align:right; font-weight:700;">${totSales.toLocaleString()}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function renderEodAccordions(dateStr = null, containerId = 'counters-accordion-container') {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -4896,18 +5011,18 @@
                 table.innerHTML = `
                     <thead>
                         <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568;">
-                            <th style="padding:6px;">B.N (Time)</th>
-                            <th style="padding:6px; text-align:right;">C</th>
-                            <th style="padding:6px; text-align:right;">Q</th>
-                            <th style="padding:6px; text-align:right;">POS</th>
-                            <th style="padding:6px; text-align:right;">IPS</th>
-                            <th style="padding:6px; text-align:right;">Esewa</th>
-                            <th style="padding:6px; text-align:right;">Online</th>
-                            <th style="padding:6px; text-align:right; color:#10b981; font-weight:700;">Tot Cash</th>
-                            <th style="padding:6px; text-align:right;">Cheque</th>
-                            <th style="padding:6px; text-align:right;">Credit</th>
-                            <th style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">Tot Credit</th>
-                            <th style="padding:6px; text-align:right; font-weight:700;">Tot Sales</th>
+                            <th style="padding:6px; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'time')">B.N (Time) ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'cash')">C ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'qr')">Q ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'pos')">POS ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'ips')">IPS ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'esewa')">Esewa ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'online')">Online ⇅</th>
+                            <th style="padding:6px; text-align:right; color:#10b981; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totCash')">Tot Cash ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'cheque')">Cheque ⇅</th>
+                            <th style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'credit')">Credit ⇅</th>
+                            <th style="padding:6px; text-align:right; color:#ef4444; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totCredit')">Tot Credit ⇅</th>
+                            <th style="padding:6px; text-align:right; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totSales')">Tot Sales ⇅</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-acc-${suffix}-${cid}">
@@ -4918,36 +5033,8 @@
                 wrapper.appendChild(content);
                 container.appendChild(wrapper);
 
-                const tbody = document.getElementById(`tbody-acc-${suffix}-${cid}`);
-                sessionEntries.slice().reverse().forEach(e => {
-                    const tr = document.createElement('tr');
-                    if (e.isVoid) {
-                        tr.style.opacity = '0.5';
-                        tr.style.textDecoration = 'line-through';
-                    }
-
-                    const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
-                    const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
-                    const totSales = totCash + totCredit;
-
-                    const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
-
-                    tr.innerHTML = `
-                        <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
-                        <td style="padding:6px; text-align:right;">${(e.cash || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.qr || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.pos || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.ips || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.esewa || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.online || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;">${totCash.toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.cheque || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right;">${(e.credit || 0).toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;">${totCredit.toLocaleString()}</td>
-                        <td style="padding:6px; text-align:right; font-weight:700;">${totSales.toLocaleString()}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                // Initial render: sort by time newest first
+                sortAccordionTable(suffix, cid, 'time', true);
             });
         }
 
@@ -5152,7 +5239,6 @@
 
             if (adStr) {
                 document.getElementById('eod-select-date').value = adStr;
-                handleEodDateChange();
             }
         }
 
@@ -5306,8 +5392,8 @@
             const btnTop = document.getElementById('btn-force-sync-top');
             const btnToday = document.getElementById('btn-sync-today-eod');
             
-            const origTextTop = btnTop ? btnTop.innerText : '☁️ Sync Latest Data';
-            const origTextToday = btnToday ? btnToday.innerText : '☁️ Sync Today\'s Data';
+            const origHtmlTop = btnTop ? btnTop.innerHTML : '☁️ Sync Latest Data';
+            const origHtmlToday = btnToday ? btnToday.innerHTML : '<span class="material-icons" style="font-size:12px;">sync</span> SYNC';
             
             const showSyncLoading = (btn) => {
                 if (btn) {
@@ -5317,11 +5403,11 @@
                 }
             };
             
-            const restoreSyncBtn = (btn, text) => {
+            const restoreSyncBtn = (btn, html) => {
                 if (btn) {
                     btn.disabled = false;
                     btn.style.opacity = '1';
-                    btn.innerHTML = text;
+                    btn.innerHTML = html;
                 }
             };
             
@@ -5387,33 +5473,54 @@
             } catch (e) {
                 showMsg("Force sync failed: " + e.message);
             } finally {
-                restoreSyncBtn(btnTop, origTextTop);
-                restoreSyncBtn(btnToday, origTextToday);
+                restoreSyncBtn(btnTop, origHtmlTop);
+                restoreSyncBtn(btnToday, origHtmlToday);
             }
         }
 
         function handleEodDateChange() {
-            selectedEodDate = document.getElementById('eod-select-date').value;
-
-            const bsDate = convertAdToBs(selectedEodDate);
+            const adVal = document.getElementById('eod-select-date').value;
+            if (!adVal) return;
+            const bsDate = convertAdToBs(adVal);
             if (bsDate) {
                 document.getElementById('bs-year').value = bsDate.year;
                 document.getElementById('bs-month').value = bsDate.month;
                 updateBsDaysDropdown(bsDate.year, bsDate.month);
                 document.getElementById('bs-day').value = bsDate.day;
             }
+        }
+
+        function executeArchiveSearch() {
+            const adVal = document.getElementById('eod-select-date').value;
+            if (!adVal) {
+                showMsg("Please select a valid date first.");
+                return;
+            }
 
             const todayStr = getLocalTodayStr();
-            const isToday = (selectedEodDate === todayStr);
+            if (adVal === todayStr) {
+                showMsg("⚠️ Today's date is not allowed in Archived Logs.\n\nUse the 'EOD Closing' tab to view or close today's sessions.");
+                return;
+            }
+
+            const hasClosure = historicalClosings.some(c => c.date === adVal);
+            const hasEntries = entries.some(e => e.date === adVal);
+
+            if (!hasClosure && !hasEntries) {
+                showMsg(`⚠️ No transaction records or closed EOD logs found for the selected date (${adVal}).`);
+                return;
+            }
+
+            selectedEodDate = adVal;
+
+            // Render counter accordions for the selected date
+            renderEodAccordions(selectedEodDate, 'archived-counters-accordion-container');
 
             // Hide reconciler panel by default for past dates until LOAD button is pressed
             const reconcilerWrap = document.getElementById('archived-eod-reconciler-wrap');
             if (reconcilerWrap) {
-                reconcilerWrap.style.display = isToday ? 'flex' : 'none';
+                reconcilerWrap.style.display = 'none';
             }
-
-            // Render counter accordions for the selected date
-            renderEodAccordions(selectedEodDate, 'archived-counters-accordion-container');
 
             const forceSyncTopBtn = document.getElementById('btn-force-sync-top');
             const closure = historicalClosings.find(c => c.date === selectedEodDate);
@@ -5421,7 +5528,7 @@
 
             // Toggle top submit button next to Date Picker in Archived Tab
             if (forceSyncTopBtn) {
-                if (!isToday && !closure && dayEntries.length > 0) {
+                if (!closure && dayEntries.length > 0) {
                     forceSyncTopBtn.style.display = 'block';
                     forceSyncTopBtn.innerText = 'SUBMIT';
                 } else {
@@ -5434,6 +5541,20 @@
             if (unclosedSessionsContent) unclosedSessionsContent.innerHTML = '';
             const unclosedSessions = document.getElementById('historical-eod-sessions');
             if (unclosedSessions) unclosedSessions.style.display = 'none';
+
+            showToast(`Search Loaded: ${selectedEodDate}`);
+        }
+
+        function executeArchiveSearchQuiet() {
+            const adVal = document.getElementById('eod-select-date').value;
+            if (!adVal || adVal === getLocalTodayStr()) return;
+
+            const hasClosure = historicalClosings.some(c => c.date === adVal);
+            const hasEntries = entries.some(e => e.date === adVal);
+            if (!hasClosure && !hasEntries) return;
+
+            selectedEodDate = adVal;
+            renderEodAccordions(selectedEodDate, 'archived-counters-accordion-container');
         }
 
         function loadDayEodReport() {
