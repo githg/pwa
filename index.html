@@ -6466,7 +6466,9 @@
                 }
             });
             
-            const opening = historicalClosings.find(x => x.date === targetAdDate)?.openingCash || openingCash || 0;
+            const todayKey = 'adminOpeningCash_' + targetAdDate;
+            const localOpeningCash = parseFloat(localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash')) || 0;
+            const opening = historicalClosings.find(x => x.date === targetAdDate)?.openingCash || localOpeningCash;
             netCashFlow = (cashSales + collectionsCash) - opening;
             
             const totalForPct = cashSales + collectionsCash + digitalSales + deferredSales;
