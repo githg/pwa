@@ -1824,6 +1824,75 @@
                     style="display: flex; flex-direction: column; gap: 16px; width: 100%;"></div>
             </div>
         </div>
+        
+        <div class="admin-content" id="admin-reports-content" style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box; padding-bottom: 30px;">
+            <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-weight: 700; color: #fff;">Dashboard Date</div>
+                <input type="date" id="reports-date" style="background:#111827; color:#fff; border:1px solid #4b5563; padding:8px; border-radius:8px; outline:none;" onchange="renderAdminReports()">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Gross Sales</div>
+                    <div id="rep-gross-sales" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">NPR 0</div>
+                </div>
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Net Cash Flow</div>
+                    <div id="rep-net-cash" style="font-size: 20px; font-weight: 800; color: #10b981; margin-top: 4px;">NPR 0</div>
+                </div>
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Avg Tx Value</div>
+                    <div id="rep-atv" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">NPR 0</div>
+                </div>
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Void Count</div>
+                    <div id="rep-voids" style="font-size: 20px; font-weight: 800; color: #ef4444; margin-top: 4px;">0</div>
+                </div>
+            </div>
+
+            <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
+                <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">Payment Methods</div>
+                <div style="display: flex; height: 24px; border-radius: 12px; overflow: hidden; width: 100%;" id="rep-payment-bar">
+                    <div id="rep-bar-cash" style="background: #10b981; width: 0%;"></div>
+                    <div id="rep-bar-digital" style="background: #3b82f6; width: 0%;"></div>
+                    <div id="rep-bar-deferred" style="background: #ef4444; width: 0%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 700;">
+                    <div style="color: #10b981;">Cash: <span id="rep-pct-cash">0%</span></div>
+                    <div style="color: #3b82f6;">Digital: <span id="rep-pct-digital">0%</span></div>
+                    <div style="color: #ef4444;">Deferred: <span id="rep-pct-deferred">0%</span></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">Counter Leaderboard</div>
+                    <div id="rep-leaderboard" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+                
+                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">Hourly Peak Activity</div>
+                    <div id="rep-heatmap" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                </div>
+            </div>
+
+            <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
+                <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">C&C Ledger (Cheque & Credit)</div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #4b5563; color: #9ca3af;">
+                                <th style="padding: 8px; text-align: left;">C#</th>
+                                <th style="padding: 8px; text-align: left;">Time</th>
+                                <th style="padding: 8px; text-align: right;">Cheque</th>
+                                <th style="padding: 8px; text-align: right;">Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rep-cnc-ledger"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Collection Entry Edit Modal (Counter 0) -->
@@ -4140,6 +4209,7 @@
             document.getElementById('admin-active-content').style.display = 'none';
             document.getElementById('admin-archived-content').style.display = 'none';
             document.getElementById('admin-eod-content').style.display = 'none';
+            document.getElementById('admin-reports-content').style.display = 'none';
 
             if (tab === 'active') {
                 document.querySelectorAll('.admin-tab')[0].classList.add('active');
@@ -6333,6 +6403,118 @@
         document.addEventListener('contextmenu', function (event) {
             event.preventDefault();
         });
+        function renderAdminReports() {
+            const dateInput = document.getElementById('reports-date');
+            if (!dateInput) return;
+            const targetAdDate = dateInput.value;
+            if (!targetAdDate) return;
+
+            const repEntries = entries.filter(e => e.date === targetAdDate && !e.isVoid);
+            
+            let grossSales = 0, cashSales = 0, digitalSales = 0, deferredSales = 0;
+            let voidCount = entries.filter(e => e.date === targetAdDate && e.isVoid).length;
+            let netCashFlow = 0; // cash sales + cash collections - opening cash
+            let collectionsCash = 0;
+            
+            const counterTotals = { '0':0, '1':0, '2':0, '3':0, '4':0, '5':0 };
+            const hourlyPeaks = {};
+            const cncLedgerHTML = [];
+
+            repEntries.forEach(e => {
+                const c = e.cash || 0;
+                const qr = e.qr || 0;
+                const pos = e.pos || 0;
+                const ips = e.ips || 0;
+                const esewa = e.esewa || 0;
+                const online = e.online || 0;
+                const chq = e.cheque || 0;
+                const crd = e.credit || 0;
+                
+                const cid = String(e.counterId);
+                const isSales = cid !== '0';
+                
+                const digital = qr + pos + ips + esewa + online;
+                const deferred = chq + crd;
+                const total = c + digital + deferred;
+                
+                if (isSales) {
+                    grossSales += total;
+                    cashSales += c;
+                    digitalSales += digital;
+                    deferredSales += deferred;
+                } else {
+                    collectionsCash += c;
+                    digitalSales += digital;
+                    deferredSales += deferred;
+                }
+                
+                counterTotals[cid] = (counterTotals[cid] || 0) + total;
+                
+                const hr = new Date(parseInt(e.id)).getHours();
+                hourlyPeaks[hr] = (hourlyPeaks[hr] || 0) + 1;
+                
+                if (deferred > 0) {
+                    const timeStr = new Date(parseInt(e.id)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    cncLedgerHTML.push(`
+                        <tr style="border-bottom: 1px solid #374151;">
+                            <td style="padding: 8px; color: #fff;">${cid}</td>
+                            <td style="padding: 8px; color: #fff;">${timeStr}</td>
+                            <td style="padding: 8px; text-align: right; color: #10b981;">${chq.toLocaleString()}</td>
+                            <td style="padding: 8px; text-align: right; color: #ef4444;">${crd.toLocaleString()}</td>
+                        </tr>
+                    `);
+                }
+            });
+            
+            const opening = historicalClosings.find(x => x.date === targetAdDate)?.openingCash || openingCash || 0;
+            netCashFlow = (cashSales + collectionsCash) - opening;
+            
+            const totalForPct = cashSales + collectionsCash + digitalSales + deferredSales;
+            const pctCash = totalForPct ? Math.round(((cashSales + collectionsCash) / totalForPct) * 100) : 0;
+            const pctDig = totalForPct ? Math.round((digitalSales / totalForPct) * 100) : 0;
+            const pctDef = totalForPct ? Math.round((deferredSales / totalForPct) * 100) : 0;
+            
+            document.getElementById('rep-gross-sales').innerText = 'NPR ' + grossSales.toLocaleString();
+            document.getElementById('rep-net-cash').innerText = 'NPR ' + netCashFlow.toLocaleString();
+            
+            const salesCount = repEntries.filter(e => String(e.counterId) !== '0').length;
+            document.getElementById('rep-atv').innerText = 'NPR ' + (salesCount ? Math.round(grossSales / salesCount).toLocaleString() : '0');
+            document.getElementById('rep-voids').innerText = voidCount;
+            
+            document.getElementById('rep-bar-cash').style.width = pctCash + '%';
+            document.getElementById('rep-bar-digital').style.width = pctDig + '%';
+            document.getElementById('rep-bar-deferred').style.width = pctDef + '%';
+            
+            document.getElementById('rep-pct-cash').innerText = pctCash + '%';
+            document.getElementById('rep-pct-digital').innerText = pctDig + '%';
+            document.getElementById('rep-pct-deferred').innerText = pctDef + '%';
+            
+            let ldbHTML = '';
+            for (let i = 0; i <= 5; i++) {
+                if (counterTotals[String(i)] > 0) {
+                    ldbHTML += `
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #374151; padding-bottom: 4px;">
+                            <div style="color: #fff;">Counter ${i} ${i===0?'(Coll)':''}</div>
+                            <div style="font-weight: 700; color: #10b981;">${counterTotals[String(i)].toLocaleString()}</div>
+                        </div>`;
+                }
+            }
+            document.getElementById('rep-leaderboard').innerHTML = ldbHTML || '<div style="color:#9ca3af; font-size:12px;">No activity</div>';
+            
+            let hmpHTML = '';
+            Object.keys(hourlyPeaks).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(hr => {
+                const ampm = hr >= 12 ? 'PM' : 'AM';
+                const hr12 = hr % 12 || 12;
+                hmpHTML += `
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #374151; padding-bottom: 4px;">
+                        <div style="color: #fff;">${hr12}:00 ${ampm}</div>
+                        <div style="font-weight: 700; color: #3b82f6;">${hourlyPeaks[hr]} tx</div>
+                    </div>`;
+            });
+            document.getElementById('rep-heatmap').innerHTML = hmpHTML || '<div style="color:#9ca3af; font-size:12px;">No activity</div>';
+            
+            document.getElementById('rep-cnc-ledger').innerHTML = cncLedgerHTML.join('') || '<tr><td colspan="4" style="text-align:center; padding:12px; color:#9ca3af;">No Cheque or Credit transactions</td></tr>';
+        }
     </script>
 </body>
 
