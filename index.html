@@ -4181,12 +4181,17 @@
         }
 
         function renderAdminPortal() {
-            renderAdminActive();
-            renderAdminArchived();
-            if (activeAdminTab === 'eod') {
-                renderAdminEOD();
-            } else if (activeAdminTab === 'archived') {
-                handleEodDateChange();
+            try {
+                renderAdminActive();
+                renderAdminArchived();
+                if (activeAdminTab === 'eod') {
+                    renderAdminEOD();
+                } else if (activeAdminTab === 'archived') {
+                    handleEodDateChange();
+                }
+            } catch (err) {
+                console.error("Error rendering admin portal:", err);
+                alert("Error rendering admin portal: " + err.message + "\nStack: " + err.stack);
             }
         }
 
@@ -4830,21 +4835,26 @@
         }
 
         function submitOpeningCash() {
-            const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
-            const val = parseFloat(document.getElementById('inp-opening-cash').value);
-            if (isNaN(val) || val < 0) {
-                showMsg("Please enter a valid opening cash amount.");
-                return;
-            }
-            localStorage.setItem(todayKey, val);
-            localStorage.setItem('adminOpeningCash', val);
-            document.getElementById('opening-cash-modal').classList.remove('active');
-            renderAdminPortal();
+            try {
+                const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                const val = parseFloat(document.getElementById('inp-opening-cash').value);
+                if (isNaN(val) || val < 0) {
+                    showMsg("Please enter a valid opening cash amount.");
+                    return;
+                }
+                localStorage.setItem(todayKey, val);
+                localStorage.setItem('adminOpeningCash', val);
+                document.getElementById('opening-cash-modal').classList.remove('active');
+                renderAdminPortal();
 
-            // Switch view
-            document.getElementById('view-calc').classList.remove('active');
-            document.getElementById('view-admin').classList.add('active');
-            document.getElementById('calc-display').innerText = "";
+                // Switch view
+                document.getElementById('view-calc').classList.remove('active');
+                document.getElementById('view-admin').classList.add('active');
+                document.getElementById('calc-display').innerText = "";
+            } catch (err) {
+                console.error("Error in submitOpeningCash:", err);
+                alert("Error submitting opening cash: " + err.message + "\nStack: " + err.stack);
+            }
         }
 
         // We store actual values in localStorage to persist EOD states
