@@ -3064,6 +3064,15 @@
                 localStorage.setItem('deviceId', bioDevId);
 
                 showToast(`Biometrics successfully registered for ${userType.toUpperCase()} ${userId}!`);
+                
+                // Ping backend to register device as Pending
+                callGas('CLAIM_SESSION', { targetId: userId, type: userType, deviceId: bioDevId, userAgent: navigator.userAgent }).then((claimRes) => {
+                    if (claimRes && !claimRes.success) {
+                        showMsg("Biometrics registered.\n\n" + (claimRes.message || "Please ask DAI for approval to log in."));
+                    } else {
+                        showMsg("Biometrics registered.\n\nPlease ask DAI for approval to log in.");
+                    }
+                });
             } catch (err) {
                 console.error("Biometrics registration failed:", err);
                 showMsg("Registration cancelled or failed: " + err.message);
@@ -3156,7 +3165,16 @@
 
                 window.history.pushState({ view: 'admin' }, '');
 
-                // CLAIM_SESSION removed as per user request to exclude device approval claim
+                const devId = getDeviceId();
+                callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent }).then((claimRes) => {
+                    if (!claimRes || !claimRes.success) {
+                        const errorMsg = (claimRes && claimRes.message) || "Access Denied.";
+                        document.getElementById('opening-cash-modal').classList.remove('active');
+                        lockApp();
+                        blinkCalcDisplay();
+                        showMsg(errorMsg);
+                    }
+                });
             } else {
                 const counterId = targetId;
                 activeCounterId = counterId;
@@ -3192,7 +3210,15 @@
                         return;
                     }
 
-                    // CLAIM_SESSION removed as per user request to exclude device approval claim
+                    const devId = getDeviceId();
+                    callGas('CLAIM_SESSION', { targetId: counterId, type: 'counter', deviceId: devId, userAgent: navigator.userAgent }).then((claimRes) => {
+                        if (!claimRes || !claimRes.success) {
+                            lockApp();
+                            blinkCalcDisplay();
+                            const errorMsg = (claimRes && claimRes.message) || `Access Denied.`;
+                            showMsg(errorMsg);
+                        }
+                    });
                 });
             }
         }
