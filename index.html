@@ -3156,19 +3156,7 @@
 
                 window.history.pushState({ view: 'admin' }, '');
 
-                const devId = getDeviceId();
-                callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId }).then((claimRes) => {
-                    if (!claimRes || !claimRes.success) {
-                        const errorMsg = (claimRes && claimRes.message) || "Admin session is already active on another device.";
-                        if (confirm(errorMsg + "\n\nDo you want to override and log in on this device?")) {
-                            callGas('RELEASE_SESSION', { targetId, type: 'admin', deviceId: devId });
-                        } else {
-                            document.getElementById('opening-cash-modal').classList.remove('active');
-                            lockApp();
-                            blinkCalcDisplay();
-                        }
-                    }
-                });
+                // CLAIM_SESSION removed as per user request to exclude device approval claim
             } else {
                 const counterId = targetId;
                 activeCounterId = counterId;
@@ -3204,15 +3192,7 @@
                         return;
                     }
 
-                    const devId = getDeviceId();
-                    callGas('CLAIM_SESSION', { targetId: counterId, type: 'counter', deviceId: devId }).then((claimRes) => {
-                        if (!claimRes || !claimRes.success) {
-                            lockApp();
-                            blinkCalcDisplay();
-                            const errorMsg = (claimRes && claimRes.message) || `Access Denied.\n\nCounter ${counterId} is already open on another device.`;
-                            showMsg(errorMsg);
-                        }
-                    });
+                    // CLAIM_SESSION removed as per user request to exclude device approval claim
                 });
             }
         }
