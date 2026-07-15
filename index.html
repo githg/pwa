@@ -1148,6 +1148,7 @@
             color: #ef4444 !important;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -1412,6 +1413,7 @@
             <div class="admin-tab active" onclick="switchAdminTab('active')">Active Sessions</div>
             <div class="admin-tab" onclick="switchAdminTab('archived')">Archived Logs</div>
             <div class="admin-tab" onclick="switchAdminTab('eod')">EOD Closing</div>
+            <div class="admin-tab" onclick="switchAdminTab('reports')">Reports / Dashboard</div>
         </div>
         <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 12px; width: 100%;">
             <!-- Quick Counter Selection Bar for Admins -->
@@ -1821,6 +1823,70 @@
                 <div id="historical-eod-sessions-content"
                     style="display: flex; flex-direction: column; gap: 16px; width: 100%;"></div>
             </div>
+        </div>
+
+        <!-- Analytical Reports / Dashboard Content Section -->
+        <div class="admin-content" id="admin-reports-content"
+            style="display: none; background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex-direction: column; gap: 20px;">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px;">
+                    📈 Financial Reports & Analytical Dashboard
+                </div>
+            </div>
+
+            <!-- Key Metrics Summary Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total Cheques</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #84cc16; margin-top: 4px;" id="reports-total-cheques">NPR 0</div>
+                </div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total Credit</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #ef4444; margin-top: 4px;" id="reports-total-credit">NPR 0</div>
+                </div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Returns (Negative)</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #f59e0b; margin-top: 4px;" id="reports-total-returns">NPR 0</div>
+                </div>
+                <div style="background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Net Sales (Active)</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px;" id="reports-net-sales">NPR 0</div>
+                </div>
+            </div>
+
+            <!-- Graphical Analytics Section -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                <div style="background: #111827; padding: 16px; border-radius: 12px; border: 1px solid #374151; display:flex; flex-direction:column; align-items:center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px; width:100%; text-align:left;">💳 Payment Mode Splits</div>
+                    <div style="width:100%; max-height:220px; position:relative; display:flex; justify-content:center;">
+                        <canvas id="chart-payment-splits" style="max-height:220px; max-width:220px;"></canvas>
+                    </div>
+                </div>
+                <div style="background: #111827; padding: 16px; border-radius: 12px; border: 1px solid #374151; display:flex; flex-direction:column; align-items:center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px; width:100%; text-align:left;">📅 7-Day Sales Trend</div>
+                    <div style="width:100%; max-height:220px; position:relative;">
+                        <canvas id="chart-sales-trend" style="max-height:220px; width:100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cheque & Credit (C&C) Logs section -->
+            <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px; margin-top: 12px;">
+                🏦 Cheque & Credit (C&C) Logs (Nested by Day)
+            </div>
+            <div id="reports-cnc-container" style="display:flex; flex-direction:column; gap:8px;">
+                <!-- Nested C&C accordions will populate dynamically -->
+            </div>
+
+            <!-- Returns (Negative Entries) Logs section -->
+            <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px; margin-top: 12px;">
+                🔄 Returns & Refunds Log (Nested by Day)
+            </div>
+            <div id="reports-returns-container" style="display:flex; flex-direction:column; gap:8px;">
+                <!-- Nested Returns accordions will populate dynamically -->
+            </div>
+
         </div>
     </div>
 
@@ -4139,6 +4205,7 @@
             document.getElementById('admin-active-content').style.display = 'none';
             document.getElementById('admin-archived-content').style.display = 'none';
             document.getElementById('admin-eod-content').style.display = 'none';
+            document.getElementById('admin-reports-content').style.display = 'none';
 
             if (tab === 'active') {
                 document.querySelectorAll('.admin-tab')[0].classList.add('active');
@@ -4182,6 +4249,10 @@
                     loadDenominations();
                     renderAdminEOD();
                 });
+            } else if (tab === 'reports') {
+                document.querySelectorAll('.admin-tab')[3].classList.add('active');
+                document.getElementById('admin-reports-content').style.display = 'flex';
+                renderAdminReports();
             }
         }
 
@@ -4192,6 +4263,8 @@
                 renderAdminEOD();
             } else if (activeAdminTab === 'archived') {
                 handleEodDateChange();
+            } else if (activeAdminTab === 'reports') {
+                renderAdminReports();
             }
         }
 
@@ -4373,6 +4446,370 @@
                     <td style="padding:6px; text-align:right; color:#ef4444; font-weight:800;">${sumTotCredit.toLocaleString()}</td>
                     <td style="padding:6px; text-align:right; font-weight:800;">${sumTotSales.toLocaleString()}</td>
                 `;
+            }
+        }
+
+        let myChartPaymentSplits = null;
+        let myChartSalesTrend = null;
+        const reportsAccordionStates = {};
+
+        function toggleReportsAccordion(id) {
+            const el = document.getElementById(id);
+            const headerBtn = document.querySelector(`#header-${id} .acc-indicator`);
+            if (!el) return;
+            if (el.style.display === 'none') {
+                el.style.display = 'block';
+                reportsAccordionStates[id] = true;
+                if (headerBtn) headerBtn.innerText = '▲';
+            } else {
+                el.style.display = 'none';
+                reportsAccordionStates[id] = false;
+                if (headerBtn) headerBtn.innerText = '▼';
+            }
+        }
+
+        function renderAdminReports() {
+            // 1. Calculate General Aggregations
+            let totalCheques = 0;
+            let totalCredit = 0;
+            let totalReturns = 0;
+            let netSales = 0;
+
+            let sumC = 0, sumQ = 0, sumPos = 0, sumIps = 0, sumEsewa = 0, sumOnline = 0;
+
+            const cncGroups = {}; // { date: [entries] }
+            const returnsGroups = {}; // { date: [entries] }
+
+            entries.forEach(e => {
+                if (e.isVoid) return;
+
+                const cash = e.cash || 0;
+                const qr = e.qr || 0;
+                const pos = e.pos || 0;
+                const ips = e.ips || 0;
+                const esewa = e.esewa || 0;
+                const online = e.online || 0;
+                const cheque = e.cheque || 0;
+                const credit = e.credit || 0;
+
+                sumC += cash;
+                sumQ += qr;
+                sumPos += pos;
+                sumIps += ips;
+                sumEsewa += esewa;
+                sumOnline += online;
+                totalCheques += cheque;
+                totalCredit += credit;
+
+                const totSales = cash + qr + pos + ips + esewa + online + cheque + credit;
+                netSales += totSales;
+
+                // Check for returns (any negative values)
+                const isReturn = (cash < 0 || qr < 0 || pos < 0 || ips < 0 || esewa < 0 || online < 0 || cheque < 0 || credit < 0);
+                if (isReturn) {
+                    const d = e.date || getLocalTodayStr();
+                    if (!returnsGroups[d]) returnsGroups[d] = [];
+                    returnsGroups[d].push(e);
+
+                    // Add to returns sum (positive absolute sum of negative amounts)
+                    const negSum = [cash, qr, pos, ips, esewa, online, cheque, credit]
+                        .filter(v => v < 0)
+                        .reduce((sum, v) => sum + Math.abs(v), 0);
+                    totalReturns += negSum;
+                }
+
+                // Check for Cheque & Credit
+                if (cheque > 0 || credit > 0) {
+                    const d = e.date || getLocalTodayStr();
+                    if (!cncGroups[d]) cncGroups[d] = [];
+                    cncGroups[d].push(e);
+                }
+            });
+
+            // 2. Render summary widgets
+            const rChequesEl = document.getElementById('reports-total-cheques');
+            if (rChequesEl) rChequesEl.innerText = `NPR ${totalCheques.toLocaleString()}`;
+
+            const rCreditEl = document.getElementById('reports-total-credit');
+            if (rCreditEl) rCreditEl.innerText = `NPR ${totalCredit.toLocaleString()}`;
+
+            const rReturnsEl = document.getElementById('reports-total-returns');
+            if (rReturnsEl) rReturnsEl.innerText = `NPR ${totalReturns.toLocaleString()}`;
+
+            const rNetSalesEl = document.getElementById('reports-net-sales');
+            if (rNetSalesEl) rNetSalesEl.innerText = `NPR ${netSales.toLocaleString()}`;
+
+            // 3. Render Chart.js Payment Split Pie Chart
+            const ctxPie = document.getElementById('chart-payment-splits')?.getContext('2d');
+            if (ctxPie) {
+                if (myChartPaymentSplits) myChartPaymentSplits.destroy();
+                myChartPaymentSplits = new Chart(ctxPie, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Cash', 'QR', 'POS', 'IPS', 'ESewa', 'Online', 'Cheque', 'Credit'],
+                        datasets: [{
+                            data: [sumC, sumQ, sumPos, sumIps, sumEsewa, sumOnline, totalCheques, totalCredit],
+                            backgroundColor: [
+                                '#10b981', // cash
+                                '#3b82f6', // qr
+                                '#f59e0b', // pos
+                                '#8b5cf6', // ips
+                                '#14b8a6', // esewa
+                                '#06b6d4', // online
+                                '#84cc16', // cheque
+                                '#ef4444'  // credit
+                            ],
+                            borderWidth: 1,
+                            borderColor: '#1f2937'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right',
+                                labels: {
+                                    boxWidth: 10,
+                                    font: { size: 10 },
+                                    color: '#9ca3af'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 4. Render Chart.js 7-Day Sales Trend Bar Chart
+            const ctxBar = document.getElementById('chart-sales-trend')?.getContext('2d');
+            if (ctxBar) {
+                const salesByDate = {};
+                entries.forEach(e => {
+                    if (e.isVoid) return;
+                    const d = e.date || getLocalTodayStr();
+                    const totSales = (e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0) + (e.cheque || 0) + (e.credit || 0);
+                    salesByDate[d] = (salesByDate[d] || 0) + totSales;
+                });
+                const sortedDates = Object.keys(salesByDate).sort();
+                const last7Dates = sortedDates.slice(-7);
+                const last7Sales = last7Dates.map(d => salesByDate[d]);
+
+                // Convert labels to readable form or BS
+                const labels = last7Dates.map(d => {
+                    const bs = convertAdToBs(d);
+                    return bs ? `${bs.month}/${bs.day}` : d.slice(5); // Show MM/DD or end of string
+                });
+
+                if (myChartSalesTrend) myChartSalesTrend.destroy();
+                myChartSalesTrend = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Sales (NPR)',
+                            data: last7Sales,
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 9 }, color: '#9ca3af' }
+                            },
+                            y: {
+                                grid: { color: '#374151' },
+                                ticks: { font: { size: 9 }, color: '#9ca3af' }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 5. Render Cheque & Credit Nested Log
+            const cncContainer = document.getElementById('reports-cnc-container');
+            if (cncContainer) {
+                cncContainer.innerHTML = '';
+                const sortedDates = Object.keys(cncGroups).sort().reverse(); // Newest first
+
+                if (sortedDates.length === 0) {
+                    cncContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#9ca3af; font-size:12px; font-style:italic;">No Cheque or Credit transactions logged.</div>';
+                } else {
+                    sortedDates.forEach(dateStr => {
+                        const dayEntries = cncGroups[dateStr];
+                        const countCheques = dayEntries.filter(e => (e.cheque || 0) > 0).length;
+                        const countCredit = dayEntries.filter(e => (e.credit || 0) > 0).length;
+                        const sumCNC = dayEntries.reduce((sum, e) => sum + (e.cheque || 0) + (e.credit || 0), 0);
+
+                        const divId = `cnc-acc-${dateStr.replace(/-/g, '_')}`;
+                        const isExpanded = reportsAccordionStates[divId] || false;
+
+                        const wrapper = document.createElement('div');
+                        wrapper.style.border = '1px solid #374151';
+                        wrapper.style.borderRadius = '8px';
+                        wrapper.style.overflow = 'hidden';
+
+                        const header = document.createElement('div');
+                        header.id = `header-${divId}`;
+                        header.style.background = '#2d3748';
+                        header.style.padding = '10px 14px';
+                        header.style.cursor = 'pointer';
+                        header.style.display = 'flex';
+                        header.style.justifyContent = 'space-between';
+                        header.style.alignItems = 'center';
+                        header.style.fontWeight = '700';
+                        header.style.fontSize = '12px';
+                        header.onclick = () => toggleReportsAccordion(divId);
+
+                        header.innerHTML = `
+                            <span>📅 ${dateStr}</span>
+                            <span style="color:#a0aec0;">Cheques: ${countCheques} | Credit: ${countCredit} | Total: NPR ${sumCNC.toLocaleString()} <span class="acc-indicator" style="font-size:9px; margin-left:6px;">${isExpanded ? '▲' : '▼'}</span></span>
+                        `;
+                        wrapper.appendChild(header);
+
+                        const content = document.createElement('div');
+                        content.id = divId;
+                        content.style.display = isExpanded ? 'block' : 'none';
+                        content.style.background = '#1a202c';
+                        content.style.padding = '8px';
+
+                        const tableWrap = document.createElement('div');
+                        tableWrap.style.overflowX = 'auto';
+
+                        tableWrap.innerHTML = `
+                            <table class="eod-table" style="width:100%; border-collapse:collapse; font-size:11px;">
+                                <thead>
+                                    <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568;">
+                                        <th style="padding:6px;">Time (Counter)</th>
+                                        <th style="padding:6px; text-align:right;">Cheque</th>
+                                        <th style="padding:6px; text-align:right;">Credit</th>
+                                        <th style="padding:6px; text-align:right; font-weight:700;">Total C&C</th>
+                                        <th style="padding:6px;">Remarks / Customer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${dayEntries.map(e => {
+                                        const chq = e.cheque || 0;
+                                        const crd = e.credit || 0;
+                                        const tot = chq + crd;
+                                        return `
+                                            <tr style="border-bottom: 1px solid #2d3748;">
+                                                <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}', true)">${e.timestamp.split(' ')[0]} (CTR ${e.counterId})</td>
+                                                <td style="padding:6px; text-align:right; color:#84cc16;">${chq > 0 ? chq.toLocaleString() : '-'}</td>
+                                                <td style="padding:6px; text-align:right; color:#ef4444;">${crd > 0 ? crd.toLocaleString() : '-'}</td>
+                                                <td style="padding:6px; text-align:right; font-weight:700;">${tot.toLocaleString()}</td>
+                                                <td style="padding:6px; color:#e2e8f0;">${e.remarks || '<span style="color:#4a5568; font-style:italic;">None</span>'}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                        content.appendChild(tableWrap);
+                        wrapper.appendChild(content);
+                        cncContainer.appendChild(wrapper);
+                    });
+                }
+            }
+
+            // 6. Render Returns Nested Log
+            const returnsContainer = document.getElementById('reports-returns-container');
+            if (returnsContainer) {
+                returnsContainer.innerHTML = '';
+                const sortedDates = Object.keys(returnsGroups).sort().reverse(); // Newest first
+
+                if (sortedDates.length === 0) {
+                    returnsContainer.innerHTML = '<div style="text-align:center; padding: 20px; color:#9ca3af; font-size:12px; font-style:italic;">No Return / Refund transactions logged.</div>';
+                } else {
+                    sortedDates.forEach(dateStr => {
+                        const dayEntries = returnsGroups[dateStr];
+                        const countReturns = dayEntries.length;
+                        
+                        const sumReturns = dayEntries.reduce((sum, e) => {
+                            const negSum = [e.cash, e.qr, e.pos, e.ips, e.esewa, e.online, e.cheque, e.credit]
+                                .filter(v => (v || 0) < 0)
+                                .reduce((s, v) => s + Math.abs(v), 0);
+                            return sum + negSum;
+                        }, 0);
+
+                        const divId = `returns-acc-${dateStr.replace(/-/g, '_')}`;
+                        const isExpanded = reportsAccordionStates[divId] || false;
+
+                        const wrapper = document.createElement('div');
+                        wrapper.style.border = '1px solid #374151';
+                        wrapper.style.borderRadius = '8px';
+                        wrapper.style.overflow = 'hidden';
+
+                        const header = document.createElement('div');
+                        header.id = `header-${divId}`;
+                        header.style.background = '#2d3748';
+                        header.style.padding = '10px 14px';
+                        header.style.cursor = 'pointer';
+                        header.style.display = 'flex';
+                        header.style.justifyContent = 'space-between';
+                        header.style.alignItems = 'center';
+                        header.style.fontWeight = '700';
+                        header.style.fontSize = '12px';
+                        header.onclick = () => toggleReportsAccordion(divId);
+
+                        header.innerHTML = `
+                            <span>📅 ${dateStr}</span>
+                            <span style="color:#a0aec0;">Returns Count: ${countReturns} | Total Returns Value: NPR ${sumReturns.toLocaleString()} <span class="acc-indicator" style="font-size:9px; margin-left:6px;">${isExpanded ? '▲' : '▼'}</span></span>
+                        `;
+                        wrapper.appendChild(header);
+
+                        const content = document.createElement('div');
+                        content.id = divId;
+                        content.style.display = isExpanded ? 'block' : 'none';
+                        content.style.background = '#1a202c';
+                        content.style.padding = '8px';
+
+                        const tableWrap = document.createElement('div');
+                        tableWrap.style.overflowX = 'auto';
+
+                        tableWrap.innerHTML = `
+                            <table class="eod-table" style="width:100%; border-collapse:collapse; font-size:11px;">
+                                <thead>
+                                    <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568;">
+                                        <th style="padding:6px;">Time (Counter)</th>
+                                        <th style="padding:6px; text-align:right;">Negative Particulars</th>
+                                        <th style="padding:6px;">Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${dayEntries.map(e => {
+                                        const fields = ['cash', 'qr', 'pos', 'ips', 'esewa', 'online', 'cheque', 'credit'];
+                                        const returnDetails = [];
+                                        fields.forEach(f => {
+                                            if ((e[f] || 0) < 0) {
+                                                returnDetails.push(`${f.toUpperCase()}: ${e[f].toLocaleString()}`);
+                                            }
+                                        });
+
+                                        return `
+                                            <tr style="border-bottom: 1px solid #2d3748;">
+                                                <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}', true)">${e.timestamp.split(' ')[0]} (CTR ${e.counterId})</td>
+                                                <td style="padding:6px; text-align:right; color:#f59e0b; font-weight:600;">${returnDetails.join(', ')}</td>
+                                                <td style="padding:6px; color:#e2e8f0;">${e.remarks || '<span style="color:#4a5568; font-style:italic;">None</span>'}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                        content.appendChild(tableWrap);
+                        wrapper.appendChild(content);
+                        returnsContainer.appendChild(wrapper);
+                    });
+                }
             }
         }
 
