@@ -3148,6 +3148,7 @@
             // Use discoverable credentials search (without allowCredentials) so it works even if local cookies/storage are cleared
             const publicKeyCredentialRequestOptions = {
                 challenge: challenge,
+                rpId: window.location.hostname,
                 userVerification: "required",
                 timeout: 60000
             };
