@@ -969,6 +969,7 @@
 
         /* ==================== 2027 DUAL-THEME GLASS DESIGN SYSTEM (DARK MIDNIGHT + LIGHT ICE-LAVENDER) ==================== */
         :root {
+            color-scheme: dark;
             /* Dark Midnight Glass — deep obsidian contrast, crisp specular rims, zero muddy gray */
             --ui-canvas:
                 radial-gradient(760px 460px at 8% -6%, rgba(99, 102, 241, 0.22), transparent 60%),
@@ -1003,6 +1004,7 @@
         }
 
         body.theme-light {
+            color-scheme: light;
             /* Light Ice-Cyan & Lavender Frosted Glass */
             --ui-canvas:
                 radial-gradient(680px 480px at 10% 4%, rgba(165, 243, 252, 0.80), transparent 60%),
@@ -1046,18 +1048,18 @@
         }
 
         #view-admin {
-            padding: 16px 20px 56px !important;
+            padding: 0 16px 56px !important;
             max-width: 100%;
             box-sizing: border-box;
         }
 
-        /* Sticky frosted glass header */
+        /* Sticky frosted glass header — flush at top:0 with zero scroll peek-through */
         #view-admin .admin-header {
             position: sticky;
             top: 0;
             z-index: 40;
-            margin: -16px -20px 16px;
-            padding: 13px 22px !important;
+            margin: 0 -16px 14px !important;
+            padding: 13px 18px !important;
             background: var(--ui-header) !important;
             backdrop-filter: blur(24px) saturate(165%);
             -webkit-backdrop-filter: blur(24px) saturate(165%);
@@ -1075,29 +1077,39 @@
             gap: 8px;
         }
 
-        /* Clean segmented tab bar (crisp 10px corners, never squished pills) */
+        /* Clean single-row segmented tab bar (scrolls cleanly on narrow phones, never wraps into tall box) */
         #view-admin .admin-tabs {
-            display: inline-flex !important;
-            flex-wrap: wrap;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
             gap: 4px !important;
             padding: 4px !important;
-            margin: 0 0 18px 0 !important;
+            margin: 0 0 16px 0 !important;
             background: var(--ui-pill-bg) !important;
             backdrop-filter: blur(20px) saturate(160%);
             -webkit-backdrop-filter: blur(20px) saturate(160%);
             border: 1px solid var(--ui-border) !important;
             border-radius: 12px !important;
             box-shadow: var(--ui-specular);
+            width: 100%;
+            box-sizing: border-box;
+            scrollbar-width: none;
+        }
+
+        #view-admin .admin-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         #view-admin .admin-tab {
-            padding: 8px 15px !important;
+            padding: 8px 14px !important;
             border-radius: 9px !important;
-            font-size: 12.5px !important;
+            font-size: 12px !important;
             font-weight: 600 !important;
             letter-spacing: -0.01em;
             color: var(--ui-muted) !important;
             border: 1px solid transparent;
+            white-space: nowrap;
+            flex-shrink: 0;
             transition: all 0.18s ease;
         }
 
@@ -1512,6 +1524,8 @@
         #view-admin .eod-input {
             padding: 6px 8px !important;
             font-size: 12.5px !important;
+            min-width: 84px;
+            box-sizing: border-box;
         }
 
         #view-admin .eod-input[readonly] {
@@ -3272,7 +3286,7 @@
 
             varianceIds.forEach(id => {
                 const el = document.getElementById(prefix + id);
-                if (el && el.innerText !== '---------------') {
+                if (el && el.innerText !== '—' && el.innerText !== '---------------') {
                     hasAnyValue = true;
                     const val = parseFloat(el.innerText.replace(/[^\d.-]/g, '')) || 0;
                     if (val !== 0) {
@@ -5652,8 +5666,8 @@
                 if (variance < 0) varColor = '#ef4444'; // Red
                 else if (variance > 0) varColor = '#f59e0b'; // Orange
 
-                let outCellHtml = '---------------';
-                let varianceText = '---------------';
+                let outCellHtml = '—';
+                let varianceText = '—';
 
                 if (hasValue) {
                     outCellHtml = r.input
@@ -6751,8 +6765,8 @@
                 if (variance < 0) varColor = '#ef4444';
                 else if (variance > 0) varColor = '#f59e0b';
 
-                let outCellHtml = '---------------';
-                let varianceText = '---------------';
+                let outCellHtml = '—';
+                let varianceText = '—';
 
                 if (hasValue) {
                     outCellHtml = `<input type="text" class="eod-input" value="${r.out.toLocaleString()}" readonly>`;
@@ -6972,7 +6986,9 @@
             const pctDef = totalForPct ? Math.round((deferredSales / totalForPct) * 100) : 0;
 
             document.getElementById('rep-gross-sales').innerText = 'NPR ' + grossSales.toLocaleString();
-            document.getElementById('rep-net-cash').innerText = 'NPR ' + netCashFlow.toLocaleString();
+            const netCashEl = document.getElementById('rep-net-cash');
+            netCashEl.innerText = 'NPR ' + netCashFlow.toLocaleString();
+            netCashEl.style.color = netCashFlow < 0 ? 'var(--ui-neg)' : 'var(--ui-pos)';
 
             const salesCount = repEntries.filter(e => String(e.counterId) !== '0').length;
             document.getElementById('rep-atv').innerText = 'NPR ' + (salesCount ? Math.round(grossSales / salesCount).toLocaleString() : '0');
