@@ -967,178 +967,79 @@
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        /* ==================== THEME MODERN (Airbnb / Slack style overrides) ==================== */
-        body.theme-modern {
-            --bg-color: #f7f7f9;
-            --surface: #ffffff;
-            --text-main: #1d1c1d;
-            /* Slack charcoal black */
-            --text-muted: #616061;
-            /* Slack gray */
-            --border: #e2e2e2;
-            --primary: #FF5A5F;
-            /* Airbnb Coral Accent */
+        /* ==================== 2027 DUAL-THEME BENTO GLASS (DARK OBSIDIAN + LIGHT LIQUID GLASS) ==================== */
+        :root {
+            --ui-canvas:
+                radial-gradient(1200px 560px at 12% -12%, rgba(56, 189, 248, 0.10), transparent 58%),
+                radial-gradient(1000px 520px at 88% -6%, rgba(129, 140, 248, 0.11), transparent 56%),
+                radial-gradient(900px 500px at 50% 112%, rgba(45, 212, 191, 0.06), transparent 60%),
+                #07090e;
+            --ui-header: rgba(7, 9, 14, 0.72);
+            --ui-card: rgba(16, 20, 29, 0.68);
+            --ui-card-hover: rgba(22, 28, 40, 0.78);
+            --ui-card-inner: rgba(9, 12, 19, 0.64);
+            --ui-border: rgba(255, 255, 255, 0.08);
+            --ui-border-strong: rgba(255, 255, 255, 0.15);
+            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.075);
+            --ui-shadow: 0 18px 42px -18px rgba(0, 0, 0, 0.78);
+            --ui-text: #f8fafc;
+            --ui-text-soft: #cbd5e1;
+            --ui-muted: #7f8ca3;
+            --ui-pill-bg: rgba(255, 255, 255, 0.045);
+            --ui-pill-active: rgba(255, 255, 255, 0.13);
+            --ui-input-bg: rgba(6, 9, 15, 0.7);
+            --ui-row-hover: rgba(255, 255, 255, 0.032);
+            --ui-thead-bg: rgba(255, 255, 255, 0.03);
+            --ui-pos: #34d399;
+            --ui-neg: #fb7185;
+            --ui-warn: #fbbf24;
+            --ui-info: #60a5fa;
+            --ui-btn-primary-bg: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+            --ui-btn-primary-text: #07090e;
         }
 
-        /* Mobile-First Grid & spacing optimizations */
-        body.theme-modern .app-view {
-            font-size: 14px;
+        body.theme-light {
+            --ui-canvas:
+                radial-gradient(1100px 560px at 12% -8%, rgba(56, 189, 248, 0.18), transparent 58%),
+                radial-gradient(900px 520px at 88% 4%, rgba(167, 139, 250, 0.16), transparent 56%),
+                radial-gradient(900px 520px at 50% 108%, rgba(52, 211, 153, 0.12), transparent 60%),
+                #eef2f7;
+            --ui-header: rgba(238, 242, 247, 0.74);
+            --ui-card: rgba(255, 255, 255, 0.72);
+            --ui-card-hover: rgba(255, 255, 255, 0.88);
+            --ui-card-inner: rgba(241, 245, 249, 0.76);
+            --ui-border: rgba(15, 23, 42, 0.08);
+            --ui-border-strong: rgba(15, 23, 42, 0.16);
+            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+            --ui-shadow: 0 18px 40px -16px rgba(15, 23, 42, 0.12), 0 2px 8px -2px rgba(15, 23, 42, 0.05);
+            --ui-text: #0f172a;
+            --ui-text-soft: #334155;
+            --ui-muted: #64748b;
+            --ui-pill-bg: rgba(255, 255, 255, 0.65);
+            --ui-pill-active: #0f172a;
+            --ui-input-bg: rgba(255, 255, 255, 0.85);
+            --ui-row-hover: rgba(15, 23, 42, 0.03);
+            --ui-thead-bg: rgba(15, 23, 42, 0.035);
+            --ui-pos: #059669;
+            --ui-neg: #e11d48;
+            --ui-warn: #d97706;
+            --ui-info: #2563eb;
+            --ui-btn-primary-bg: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            --ui-btn-primary-text: #ffffff;
         }
 
-        body.theme-modern #view-admin {
-            background: #1A1D21;
-            /* Slack Dark Background for Admin view */
-            color: #d1d2d3;
-        }
-
-        body.theme-modern #view-admin .admin-header {
-            background: #1A1D21;
-            border-bottom: 1px solid #2A2D31;
-            padding: 12px 16px;
-        }
-
-        body.theme-modern #view-admin #admin-title {
-            color: #ffffff;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        body.theme-modern #view-admin .admin-tabs {
-            background: #222529 !important;
-            border-radius: 99px !important;
-            padding: 4px !important;
-            margin: 8px 12px !important;
-            border: 1px solid #2A2D31;
-        }
-
-        body.theme-modern #view-admin .admin-tab {
-            border-radius: 99px !important;
-            padding: 8px 16px !important;
-            font-size: 12px !important;
-            font-weight: 700 !important;
-            color: #abb2bf !important;
-            transition: all 0.2s ease;
-        }
-
-        body.theme-modern #view-admin .admin-tab.active {
-            background: #FF5A5F !important;
-            color: #ffffff !important;
-        }
-
-        body.theme-modern #view-admin .admin-content {
-            padding: 12px 16px !important;
-        }
-
-        /* Entry card overrides */
-        body.theme-modern .entry-card {
-            border-radius: 16px !important;
-            border: 1px solid var(--border) !important;
-            padding: 14px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-
-        body.theme-modern #view-admin .entry-card {
-            background: #222529 !important;
-            border: 1px solid #2A2D31 !important;
-            box-shadow: none !important;
-        }
-
-        body.theme-modern .entry-card:active {
-            transform: scale(0.98);
-        }
-
-        /* Input and forms overrides */
-        body.theme-modern input.input-field,
-        body.theme-modern select {
-            border-radius: 10px !important;
-            padding: 12px !important;
-            font-size: 14px !important;
-            border: 1px solid var(--border) !important;
-            background: var(--surface) !important;
-            color: var(--text-main) !important;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        body.theme-modern input.input-field:focus {
-            border-color: #FF5A5F !important;
-            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.15) !important;
-            outline: none;
-        }
-
-        body.theme-modern #view-admin input,
-        body.theme-modern #view-admin select {
-            background: #111827 !important;
-            border-color: #374151 !important;
-            color: #fff !important;
-        }
-
-        body.theme-modern #view-admin input:focus,
-        body.theme-modern #view-admin select:focus {
-            border-color: #FF5A5F !important;
-            box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.25) !important;
-        }
-
-        /* Buttons overrides */
-        body.theme-modern .btn-next,
-        body.theme-modern .btn-close-session {
-            background: #FF5A5F !important;
-            color: #ffffff !important;
-            border-radius: 99px !important;
-            font-weight: 700 !important;
-            padding: 12px 24px !important;
-            border: none !important;
-            box-shadow: 0 4px 10px rgba(255, 90, 95, 0.3) !important;
-            transition: transform 0.1s;
-        }
-
-        body.theme-modern .btn-next:active,
-        body.theme-modern .btn-close-session:active {
-            transform: scale(0.96);
-        }
-
-        body.theme-modern .btn-history {
-            border-radius: 99px !important;
-            font-weight: 700 !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            background: rgba(255, 255, 255, 0.1) !important;
-            padding: 8px 16px !important;
-        }
-
-        body.theme-modern .btn-void {
-            border-radius: 99px !important;
-            font-weight: 700 !important;
-            padding: 8px 16px !important;
-        }
-
-        /* Bottom sheet and modals styling */
-        body.theme-modern .bottom-sheet {
-            border-radius: 28px 28px 0 0 !important;
-        }
-
-        body.theme-modern .preview-thumb-wrap img {
-            border-radius: 16px !important;
-        }
-
-        body.theme-modern .add-more-btn {
-            border-radius: 16px !important;
-            border: 2px dashed #bbb !important;
-        }
-
-        /* ==================== 2027 OBSIDIAN GLASS / WEB3 SLEEK POLISH ==================== */
         #view-admin,
         #collection-workspace {
-            background:
-                radial-gradient(1100px 520px at 10% -10%, rgba(148, 163, 184, 0.11), transparent 60%),
-                radial-gradient(900px 480px at 92% 8%, rgba(56, 189, 248, 0.06), transparent 58%),
-                radial-gradient(800px 520px at 50% 110%, rgba(99, 102, 241, 0.06), transparent 60%),
-                #06080d !important;
-            color: #e5e7eb !important;
+            background: var(--ui-canvas) !important;
+            color: var(--ui-text) !important;
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+            transition: background 0.3s ease, color 0.25s ease;
         }
 
         #view-admin {
-            padding: 16px 20px 40px !important;
+            padding: 16px 20px 48px !important;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         /* Sticky frosted glass header */
@@ -1146,73 +1047,299 @@
             position: sticky;
             top: 0;
             z-index: 40;
-            margin: -16px -20px 14px;
-            padding: 14px 20px !important;
-            background: rgba(6, 8, 13, 0.72) !important;
-            backdrop-filter: blur(20px) saturate(140%);
-            -webkit-backdrop-filter: blur(20px) saturate(140%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-            box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.8);
+            margin: -16px -20px 16px;
+            padding: 14px 22px !important;
+            background: var(--ui-header) !important;
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border-bottom: 1px solid var(--ui-border) !important;
         }
 
         #view-admin #admin-title {
             font-size: 16px !important;
             font-weight: 700 !important;
             letter-spacing: -0.025em;
-            color: #f8fafc !important;
+            color: var(--ui-text) !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Segmented frosted pill tabs */
+        /* Floating segmented pill navigation */
         #view-admin .admin-tabs {
             display: inline-flex !important;
             flex-wrap: wrap;
             gap: 4px !important;
             padding: 4px !important;
             margin: 0 0 18px 0 !important;
-            background: rgba(255, 255, 255, 0.035) !important;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.07) !important;
-            border-radius: 14px !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+            background: var(--ui-pill-bg) !important;
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 16px !important;
+            box-shadow: var(--ui-specular), var(--ui-shadow);
         }
 
         #view-admin .admin-tab {
-            padding: 8px 15px !important;
-            border-radius: 10px !important;
-            font-size: 12px !important;
+            padding: 9px 16px !important;
+            border-radius: 12px !important;
+            font-size: 12.5px !important;
             font-weight: 600 !important;
             letter-spacing: -0.01em;
-            color: #94a3b8 !important;
+            color: var(--ui-muted) !important;
             border: 1px solid transparent;
             transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         #view-admin .admin-tab:hover {
-            color: #f1f5f9 !important;
-            background: rgba(255, 255, 255, 0.04);
+            color: var(--ui-text) !important;
         }
 
         #view-admin .admin-tab.active {
-            background: rgba(255, 255, 255, 0.11) !important;
+            background: var(--ui-pill-active) !important;
             color: #ffffff !important;
-            border-color: rgba(255, 255, 255, 0.14) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 4px 16px -4px rgba(0, 0, 0, 0.6);
+            border-color: var(--ui-border-strong) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px -6px rgba(0, 0, 0, 0.45);
         }
 
-        /* Glassy panels, cards, KPI boxes, and accordions */
-        #view-admin .admin-content > div,
-        #view-admin .entry-card,
-        #view-admin .history-log-box,
-        #collection-workspace > div:nth-child(2) {
-            background: rgba(15, 19, 28, 0.58) !important;
-            backdrop-filter: blur(18px) saturate(130%);
-            -webkit-backdrop-filter: blur(18px) saturate(130%);
-            border: 1px solid rgba(255, 255, 255, 0.075) !important;
+        /* Bento Glass Cards */
+        .glass-card {
+            background: var(--ui-card) !important;
+            backdrop-filter: blur(22px) saturate(150%);
+            -webkit-backdrop-filter: blur(22px) saturate(150%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 20px !important;
+            padding: 18px !important;
+            box-shadow: var(--ui-specular), var(--ui-shadow) !important;
+            box-sizing: border-box;
+        }
+
+        .glass-subcard {
+            background: var(--ui-card-inner) !important;
+            border: 1px solid var(--ui-border) !important;
             border-radius: 16px !important;
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.055),
-                0 14px 36px -16px rgba(0, 0, 0, 0.72) !important;
+            padding: 14px 16px !important;
+            box-shadow: var(--ui-specular);
+        }
+
+        .bento-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 12px;
+        }
+
+        .bento-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 14px;
+        }
+
+        .kpi-tile {
+            background: var(--ui-card) !important;
+            backdrop-filter: blur(22px) saturate(150%);
+            -webkit-backdrop-filter: blur(22px) saturate(150%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 20px !important;
+            padding: 18px 18px 16px !important;
+            box-shadow: var(--ui-specular), var(--ui-shadow) !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+            transition: transform 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .kpi-tile:hover {
+            transform: translateY(-2px);
+            border-color: var(--ui-border-strong) !important;
+            background: var(--ui-card-hover) !important;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kpi-value {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--ui-text);
+            font-variant-numeric: tabular-nums;
+            line-height: 1.1;
+        }
+
+        .kpi-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 99px;
+            background: var(--ui-pill-bg);
+            border: 1px solid var(--ui-border);
+            color: var(--ui-muted);
+        }
+
+        .section-kicker {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Vertical pill bar chart (Fintech Image 2 style) */
+        .pill-chart-wrap {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            height: 136px;
+            padding: 12px 6px 4px;
+            overflow-x: auto;
+        }
+
+        .pill-col {
+            flex: 1;
+            min-width: 34px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .pill-track {
+            width: 10px;
+            height: 92px;
+            border-radius: 99px;
+            background: var(--ui-pill-bg);
+            border: 1px solid var(--ui-border);
+            display: flex;
+            align-items: flex-end;
+            overflow: hidden;
+            padding: 1px;
+        }
+
+        .pill-fill {
+            width: 100%;
+            border-radius: 99px;
+            background: linear-gradient(180deg, var(--ui-info) 0%, var(--ui-pos) 100%);
+            transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            min-height: 6px;
+        }
+
+        .pill-lbl {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ui-muted);
+            white-space: nowrap;
+        }
+
+        .pill-val {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--ui-text-soft);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Ranked leaderboard rows (Robinhood/Fintech style) */
+        .rank-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--ui-card-inner);
+            border: 1px solid var(--ui-border);
+        }
+
+        .rank-bar-bg {
+            height: 5px;
+            width: 100%;
+            border-radius: 99px;
+            background: var(--ui-pill-bg);
+            overflow: hidden;
+        }
+
+        .rank-bar-fill {
+            height: 100%;
+            border-radius: 99px;
+            background: linear-gradient(90deg, var(--ui-pos), var(--ui-info));
+        }
+
+        /* Glassy Buttons */
+        .glass-btn {
+            background: var(--ui-pill-bg) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 12px !important;
+            padding: 8px 14px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: var(--ui-specular);
+            transition: transform 0.14s ease, background 0.18s ease, border-color 0.18s ease;
+        }
+
+        .glass-btn:hover {
+            background: var(--ui-card-hover) !important;
+            border-color: var(--ui-border-strong) !important;
+        }
+
+        .glass-btn:active {
+            transform: scale(0.97);
+        }
+
+        .glass-btn-primary {
+            background: var(--ui-btn-primary-bg) !important;
+            color: var(--ui-btn-primary-text) !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 11px 18px !important;
+            font-size: 12.5px !important;
+            font-weight: 700 !important;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.35);
+            transition: transform 0.14s ease, filter 0.18s ease;
+        }
+
+        .glass-btn-primary:hover {
+            filter: brightness(1.06);
+        }
+
+        .glass-btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        /* Legacy dynamic admin blocks adapt seamlessly to Dark & Light */
+        #view-admin .admin-content > div:not(.bento-kpi-grid):not(.bento-2col):not(.glass-card),
+        #view-admin .entry-card,
+        #view-admin .history-log-box {
+            background: var(--ui-card) !important;
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 18px !important;
+            color: var(--ui-text) !important;
+            box-shadow: var(--ui-specular), var(--ui-shadow) !important;
         }
 
         #view-admin #admin-archived-main-view,
@@ -1225,191 +1352,162 @@
             backdrop-filter: none !important;
         }
 
-        #view-admin .counter-group-title {
-            font-size: 11px !important;
-            font-weight: 700 !important;
-            letter-spacing: 0.09em !important;
-            color: #94a3b8 !important;
-            border-left: 2px solid rgba(255, 255, 255, 0.35) !important;
-            padding-left: 10px !important;
+        /* Ensure inline dark colors in JS-rendered admin panels adapt in Light Liquid Glass mode */
+        body.theme-light #view-admin [style*="background: #1f2937"],
+        body.theme-light #view-admin [style*="background:#1f2937"],
+        body.theme-light #view-admin [style*="background: #2d3748"],
+        body.theme-light #view-admin [style*="background:#2d3748"],
+        body.theme-light #view-admin [style*="background: #111827"],
+        body.theme-light #view-admin [style*="background:#111827"],
+        body.theme-light #view-admin [style*="background: #1a202c"],
+        body.theme-light #view-admin [style*="background:#1a202c"],
+        body.theme-light #view-admin [style*="background: #374151"],
+        body.theme-light #view-admin [style*="background:#374151"] {
+            background: var(--ui-card-inner) !important;
+            border-color: var(--ui-border) !important;
+            color: var(--ui-text) !important;
         }
 
-        /* Restrained glassy buttons inside Admin */
-        #view-admin button {
-            border-radius: 10px !important;
-            font-weight: 600 !important;
-            letter-spacing: -0.01em;
-            transition: transform 0.14s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        body.theme-light #view-admin [style*="color: #fff"],
+        body.theme-light #view-admin [style*="color:#fff"],
+        body.theme-light #view-admin [style*="color: #f3f4f6"],
+        body.theme-light #view-admin [style*="color:#f3f4f6"] {
+            color: var(--ui-text) !important;
         }
 
-        #view-admin button:hover {
-            filter: brightness(1.08);
+        body.theme-light #view-admin [style*="color: #9ca3af"],
+        body.theme-light #view-admin [style*="color:#9ca3af"] {
+            color: var(--ui-muted) !important;
         }
 
-        #view-admin button:active {
-            transform: scale(0.97);
-        }
-
-        #view-admin .admin-header button,
-        #view-admin .btn-void {
-            background: rgba(255, 255, 255, 0.055) !important;
-            color: #e2e8f0 !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-        }
-
-        #view-admin .admin-header button:hover,
-        #view-admin .btn-void:hover {
-            background: rgba(255, 255, 255, 0.11) !important;
-            border-color: rgba(255, 255, 255, 0.18) !important;
-        }
-
-        /* Recessed foggy inputs & selects */
+        /* Recessed inputs & selects */
         #view-admin input,
         #view-admin select,
         #collection-workspace input {
-            background: rgba(5, 7, 12, 0.62) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background: var(--ui-input-bg) !important;
+            border: 1px solid var(--ui-border) !important;
             border-radius: 10px !important;
-            color: #f8fafc !important;
+            color: var(--ui-text) !important;
             font-variant-numeric: tabular-nums;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         #view-admin input:focus,
         #view-admin select:focus,
         #collection-workspace input:focus {
             outline: none !important;
-            border-color: rgba(255, 255, 255, 0.28) !important;
-            background: rgba(8, 11, 18, 0.85) !important;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06) !important;
+            border-color: var(--ui-border-strong) !important;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15) !important;
         }
 
         #view-admin .eod-input[readonly] {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border-color: rgba(255, 255, 255, 0.05) !important;
-            color: #cbd5e1 !important;
+            background: var(--ui-pill-bg) !important;
+            border-color: transparent !important;
+            color: var(--ui-text-soft) !important;
         }
 
-        /* Crisp tabular data tables */
+        /* Terminal precision data tables */
         #view-admin table {
             border-collapse: separate !important;
             border-spacing: 0 !important;
             font-variant-numeric: tabular-nums;
+            color: var(--ui-text) !important;
         }
 
         #view-admin table thead th {
-            background: rgba(255, 255, 255, 0.035) !important;
-            color: #94a3b8 !important;
+            background: var(--ui-thead-bg) !important;
+            color: var(--ui-muted) !important;
             font-size: 10.5px !important;
             font-weight: 700 !important;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-            padding: 9px 8px !important;
+            border-bottom: 1px solid var(--ui-border) !important;
+            padding: 10px 8px !important;
         }
 
         #view-admin table tbody td,
         #view-admin .eod-table td {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-            padding: 9px 8px !important;
-            color: #e2e8f0;
+            border-bottom: 1px solid var(--ui-border) !important;
+            padding: 10px 8px !important;
+            color: var(--ui-text);
         }
 
         #view-admin table tbody tr:hover td {
-            background: rgba(255, 255, 255, 0.028);
+            background: var(--ui-row-hover);
         }
 
         /* Sleek frosted Fast-Lane floating pill */
         .fast-lane-bar {
-            background: rgba(9, 12, 19, 0.72) !important;
-            backdrop-filter: blur(20px) saturate(150%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                0 16px 36px -10px rgba(0, 0, 0, 0.75) !important;
+            background: rgba(9, 12, 19, 0.74) !important;
+            backdrop-filter: blur(22px) saturate(160%) !important;
+            -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 40px -12px rgba(0, 0, 0, 0.78) !important;
         }
 
         .fast-input {
-            background: rgba(255, 255, 255, 0.07) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
             font-variant-numeric: tabular-nums;
-        }
-
-        .fast-input:focus {
-            border-color: rgba(255, 255, 255, 0.32) !important;
-            background: rgba(255, 255, 255, 0.12) !important;
         }
 
         .fast-save-btn {
             background: #f8fafc !important;
-            color: #090d16 !important;
-            box-shadow: 0 4px 14px -2px rgba(255, 255, 255, 0.25);
+            color: #07090e !important;
         }
 
         /* Glassy bottom sheets & modals */
         .bottom-sheet {
-            background: rgba(12, 16, 24, 0.92) !important;
-            backdrop-filter: blur(24px) saturate(140%);
-            -webkit-backdrop-filter: blur(24px) saturate(140%);
-            color: #f1f5f9 !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.75) !important;
+            background: var(--ui-card) !important;
+            backdrop-filter: blur(28px) saturate(160%);
+            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            color: var(--ui-text) !important;
+            border-top: 1px solid var(--ui-border-strong) !important;
+            border-radius: 26px 26px 0 0 !important;
+            box-shadow: 0 -20px 54px rgba(0, 0, 0, 0.45) !important;
         }
 
         .bottom-sheet .sheet-header,
         .bottom-sheet .sheet-footer {
-            border-color: rgba(255, 255, 255, 0.08) !important;
+            border-color: var(--ui-border) !important;
             background: transparent !important;
         }
 
         .bottom-sheet .input-field {
-            background: rgba(5, 7, 12, 0.65) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #f8fafc !important;
-            border-radius: 10px !important;
+            background: var(--ui-input-bg) !important;
+            border: 1px solid var(--ui-border) !important;
+            color: var(--ui-text) !important;
+            border-radius: 12px !important;
             font-variant-numeric: tabular-nums;
         }
 
         .bottom-sheet .entry-card {
-            background: rgba(255, 255, 255, 0.04) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            border-radius: 14px !important;
-            color: #f1f5f9 !important;
+            background: var(--ui-card-inner) !important;
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 16px !important;
+            color: var(--ui-text) !important;
         }
 
         .modal-box {
-            background: rgba(13, 17, 26, 0.88) !important;
-            backdrop-filter: blur(24px) saturate(150%);
-            -webkit-backdrop-filter: blur(24px) saturate(150%);
-            color: #f1f5f9 !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 20px !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 64px rgba(0, 0, 0, 0.8) !important;
+            background: var(--ui-card) !important;
+            backdrop-filter: blur(28px) saturate(160%);
+            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-border-strong) !important;
+            border-radius: 22px !important;
+            box-shadow: var(--ui-specular), 0 24px 64px rgba(0, 0, 0, 0.55) !important;
         }
 
-        /* Subtle thin scrollbars */
         #view-admin ::-webkit-scrollbar,
         #view-admin::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
 
-        #view-admin ::-webkit-scrollbar-track,
-        #view-admin::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
         #view-admin ::-webkit-scrollbar-thumb,
         #view-admin::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.12);
+            background: var(--ui-border-strong);
             border-radius: 99px;
-        }
-
-        #view-admin ::-webkit-scrollbar-thumb:hover,
-        #view-admin::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.24);
         }
 
         @keyframes blink-red {
@@ -1691,12 +1789,12 @@
     <!-- Admin Panel Workspace -->
     <div id="view-admin" class="app-view">
         <div class="admin-header">
-            <div style="font-weight: 700; font-size: 18px;" id="admin-title">Admin Portal</div>
+            <div id="admin-title">Admin Portal</div>
             <div style="display:flex; gap:8px; align-items:center;">
-                <button class="btn-history" onclick="toggleTheme()" style="padding: 8px 12px;"><span
-                        class="material-icons" style="font-size:16px;">palette</span> THEME</button>
-                <button class="btn-history" onclick="lockApp()" style="padding: 8px 16px;"><span class="material-icons"
-                        style="font-size:16px;">lock</span> LOCK</button>
+                <button class="glass-btn" id="btn-theme-toggle" onclick="toggleTheme()"><span
+                        class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label">Light</span></button>
+                <button class="glass-btn" onclick="lockApp()"><span class="material-icons"
+                        style="font-size:15px;">lock</span> Lock</button>
             </div>
         </div>
         <div class="admin-tabs">
@@ -1705,32 +1803,20 @@
             <div class="admin-tab" onclick="switchAdminTab('eod')">EOD Closing</div>
             <div class="admin-tab" onclick="switchAdminTab('reports')">Reports / Dashboard</div>
         </div>
-        <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 12px; width: 100%;">
+        <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 14px; width: 100%;">
             <!-- Quick Counter Selection Bar for Admins -->
-            <div
-                style="background: #1f2937; padding: 12px; border-radius: 12px; margin: 8px 0 16px 0; border: 1px solid #374151;">
-                <div
-                    style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 8px;">
-                    Quick Counter Selector</div>
+            <div class="glass-card" style="padding: 14px 16px !important;">
+                <div class="section-kicker" style="margin-bottom: 10px;">
+                    <span>Quick Counter Dock</span>
+                    <span class="kpi-badge">6 Counters</span>
+                </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn-void" onclick="adminEnterWorkspace('0')"
-                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                        0</button>
-                    <button class="btn-void" onclick="adminEnterWorkspace('1')"
-                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                        1</button>
-                    <button class="btn-void" onclick="adminEnterWorkspace('2')"
-                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                        2</button>
-                    <button class="btn-void" onclick="adminEnterWorkspace('3')"
-                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                        3</button>
-                    <button class="btn-void" onclick="adminEnterWorkspace('4')"
-                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                        4</button>
-                    <button class="btn-void" onclick="adminEnterWorkspace('5')"
-                        style="background:#374151; color:#fff; border-radius:6px; padding: 6px 10px; font-size:12px; font-weight:700;">Counter
-                        5</button>
+                    <button class="glass-btn" onclick="adminEnterWorkspace('0')">C0 · Collections</button>
+                    <button class="glass-btn" onclick="adminEnterWorkspace('1')">Counter 1</button>
+                    <button class="glass-btn" onclick="adminEnterWorkspace('2')">Counter 2</button>
+                    <button class="glass-btn" onclick="adminEnterWorkspace('3')">Counter 3</button>
+                    <button class="glass-btn" onclick="adminEnterWorkspace('4')">Counter 4</button>
+                    <button class="glass-btn" onclick="adminEnterWorkspace('5')">Counter 5</button>
                 </div>
             </div>
             <!-- Active counter groups will load here -->
@@ -2117,98 +2203,121 @@
         </div>
 
         <div class="admin-content" id="admin-reports-content"
-            style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box; padding-bottom: 30px;">
-            <div
-                style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; display: flex; align-items: center; justify-content: space-between;">
-                <div style="font-weight: 700; color: #fff;">Dashboard Date</div>
-                <input type="date" id="reports-date"
-                    style="background:#111827; color:#fff; border:1px solid #4b5563; padding:8px; border-radius:8px; outline:none;"
+            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 30px;">
+            <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 14px 18px !important;">
+                <div>
+                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ui-muted);">Analytics Overview</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--ui-text); margin-top: 2px;">Daily Performance</div>
+                </div>
+                <input type="date" id="reports-date" style="padding: 8px 12px; font-size: 12.5px; font-weight: 600;"
                     onchange="renderAdminReports()">
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Gross
-                        Sales</div>
-                    <div id="rep-gross-sales" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">
-                        NPR 0</div>
+            <!-- 4-up Bento KPI Row -->
+            <div class="bento-kpi-grid">
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Gross Sales</span><span class="kpi-badge">TODAY</span></div>
+                    <div id="rep-gross-sales" class="kpi-value">NPR 0</div>
+                    <svg id="rep-spark-sales" viewBox="0 0 140 30" style="width:100%; height:28px; overflow:visible;">
+                        <path d="M 0 24 L 140 24" fill="none" stroke="var(--ui-pos)" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+                    </svg>
                 </div>
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Net Cash
-                        Flow</div>
-                    <div id="rep-net-cash" style="font-size: 20px; font-weight: 800; color: #10b981; margin-top: 4px;">
-                        NPR 0</div>
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Net Cash Flow</span><span class="kpi-badge">CASH</span></div>
+                    <div id="rep-net-cash" class="kpi-value" style="color: var(--ui-pos);">NPR 0</div>
+                    <div style="font-size: 11px; color: var(--ui-muted);">Cash Sales + Coll − Opening</div>
                 </div>
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Avg Tx
-                        Value</div>
-                    <div id="rep-atv" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">NPR 0
-                    </div>
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Avg Tx Value</span><span class="kpi-badge">ATV</span></div>
+                    <div id="rep-atv" class="kpi-value">NPR 0</div>
+                    <div style="font-size: 11px; color: var(--ui-muted);">Mean bill across counters</div>
                 </div>
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Void
-                        Count</div>
-                    <div id="rep-voids" style="font-size: 20px; font-weight: 800; color: #ef4444; margin-top: 4px;">0
-                    </div>
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Void Count</span><span class="kpi-badge">RETURNS</span></div>
+                    <div id="rep-voids" class="kpi-value" style="color: var(--ui-neg);">0</div>
+                    <div style="font-size: 11px; color: var(--ui-muted);">Cancelled / returned bills</div>
                 </div>
             </div>
 
-            <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
-                <div
-                    style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
-                    Payment Methods</div>
-                <div style="display: flex; height: 24px; border-radius: 12px; overflow: hidden; width: 100%;"
-                    id="rep-payment-bar">
-                    <div id="rep-bar-cash" style="background: #10b981; width: 0%;"></div>
-                    <div id="rep-bar-digital" style="background: #3b82f6; width: 0%;"></div>
-                    <div id="rep-bar-deferred" style="background: #ef4444; width: 0%;"></div>
+            <!-- 2-up Visual Analytics Row: Radial Donut + Vertical Pill Bar Chart -->
+            <div class="bento-2col">
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>Payment Mix</span>
+                        <span class="kpi-badge">SPLIT</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="position: relative; width: 116px; height: 116px; flex-shrink: 0;">
+                            <svg viewBox="0 0 120 120" style="width:116px; height:116px; transform: rotate(-90deg);">
+                                <circle cx="60" cy="60" r="46" fill="none" stroke="var(--ui-pill-bg)" stroke-width="12" />
+                                <circle id="rep-donut-cash" cx="60" cy="60" r="46" fill="none" stroke="var(--ui-pos)" stroke-width="12" stroke-dasharray="0 289" stroke-linecap="round" />
+                                <circle id="rep-donut-digital" cx="60" cy="60" r="46" fill="none" stroke="var(--ui-info)" stroke-width="12" stroke-dasharray="0 289" stroke-dashoffset="0" stroke-linecap="round" />
+                                <circle id="rep-donut-deferred" cx="60" cy="60" r="46" fill="none" stroke="var(--ui-neg)" stroke-width="12" stroke-dasharray="0 289" stroke-dashoffset="0" stroke-linecap="round" />
+                            </svg>
+                            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <span id="rep-donut-center" style="font-size: 17px; font-weight: 800; color: var(--ui-text); font-variant-numeric: tabular-nums;">0%</span>
+                                <span style="font-size: 9px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Cash</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 10px;">
+                            <div style="display: flex; height: 6px; border-radius: 99px; overflow: hidden; width: 100%; background: var(--ui-pill-bg);" id="rep-payment-bar">
+                                <div id="rep-bar-cash" style="background: var(--ui-pos); width: 0%;"></div>
+                                <div id="rep-bar-digital" style="background: var(--ui-info); width: 0%;"></div>
+                                <div id="rep-bar-deferred" style="background: var(--ui-neg); width: 0%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
+                                <span style="color: var(--ui-muted);">● Cash</span>
+                                <span id="rep-pct-cash" style="color: var(--ui-pos); font-variant-numeric: tabular-nums;">0%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
+                                <span style="color: var(--ui-muted);">● Digital (QR/POS/IPS)</span>
+                                <span id="rep-pct-digital" style="color: var(--ui-info); font-variant-numeric: tabular-nums;">0%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
+                                <span style="color: var(--ui-muted);">● Deferred (Chq/Credit)</span>
+                                <span id="rep-pct-deferred" style="color: var(--ui-neg); font-variant-numeric: tabular-nums;">0%</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div
-                    style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 700;">
-                    <div style="color: #10b981;">Cash: <span id="rep-pct-cash">0%</span></div>
-                    <div style="color: #3b82f6;">Digital: <span id="rep-pct-digital">0%</span></div>
-                    <div style="color: #ef4444;">Deferred: <span id="rep-pct-deferred">0%</span></div>
+
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>Hourly Peak Activity</span>
+                        <span class="kpi-badge">VOLUME</span>
+                    </div>
+                    <div id="rep-heatmap" class="pill-chart-wrap"></div>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
-                    <div
-                        style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
-                        Counter Leaderboard</div>
+            <!-- 2-up Bottom Row: Ranked Leaderboard + C&C Ledger -->
+            <div class="bento-2col">
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>Counter Leaderboard</span>
+                        <span class="kpi-badge">RANKED</span>
+                    </div>
                     <div id="rep-leaderboard" style="display: flex; flex-direction: column; gap: 8px;"></div>
                 </div>
 
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
-                    <div
-                        style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
-                        Hourly Peak Activity</div>
-                    <div id="rep-heatmap" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                </div>
-            </div>
-
-            <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
-                <div
-                    style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
-                    C&C Ledger (Cheque & Credit)</div>
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                        <thead>
-                            <tr style="border-bottom: 1px solid #4b5563; color: #9ca3af;">
-                                <th style="padding: 8px; text-align: left;">C#</th>
-                                <th style="padding: 8px; text-align: left;">Time</th>
-                                <th style="padding: 8px; text-align: right;">Cheque</th>
-                                <th style="padding: 8px; text-align: right;">Credit</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rep-cnc-ledger"></tbody>
-                    </table>
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>C&C Ledger (Cheque & Credit)</span>
+                        <span class="kpi-badge">DEFERRED</span>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: left;">C#</th>
+                                    <th style="text-align: left;">Time</th>
+                                    <th style="text-align: right;">Cheque</th>
+                                    <th style="text-align: right;">Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rep-cnc-ledger"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3295,25 +3404,26 @@
             showToast("Annotated image saved!");
         }
 
-        function toggleTheme() {
-            if (document.body.classList.contains('theme-modern')) {
-                document.body.classList.remove('theme-modern');
-                localStorage.setItem('theme', 'classic');
-                showToast("Theme reverted to Classic");
-            } else {
-                document.body.classList.add('theme-modern');
-                localStorage.setItem('theme', 'modern');
-                showToast("Modern theme enabled!");
+        function applyThemeUI(isLight) {
+            document.body.classList.toggle('theme-light', isLight);
+            const btn = document.getElementById('btn-theme-toggle');
+            if (btn) {
+                btn.innerHTML = isLight
+                    ? `<span class="material-icons" style="font-size:15px;">dark_mode</span> <span id="theme-toggle-label">Dark</span>`
+                    : `<span class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label">Light</span>`;
             }
+        }
+
+        function toggleTheme() {
+            const nextLight = !document.body.classList.contains('theme-light');
+            applyThemeUI(nextLight);
+            localStorage.setItem('theme', nextLight ? 'light' : 'dark');
+            showToast(nextLight ? "Liquid Glass Light theme" : "Obsidian Dark theme");
         }
 
         window.onload = async () => {
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'modern') {
-                document.body.classList.add('theme-modern');
-            } else {
-                document.body.classList.remove('theme-modern');
-            }
+            applyThemeUI(savedTheme === 'light');
 
             // Initialize PWA router state with exit guard
             window.history.pushState({ view: 'exit_guard' }, '');
@@ -6786,31 +6896,74 @@
             document.getElementById('rep-pct-digital').innerText = pctDig + '%';
             document.getElementById('rep-pct-deferred').innerText = pctDef + '%';
 
-            let ldbHTML = '';
-            for (let i = 0; i <= 5; i++) {
-                if (counterTotals[String(i)] > 0) {
-                    ldbHTML += `
-                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #374151; padding-bottom: 4px;">
-                            <div style="color: #fff;">Counter ${i} ${i === 0 ? '(Coll)' : ''}</div>
-                            <div style="font-weight: 700; color: #10b981;">${counterTotals[String(i)].toLocaleString()}</div>
-                        </div>`;
+            // Update SVG Radial Donut Ring (circumference = 2 * pi * 46 ~= 289.03)
+            const C = 289.03;
+            const lenCash = (pctCash / 100) * C;
+            const lenDig = (pctDig / 100) * C;
+            const lenDef = (pctDef / 100) * C;
+            const dCash = document.getElementById('rep-donut-cash');
+            const dDig = document.getElementById('rep-donut-digital');
+            const dDef = document.getElementById('rep-donut-deferred');
+            const dCenter = document.getElementById('rep-donut-center');
+            if (dCash) { dCash.setAttribute('stroke-dasharray', `${lenCash} ${C}`); dCash.setAttribute('stroke-dashoffset', '0'); }
+            if (dDig) { dDig.setAttribute('stroke-dasharray', `${lenDig} ${C}`); dDig.setAttribute('stroke-dashoffset', `${-lenCash}`); }
+            if (dDef) { dDef.setAttribute('stroke-dasharray', `${lenDef} ${C}`); dDef.setAttribute('stroke-dashoffset', `${-(lenCash + lenDig)}`); }
+            if (dCenter) dCenter.innerText = pctCash + '%';
+
+            // Update Gross Sales SVG Sparkline
+            const sparkSvg = document.getElementById('rep-spark-sales');
+            if (sparkSvg) {
+                const salesPts = repEntries
+                    .filter(e => String(e.counterId) !== '0')
+                    .sort((a, b) => Number(a.id) - Number(b.id))
+                    .map(e => (e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0) + (e.cheque || 0) + (e.credit || 0));
+                if (salesPts.length >= 2) {
+                    const maxV = Math.max(...salesPts, 1);
+                    const stepX = 140 / (salesPts.length - 1);
+                    const d = salesPts.map((v, i) => `${i === 0 ? 'M' : 'L'} ${(i * stepX).toFixed(1)} ${(26 - (v / maxV) * 22).toFixed(1)}`).join(' ');
+                    sparkSvg.innerHTML = `<path d="${d}" fill="none" stroke="var(--ui-pos)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />`;
+                } else {
+                    sparkSvg.innerHTML = `<path d="M 0 22 Q 35 18 70 16 T 140 12" fill="none" stroke="var(--ui-pos)" stroke-width="2" stroke-linecap="round" opacity="0.45" />`;
                 }
             }
-            document.getElementById('rep-leaderboard').innerHTML = ldbHTML || '<div style="color:#9ca3af; font-size:12px;">No activity</div>';
 
+            // Ranked Counter Leaderboard with progress bars
+            const maxCounter = Math.max(...Object.values(counterTotals), 1);
+            let ldbHTML = '';
+            Object.entries(counterTotals)
+                .filter(([, val]) => val > 0)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([cid, val]) => {
+                    const pct = Math.round((val / maxCounter) * 100);
+                    ldbHTML += `
+                        <div class="rank-row">
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px;">
+                                <span style="font-weight:600; color:var(--ui-text);">Counter ${cid} ${cid === '0' ? '<span class="kpi-badge" style="margin-left:4px;">Coll</span>' : ''}</span>
+                                <span style="font-weight:700; color:var(--ui-pos); font-variant-numeric:tabular-nums;">NPR ${val.toLocaleString()}</span>
+                            </div>
+                            <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${pct}%;"></div></div>
+                        </div>`;
+                });
+            document.getElementById('rep-leaderboard').innerHTML = ldbHTML || '<div style="color:var(--ui-muted); font-size:12px;">No activity yet</div>';
+
+            // Vertical Pill Bar Chart for Hourly Activity
+            const hours = Object.keys(hourlyPeaks).sort((a, b) => parseInt(a) - parseInt(b));
+            const maxPeak = Math.max(...Object.values(hourlyPeaks), 1);
             let hmpHTML = '';
-            Object.keys(hourlyPeaks).sort((a, b) => parseInt(a) - parseInt(b)).forEach(hr => {
-                const ampm = hr >= 12 ? 'PM' : 'AM';
+            hours.forEach(hr => {
+                const ampm = hr >= 12 ? 'P' : 'A';
                 const hr12 = hr % 12 || 12;
+                const pctH = Math.max(10, Math.round((hourlyPeaks[hr] / maxPeak) * 100));
                 hmpHTML += `
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #374151; padding-bottom: 4px;">
-                        <div style="color: #fff;">${hr12}:00 ${ampm}</div>
-                        <div style="font-weight: 700; color: #3b82f6;">${hourlyPeaks[hr]} tx</div>
+                    <div class="pill-col">
+                        <span class="pill-val">${hourlyPeaks[hr]}</span>
+                        <div class="pill-track"><div class="pill-fill" style="height:${pctH}%;"></div></div>
+                        <span class="pill-lbl">${hr12}${ampm}</span>
                     </div>`;
             });
-            document.getElementById('rep-heatmap').innerHTML = hmpHTML || '<div style="color:#9ca3af; font-size:12px;">No activity</div>';
+            document.getElementById('rep-heatmap').innerHTML = hmpHTML || '<div style="color:var(--ui-muted); font-size:12px; align-self:center; margin:auto;">No activity yet</div>';
 
-            document.getElementById('rep-cnc-ledger').innerHTML = cncLedgerHTML.join('') || '<tr><td colspan="4" style="text-align:center; padding:12px; color:#9ca3af;">No Cheque or Credit transactions</td></tr>';
+            document.getElementById('rep-cnc-ledger').innerHTML = cncLedgerHTML.join('') || '<tr><td colspan="4" style="text-align:center; padding:14px; color:var(--ui-muted);">No Cheque or Credit transactions</td></tr>';
         }
     </script>
 </body>
