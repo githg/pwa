@@ -1051,13 +1051,15 @@
             padding: 0 16px 56px !important;
             max-width: 100%;
             box-sizing: border-box;
+            overflow-x: hidden;
         }
 
-        /* Sticky frosted glass header — flush at top:0 with zero scroll peek-through */
+        /* Sticky frosted glass header — flush at top:0, flex-shrink:0 so flexbox NEVER squishes it */
         #view-admin .admin-header {
             position: sticky;
             top: 0;
             z-index: 40;
+            flex-shrink: 0 !important;
             margin: 0 -16px 14px !important;
             padding: 13px 18px !important;
             background: var(--ui-header) !important;
@@ -1077,14 +1079,18 @@
             gap: 8px;
         }
 
-        /* Clean single-row segmented tab bar (scrolls cleanly on narrow phones, never wraps into tall box) */
+        /* Clean single-row segmented tab bar — flex-shrink:0 prevents overlap with content below */
         #view-admin .admin-tabs {
             display: flex !important;
+            flex-direction: row !important;
             flex-wrap: nowrap !important;
+            flex-shrink: 0 !important;
+            align-items: center !important;
             overflow-x: auto;
+            overflow-y: hidden;
             gap: 4px !important;
             padding: 4px !important;
-            margin: 0 0 16px 0 !important;
+            margin: 0 auto 16px auto !important;
             background: var(--ui-pill-bg) !important;
             backdrop-filter: blur(20px) saturate(160%);
             -webkit-backdrop-filter: blur(20px) saturate(160%);
@@ -1092,8 +1098,18 @@
             border-radius: 12px !important;
             box-shadow: var(--ui-specular);
             width: 100%;
+            max-width: 1280px;
+            min-height: 44px;
             box-sizing: border-box;
             scrollbar-width: none;
+        }
+
+        #view-admin .admin-content {
+            flex-shrink: 0 !important;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto 24px auto;
+            box-sizing: border-box;
         }
 
         #view-admin .admin-tabs::-webkit-scrollbar {
@@ -1103,13 +1119,14 @@
         #view-admin .admin-tab {
             padding: 8px 14px !important;
             border-radius: 9px !important;
-            font-size: 12px !important;
+            font-size: 12.5px !important;
             font-weight: 600 !important;
             letter-spacing: -0.01em;
             color: var(--ui-muted) !important;
             border: 1px solid transparent;
             white-space: nowrap;
             flex-shrink: 0;
+            line-height: 1.2;
             transition: all 0.18s ease;
         }
 
@@ -1726,6 +1743,82 @@
         #view-admin::-webkit-scrollbar-thumb {
             background: var(--ui-border-strong);
             border-radius: 6px;
+        }
+
+        /* Responsive Layout Breakpoints (Mobile / Tablet / Desktop) */
+        @media (max-width: 640px) {
+            #view-admin {
+                padding: 0 12px 48px !important;
+            }
+            #view-admin .admin-header {
+                margin: 0 -12px 12px !important;
+                padding: 11px 12px !important;
+            }
+            #view-admin #admin-title {
+                font-size: 14.5px !important;
+            }
+            .glass-card {
+                padding: 14px !important;
+            }
+            .bento-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .bento-3col {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+            .bento-2col {
+                grid-template-columns: 1fr !important;
+            }
+            .counter-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .kpi-tile {
+                padding: 13px 14px !important;
+            }
+            .kpi-value {
+                font-size: 19px !important;
+                word-break: break-word;
+            }
+            #view-admin .admin-tab {
+                padding: 7px 12px !important;
+                font-size: 12px !important;
+            }
+        }
+
+        @media (min-width: 641px) and (max-width: 1023px) {
+            .counter-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+            .bento-kpi-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+            .bento-3col {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #view-admin {
+                padding: 0 28px 56px !important;
+            }
+            #view-admin .admin-header {
+                margin: 0 -28px 18px !important;
+                padding: 14px 28px !important;
+            }
+            .counter-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+            .bento-kpi-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            }
+            .bento-3col {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+            .bento-2col {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
         }
 
         @keyframes blink-red {
