@@ -10,8 +10,11 @@
 
     <style>
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
+
         :root {
             --bg-color: #f4f7f6;
             --surface: #ffffff;
@@ -1148,7 +1151,6 @@
             color: #ef4444 !important;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -1294,7 +1296,8 @@
             <div class="sheet-header" onclick="toggleListSheet()">
                 <div class="sheet-handle"></div>
                 <div>
-                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;" id="session-header-title">Session Active</div>
+                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;"
+                        id="session-header-title">Session Active</div>
                     <div style="font-size: 14px; font-weight: 700;"><span id="list-entry-count">0</span> Captures</div>
                 </div>
                 <div style="text-align: right;">
@@ -1447,7 +1450,7 @@
         </div>
         <div class="admin-content" id="admin-archived-content"
             style="display: none; flex-direction: column; gap: 12px; width: 100%;">
-            
+
             <div id="admin-archived-main-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                 <!-- EOD Archive Date Picker & Reconciler -->
                 <div
@@ -1469,7 +1472,8 @@
                                 <select id="bs-day" onchange="handleBsSelectChange()"
                                     style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
                             </div>
-                            <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD Date:</span>
+                            <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD
+                                Date:</span>
                             <input type="date" id="eod-select-date" onchange="handleEodDateChange()"
                                 style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none; font-family:inherit;">
                         </div>
@@ -1563,8 +1567,8 @@
                             </div>
                             <div
                                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">IC 500 (NPR
-                                        800)</label><input type="number" id="archived-denom-ic500"
+                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">INR
+                                        (x1.6)</label><input type="number" id="archived-denom-ic500"
                                         class="input-field eod-input" value="0" oninput="calculateDenominations()"
                                         style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
                                 </div>
@@ -1824,40 +1828,60 @@
                     style="display: flex; flex-direction: column; gap: 16px; width: 100%;"></div>
             </div>
         </div>
-        
-        <div class="admin-content" id="admin-reports-content" style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box; padding-bottom: 30px;">
-            <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; display: flex; align-items: center; justify-content: space-between;">
+
+        <div class="admin-content" id="admin-reports-content"
+            style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box; padding-bottom: 30px;">
+            <div
+                style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; display: flex; align-items: center; justify-content: space-between;">
                 <div style="font-weight: 700; color: #fff;">Dashboard Date</div>
-                <input type="date" id="reports-date" style="background:#111827; color:#fff; border:1px solid #4b5563; padding:8px; border-radius:8px; outline:none;" onchange="renderAdminReports()">
+                <input type="date" id="reports-date"
+                    style="background:#111827; color:#fff; border:1px solid #4b5563; padding:8px; border-radius:8px; outline:none;"
+                    onchange="renderAdminReports()">
             </div>
-            
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Gross Sales</div>
-                    <div id="rep-gross-sales" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">NPR 0</div>
+                <div
+                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Gross
+                        Sales</div>
+                    <div id="rep-gross-sales" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">
+                        NPR 0</div>
                 </div>
-                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Net Cash Flow</div>
-                    <div id="rep-net-cash" style="font-size: 20px; font-weight: 800; color: #10b981; margin-top: 4px;">NPR 0</div>
+                <div
+                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Net Cash
+                        Flow</div>
+                    <div id="rep-net-cash" style="font-size: 20px; font-weight: 800; color: #10b981; margin-top: 4px;">
+                        NPR 0</div>
                 </div>
-                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Avg Tx Value</div>
-                    <div id="rep-atv" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">NPR 0</div>
+                <div
+                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Avg Tx
+                        Value</div>
+                    <div id="rep-atv" style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">NPR 0
+                    </div>
                 </div>
-                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Void Count</div>
-                    <div id="rep-voids" style="font-size: 20px; font-weight: 800; color: #ef4444; margin-top: 4px;">0</div>
+                <div
+                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; text-align: center;">
+                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Void
+                        Count</div>
+                    <div id="rep-voids" style="font-size: 20px; font-weight: 800; color: #ef4444; margin-top: 4px;">0
+                    </div>
                 </div>
             </div>
 
             <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
-                <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">Payment Methods</div>
-                <div style="display: flex; height: 24px; border-radius: 12px; overflow: hidden; width: 100%;" id="rep-payment-bar">
+                <div
+                    style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
+                    Payment Methods</div>
+                <div style="display: flex; height: 24px; border-radius: 12px; overflow: hidden; width: 100%;"
+                    id="rep-payment-bar">
                     <div id="rep-bar-cash" style="background: #10b981; width: 0%;"></div>
                     <div id="rep-bar-digital" style="background: #3b82f6; width: 0%;"></div>
                     <div id="rep-bar-deferred" style="background: #ef4444; width: 0%;"></div>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 700;">
+                <div
+                    style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; font-weight: 700;">
                     <div style="color: #10b981;">Cash: <span id="rep-pct-cash">0%</span></div>
                     <div style="color: #3b82f6;">Digital: <span id="rep-pct-digital">0%</span></div>
                     <div style="color: #ef4444;">Deferred: <span id="rep-pct-deferred">0%</span></div>
@@ -1865,19 +1889,27 @@
             </div>
 
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">Counter Leaderboard</div>
+                <div
+                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
+                    <div
+                        style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
+                        Counter Leaderboard</div>
                     <div id="rep-leaderboard" style="display: flex; flex-direction: column; gap: 8px;"></div>
                 </div>
-                
-                <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">Hourly Peak Activity</div>
+
+                <div
+                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex: 1; min-width: 250px;">
+                    <div
+                        style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
+                        Hourly Peak Activity</div>
                     <div id="rep-heatmap" style="display: flex; flex-direction: column; gap: 8px;"></div>
                 </div>
             </div>
 
             <div style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
-                <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">C&C Ledger (Cheque & Credit)</div>
+                <div
+                    style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;">
+                    C&C Ledger (Cheque & Credit)</div>
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                         <thead>
@@ -2071,6 +2103,7 @@
         async function callGas(action, payload = {}) {
             const bodyObj = {
                 action: action,
+                deviceId: getDeviceId(),
                 payload: payload
             };
             const response = await fetch(GAS_URL, {
@@ -2086,6 +2119,27 @@
                 throw new Error(resJson.message);
             }
             return resJson.result;
+        }
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getPendingDeletes() {
+            try {
+                return JSON.parse(localStorage.getItem('pendingDeleteIds') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function savePendingDeletes(ids) {
+            localStorage.setItem('pendingDeleteIds', JSON.stringify([...new Set(ids.map(String))]));
         }
 
         // Global client-side error reporting
@@ -2200,9 +2254,7 @@
         });
 
         async function saveEntryToIDB(entry) {
-            if (entry.synced === undefined) {
-                entry.synced = false;
-            }
+            entry.synced = false;
             const db = await dbPromise;
             await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -2257,8 +2309,26 @@
             return false;
         }
 
+        let isSyncing = false;
+
         async function syncWithServer() {
+            if (isSyncing) return;
+            isSyncing = true;
             try {
+                // Flush any offline pending deletes before pulling server state
+                const pendingDeletes = getPendingDeletes();
+                if (pendingDeletes.length > 0) {
+                    const remainingDeletes = [];
+                    for (const delId of pendingDeletes) {
+                        try {
+                            await callGas('DELETE_ENTRY', { id: delId });
+                        } catch (delErr) {
+                            remainingDeletes.push(delId);
+                        }
+                    }
+                    savePendingDeletes(remainingDeletes);
+                }
+
                 // Fetch permissions separately – don't let it block the full sync
                 try {
                     await fetchCounterPermissions();
@@ -2274,43 +2344,57 @@
                 const serverEntries = await callGas('GET_ENTRIES');
                 if (!serverEntries || !Array.isArray(serverEntries)) return;
 
-                // Build a set of IDs that GAS knows about
                 const serverIds = new Set(serverEntries.map(e => String(e.id)));
+                const stillDeleted = new Set(getPendingDeletes());
 
                 const db = await dbPromise;
 
-                // Load local entries before clearing — to identify unsynced and to preserve base64 images
+                // Load local entries before merging — identify unsynced/edited entries and preserve base64 images
                 const localEntries = await loadEntriesFromIDB();
                 const localMap = {};
                 localEntries.forEach(e => { localMap[String(e.id)] = e; });
 
-                // Push any locally-created entries that GAS doesn't know about yet
-                const unsynced = localEntries.filter(e => !serverIds.has(String(e.id)));
+                // Push any locally-created OR locally-edited entries (synced === false)
+                const unsynced = localEntries.filter(e => !stillDeleted.has(String(e.id)) && (!serverIds.has(String(e.id)) || e.synced === false));
+                const failedUploadIds = new Set();
                 for (const e of unsynced) {
                     try {
                         await callGas('SYNC_ENTRIES', { data: e });
                         e.synced = true;
                     } catch (uploadErr) {
+                        failedUploadIds.add(String(e.id));
                         console.warn('Could not push local entry to GAS:', uploadErr);
                     }
                 }
 
-                // Merge: use GAS as source of truth, but preserve local base64 images
+                // Merge: preserve local dirty/just-pushed copies so server stale state never overwrites local edits
                 const mergedEntries = [];
+                const seenIds = new Set();
                 serverEntries.forEach(gasEntry => {
+                    const idStr = String(gasEntry.id);
+                    if (stillDeleted.has(idStr)) return;
+                    seenIds.add(idStr);
+
+                    const local = localMap[idStr];
+                    if (local && (failedUploadIds.has(idStr) || unsynced.some(u => String(u.id) === idStr))) {
+                        mergedEntries.push(local);
+                        return;
+                    }
+
                     gasEntry.synced = true;
-                    const local = localMap[String(gasEntry.id)];
-                    // If local copy has base64 images, keep them (Drive thumbnails may not load immediately)
                     if (local && local.images && local.images.some(img => img.startsWith('data:'))) {
                         gasEntry = { ...gasEntry, images: local.images };
                     }
                     mergedEntries.push(gasEntry);
                 });
 
-                // Re-add still-unsynced local entries (which are still pending)
+                // Re-add locally-created entries that aren't in serverEntries yet
                 unsynced.forEach(entry => {
-                    if (entry.synced === undefined) entry.synced = false;
-                    mergedEntries.push(entry);
+                    const idStr = String(entry.id);
+                    if (!seenIds.has(idStr)) {
+                        if (entry.synced === undefined) entry.synced = false;
+                        mergedEntries.push(entry);
+                    }
                 });
 
                 // Check if anything has actually changed before writing to database or re-rendering
@@ -2327,9 +2411,9 @@
 
                     // Skip rebuilding the admin workspace DOM if the user is actively editing/typing in any input
                     const isEditingInActiveTable = !!(
-                        document.activeElement && 
-                        document.activeElement.tagName === 'INPUT' && 
-                        document.activeElement.closest && 
+                        document.activeElement &&
+                        document.activeElement.tagName === 'INPUT' &&
+                        document.activeElement.closest &&
                         document.activeElement.closest('[class*="active-sess-tbody"]')
                     );
 
@@ -2341,6 +2425,8 @@
                 }
             } catch (err) {
                 console.warn("Background poll sync failed (working offline):", err);
+            } finally {
+                isSyncing = false;
             }
         }
 
@@ -2440,6 +2526,7 @@
                 sessionStatus: 'active'
             };
 
+            entry.synced = false;
             const db = await dbPromise;
             await new Promise((resolve, reject) => {
                 const tx = db.transaction(STORE_NAME, 'readwrite');
@@ -2450,6 +2537,10 @@
 
             try {
                 await callGas('SYNC_ENTRIES', { data: entry });
+                entry.synced = true;
+                const tx2 = db.transaction(STORE_NAME, 'readwrite');
+                tx2.objectStore(STORE_NAME).put(entry);
+                await new Promise(r => tx2.oncomplete = r);
             } catch (e) {
                 console.warn("Failed to sync new collection entry to server:", e);
             }
@@ -2524,6 +2615,7 @@
                 totalCredit: 0
             };
 
+            updated.synced = false;
             entries[entryIdx] = updated;
 
             const db = await dbPromise;
@@ -2535,6 +2627,10 @@
 
             try {
                 await callGas('SYNC_ENTRIES', { data: updated });
+                updated.synced = true;
+                const tx2 = db.transaction(STORE_NAME, 'readwrite');
+                tx2.objectStore(STORE_NAME).put(updated);
+                await new Promise(r => tx2.oncomplete = r);
             } catch (e) { console.warn("Sync failed:", e); }
 
             closeCollectionEdit();
@@ -2546,7 +2642,7 @@
         async function voidCollectionEntry() {
             const entryIdx = entries.findIndex(e => String(e.id) === String(editingCollectionId));
             if (entryIdx === -1) return;
-            const updated = { ...entries[entryIdx], isVoid: true, totalIn: 0, totalCredit: 0 };
+            const updated = { ...entries[entryIdx], isVoid: true, totalIn: 0, totalCredit: 0, synced: false };
             entries[entryIdx] = updated;
 
             const db = await dbPromise;
@@ -2558,6 +2654,10 @@
 
             try {
                 await callGas('SYNC_ENTRIES', { data: updated });
+                updated.synced = true;
+                const tx2 = db.transaction(STORE_NAME, 'readwrite');
+                tx2.objectStore(STORE_NAME).put(updated);
+                await new Promise(r => tx2.oncomplete = r);
             } catch (e) { }
 
             closeCollectionEdit();
@@ -2577,14 +2677,17 @@
                 tx.objectStore(STORE_NAME).clear();
                 await new Promise(resolve => tx.oncomplete = resolve);
 
-                // Clear all reconciliation and opening cash keys from localStorage
-                localStorage.removeItem('adminOpeningCash');
-                localStorage.removeItem('adminDenoms');
-                localStorage.removeItem('activeSessionCounter');
-
-                const eodKeys = ['esewa', 'pos', 'total_qr', 'total_ips', 'cheque', 'credit', 'total_c'];
-                eodKeys.forEach(k => {
-                    localStorage.removeItem('eod_out_' + k);
+                // Clear all reconciliation, denomination, and opening cash keys (including date-prefixed keys)
+                Object.keys(localStorage).forEach(k => {
+                    if (
+                        k.startsWith('adminOpeningCash') ||
+                        k.startsWith('adminDenoms') ||
+                        k.startsWith('eod_out_') ||
+                        k === 'activeSessionCounter' ||
+                        k === 'pendingDeleteIds'
+                    ) {
+                        localStorage.removeItem(k);
+                    }
                 });
 
                 // Reset physical denomination inputs in the UI
@@ -2710,21 +2813,6 @@
                     resolve(result);
                 };
                 req.onerror = reject;
-            });
-        }
-
-        async function clearCounterEntriesFromIDB(counterId) {
-            const db = await dbPromise;
-            const allEntries = await loadEntriesFromIDB();
-            const keysToDelete = allEntries.filter(e => e.counterId === counterId).map(e => e.id);
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction(STORE_NAME, 'readwrite');
-                const store = tx.objectStore(STORE_NAME);
-                keysToDelete.forEach(key => {
-                    store.delete(key);
-                });
-                tx.oncomplete = resolve;
-                tx.onerror = reject;
             });
         }
 
@@ -2984,32 +3072,16 @@
                 }
             };
 
-            await fetchCounterPermissions();
+            try {
+                await fetchCounterPermissions();
+            } catch (e) {
+                console.warn("Initial permissions fetch skipped:", e);
+            }
             entries = await loadEntriesFromIDB();
             renderList();
 
-            const savedSession = localStorage.getItem('activeSessionCounter');
-            if (savedSession && counterPermissions[savedSession] !== false) {
-                activeCounterId = savedSession;
-                document.getElementById('view-calc').classList.remove('active');
-                document.getElementById('view-main').classList.add('active');
-
-                let primaryColor, primaryTextColor;
-                switch (activeCounterId) {
-                    case '1': primaryColor = '#ffffff'; primaryTextColor = '#000000'; break;
-                    case '2': primaryColor = '#eab308'; primaryTextColor = '#000000'; break;
-                    case '3': primaryColor = '#4ade80'; primaryTextColor = '#000000'; break;
-                    case '4': primaryColor = '#06b6d4'; primaryTextColor = '#ffffff'; break;
-                    default: primaryColor = '#14b8a6'; primaryTextColor = '#ffffff';
-                }
-                document.documentElement.style.setProperty('--primary', primaryColor);
-                document.documentElement.style.setProperty('--primary-text', primaryTextColor);
-
-                document.getElementById('session-header-title').innerText = `Session Active (Counter ${activeCounterId})`;
-                setupWorkspaceUI();
-
-                window.history.pushState({ view: 'main' }, '');
-            }
+            // Always start locked on the stealth calculator (never auto-unlock without biometrics/device approval)
+            localStorage.removeItem('activeSessionCounter');
 
             // Initialize image editor elements
             editorCanvas = document.getElementById('editor-canvas');
@@ -3133,7 +3205,7 @@
                 localStorage.setItem('deviceId', bioDevId);
 
                 showToast(`Biometrics successfully registered for ${userType.toUpperCase()} ${userId}!`);
-                
+
                 // Ping backend to register device as Pending
                 callGas('CLAIM_SESSION', { targetId: userId, type: userType, deviceId: bioDevId, userAgent: navigator.userAgent }).then((claimRes) => {
                     if (claimRes && !claimRes.success) {
@@ -3639,7 +3711,7 @@
             }
         }
 
-        function openCaptureSheet(existingId = null) {
+        function openCaptureSheet(existingId = null, forceReadOnly = false) {
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 stream = null;
@@ -3654,7 +3726,7 @@
             }
 
             const targetEntry = existingId ? entries.find(x => String(x.id) === String(existingId)) : null;
-            isReadOnly = !!(targetEntry && targetEntry.sessionStatus === 'closed');
+            isReadOnly = forceReadOnly || !!(targetEntry && targetEntry.sessionStatus === 'closed');
 
             if (existingId) {
                 currentEditingId = existingId;
@@ -4003,7 +4075,7 @@
                         </div>
                         <div class="entry-details">
                             <div style="display:flex; justify-content: space-between; align-items: center;">
-                                <div style="font-size: 14px; font-weight: 700; color:#fff;">${entry.remarks || 'Unknown'}</div>
+                                <div style="font-size: 14px; font-weight: 700; color:#fff;">${escapeHtml(entry.remarks || 'Unknown')}</div>
                                 <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced to Cloud' : 'Pending Sync'}"></span>
                             </div>
                             <div style="font-size: 12px; color: #10b981; font-weight: 600; margin-top:2px;">Total: NPR ${(entry.totalIn || 0).toLocaleString()}</div>
@@ -4032,7 +4104,7 @@
                         detailsHtml = `<div class="entry-totals"><span class="c-cash">IN: ${entry.totalIn.toLocaleString()}</span></div>`;
                     }
 
-                    const remarksHtml = entry.remarks ? `<div style="font-size: 11px; font-style: italic; color: var(--text-muted); margin-top: 2px;">Note: ${entry.remarks}</div>` : '';
+                    const remarksHtml = entry.remarks ? `<div style="font-size: 11px; font-style: italic; color: var(--text-muted); margin-top: 2px;">Note: ${escapeHtml(entry.remarks)}</div>` : '';
 
                     card.innerHTML = `
                         ${thumbHtml}
@@ -4253,6 +4325,16 @@
                     loadDenominations();
                     renderAdminEOD();
                 });
+            } else if (tab === 'reports') {
+                document.querySelectorAll('.admin-tab')[3].classList.add('active');
+                document.getElementById('admin-reports-content').style.display = 'flex';
+                const dateInput = document.getElementById('reports-date');
+                if (dateInput && !dateInput.value) {
+                    dateInput.value = getLocalTodayStr();
+                }
+                fetchHistoricalClosings().then(() => {
+                    renderAdminReports();
+                });
             }
         }
 
@@ -4264,6 +4346,8 @@
                     renderAdminEOD();
                 } else if (activeAdminTab === 'archived') {
                     handleEodDateChange();
+                } else if (activeAdminTab === 'reports') {
+                    renderAdminReports();
                 }
             } catch (err) {
                 console.error("Error rendering admin portal:", err);
@@ -4393,7 +4477,7 @@
                     if (totSales > 0) cntTotSales++;
                 }
 
-                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
+                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${escapeHtml(e.remarks)})</span>` : '';
 
                 tr.innerHTML = `
                     <td style="padding:6px; font-weight:600; color:#9ca3af; text-align:center;">${snMap[e.id] || ''}</td>
@@ -4677,8 +4761,9 @@
             const val = parseFloat(value) || 0;
             entry[field] = val;
 
-            entry.totalIn = (entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0);
-            entry.totalCredit = (entry.credit || 0);
+            entry.totalIn = entry.isVoid ? 0 : ((entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0));
+            entry.totalCredit = entry.isVoid ? 0 : ((entry.cheque || 0) + (entry.credit || 0));
+            entry.synced = false;
 
             if (!entry.history) entry.history = [];
             const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr();
@@ -4693,7 +4778,14 @@
             tx.objectStore(STORE_NAME).put(entry);
             await new Promise(r => tx.oncomplete = r);
 
-            callGas('SYNC_ENTRIES', { data: entry }).catch(e => console.warn('Admin background sync failed:', e));
+            callGas('SYNC_ENTRIES', { data: entry })
+                .then(async () => {
+                    entry.synced = true;
+                    const tx2 = db.transaction(STORE_NAME, 'readwrite');
+                    tx2.objectStore(STORE_NAME).put(entry);
+                    await new Promise(r => tx2.oncomplete = r);
+                })
+                .catch(e => console.warn('Admin background sync failed:', e));
 
             const tr = document.querySelector(`.active-sess-tbody-${entry.counterId} tr[data-entry-id="${entry.id}"]`);
             if (tr) {
@@ -4842,7 +4934,7 @@
                 detailsHtml = `<div class="entry-totals"><span class="c-cash">IN: ${(entry.totalIn || 0).toLocaleString()}</span></div>`;
             }
 
-            let remarksHtml = entry.remarks ? `<div style="font-size: 11px; font-style: italic; color: var(--text-muted); margin-top: 2px;">Note: ${entry.remarks}</div>` : '';
+            let remarksHtml = entry.remarks ? `<div style="font-size: 11px; font-style: italic; color: var(--text-muted); margin-top: 2px;">Note: ${escapeHtml(entry.remarks)}</div>` : '';
 
             card.innerHTML = `
                 ${thumbHtml}
@@ -4878,11 +4970,14 @@
                 tx.onerror = reject;
             });
 
-            // Send delete request to central server
+            // Send delete request to central server (queue locally if offline so sync won't resurrect it)
             try {
                 await callGas('DELETE_ENTRY', { id: targetId });
             } catch (e) {
-                console.warn("Delete API call failed:", e);
+                const pending = getPendingDeletes();
+                pending.push(String(targetId));
+                savePendingDeletes(pending);
+                console.warn("Delete API call failed (queued for retry):", e);
             }
 
             document.getElementById('delete-confirm-modal').classList.remove('active');
@@ -5212,10 +5307,10 @@
             const tbody = document.getElementById(`tbody-acc-${suffix}-${cid}`);
             if (!tbody) return;
 
-            const isToday = (suffix === 'today');
-            const dayEntries = selectedEodDate && !isToday
-                ? entries.filter(e => e.date === selectedEodDate)
-                : entries.filter(e => e.sessionStatus !== 'closed');
+            const targetDate = (suffix === 'today')
+                ? getLocalTodayStr()
+                : (selectedEodDate || getLocalTodayStr());
+            const dayEntries = entries.filter(e => e.date === targetDate);
 
             const counterEntries = dayEntries.filter(e => (e.counterId || 'unknown') === cid);
 
@@ -5315,7 +5410,7 @@
                     if (totSales > 0) cntTotSales++;
                 }
 
-                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${e.remarks})</span>` : '';
+                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${escapeHtml(e.remarks)})</span>` : '';
 
                 // If in archived tab, open in read-only mode by passing true for forceReadOnly
                 const openMode = (suffix === 'archived') ? `openCaptureSheet('${e.id}', true)` : `openCaptureSheet('${e.id}')`;
@@ -5382,9 +5477,8 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const dayEntries = dateStr
-                ? entries.filter(e => e.date === dateStr)
-                : entries.filter(e => e.sessionStatus !== 'closed');
+            const targetDate = dateStr || (containerId === 'counters-accordion-container' ? getLocalTodayStr() : (selectedEodDate || getLocalTodayStr()));
+            const dayEntries = entries.filter(e => e.date === targetDate);
 
             if (dayEntries.length === 0) {
                 container.innerHTML = `<div style="text-align:center; padding: 20px; color:#9ca3af; font-size:12px; font-style:italic;">No entries found.</div>`;
@@ -5573,6 +5667,12 @@
 
         const nepaliMonths = ["Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"];
 
+        function parseYmdUtc(ymd) {
+            const parts = String(ymd).split('-').map(Number);
+            if (parts.length !== 3 || parts.some(isNaN)) return NaN;
+            return Date.UTC(parts[0], parts[1] - 1, parts[2]);
+        }
+
         function convertBsToAd(yy, mm, dd) {
             const yearInfo = bsData[yy];
             if (!yearInfo) return null;
@@ -5583,21 +5683,25 @@
             }
             totalDays += (dd - 1);
 
-            const startGregorian = new Date(yearInfo.startGregorian);
-            startGregorian.setDate(startGregorian.getDate() + totalDays);
-
-            return startGregorian.toISOString().split('T')[0];
+            const startMs = parseYmdUtc(yearInfo.startGregorian);
+            if (isNaN(startMs)) return null;
+            const out = new Date(startMs + totalDays * 86400000);
+            const y = out.getUTCFullYear();
+            const m = String(out.getUTCMonth() + 1).padStart(2, '0');
+            const d = String(out.getUTCDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
         }
 
         function convertAdToBs(adStr) {
             if (!adStr) return null;
-            const targetDate = new Date(adStr);
+            const targetMs = parseYmdUtc(adStr);
+            if (isNaN(targetMs)) return null;
 
             let bsYear = null;
             const years = Object.keys(bsData).map(Number).sort((a, b) => b - a);
             for (let y of years) {
-                const startAd = new Date(bsData[y].startGregorian);
-                if (targetDate >= startAd) {
+                const startMs = parseYmdUtc(bsData[y].startGregorian);
+                if (targetMs >= startMs) {
                     bsYear = y;
                     break;
                 }
@@ -5605,11 +5709,8 @@
 
             if (!bsYear) return null;
 
-            const startAd = new Date(bsData[bsYear].startGregorian);
-            const diffTime = Math.abs(targetDate - startAd);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            let remainingDays = diffDays;
+            const startMs = parseYmdUtc(bsData[bsYear].startGregorian);
+            let remainingDays = Math.round((targetMs - startMs) / 86400000);
             let bsMonth = 1;
             const yearDays = bsData[bsYear].days;
 
@@ -5625,8 +5726,7 @@
             return { year: bsYear, month: bsMonth, day: bsDay };
         }
 
-        function getLocalTodayStr() {
-            const d = new Date();
+        function getLocalTodayStr(d = new Date()) {
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
@@ -5809,7 +5909,7 @@
                 const activeCounterIds = [...new Set(activeEntries.filter(e => e.sessionStatus !== 'closed').map(e => e.counterId))];
                 for (const cid of activeCounterIds) {
                     try {
-                        await callGas('ARCHIVE_SESSION', { counterId: cid, remarks: `EOD auto-close ${selectedEodDate}` });
+                        await callGas('ARCHIVE_SESSION', { counterId: cid, remarks: `EOD auto-close ${selectedEodDate}`, date: selectedEodDate });
                     } catch (archErr) {
                         console.warn(`Failed to auto-close counter ${cid}:`, archErr);
                     }
@@ -5841,10 +5941,10 @@
         async function forceSync() {
             const btnTop = document.getElementById('btn-force-sync-top');
             const btnToday = document.getElementById('btn-sync-today-eod');
-            
+
             const origHtmlTop = btnTop ? btnTop.innerHTML : '☁️ Sync Latest Data';
             const origHtmlToday = btnToday ? btnToday.innerHTML : '<span class="material-icons" style="font-size:12px;">sync</span> SYNC';
-            
+
             const showSyncLoading = (btn) => {
                 if (btn) {
                     btn.disabled = true;
@@ -5852,7 +5952,7 @@
                     btn.innerHTML = `<span class="material-icons" style="font-size:11px; animation:spin 1s linear infinite; display:inline-block; vertical-align:middle; margin-right:4px;">sync</span> Syncing...`;
                 }
             };
-            
+
             const restoreSyncBtn = (btn, html) => {
                 if (btn) {
                     btn.disabled = false;
@@ -5860,10 +5960,10 @@
                     btn.innerHTML = html;
                 }
             };
-            
+
             showSyncLoading(btnTop);
             showSyncLoading(btnToday);
- 
+
             try {
                 const db = await dbPromise;
                 const tx = db.transaction(STORE_NAME, 'readonly');
@@ -5873,29 +5973,29 @@
                     req.onsuccess = () => resolve(req.result);
                     req.onerror = () => reject(req.error);
                 });
- 
-                const unsynced = allEntries.filter(e => e.syncedToGas !== true);
+
+                const unsynced = allEntries.filter(e => e.synced !== true);
                 if (unsynced.length > 0) {
                     await callGas('SYNC_ENTRIES', { data: unsynced });
                     const writeTx = db.transaction(STORE_NAME, 'readwrite');
                     const writeStore = writeTx.objectStore(STORE_NAME);
                     for (const entry of unsynced) {
-                        entry.syncedToGas = true;
+                        entry.synced = true;
                         writeStore.put(entry);
                     }
                     await new Promise(resolve => writeTx.oncomplete = resolve);
                 }
- 
+
                 // Force pull EOD Closings
                 await fetchHistoricalClosings();
- 
+
                 // Force full state pull from server
                 const serverEntries = await callGas('GET_ENTRIES');
                 if (serverEntries && Array.isArray(serverEntries)) {
                     const localEntries = await loadEntriesFromIDB();
                     const localMap = {};
                     localEntries.forEach(e => { localMap[String(e.id)] = e; });
- 
+
                     const mergedEntries = [];
                     serverEntries.forEach(gasEntry => {
                         gasEntry.synced = true;
@@ -5905,20 +6005,20 @@
                         }
                         mergedEntries.push(gasEntry);
                     });
- 
+
                     // Direct overwrite
                     const writeTx = db.transaction(STORE_NAME, 'readwrite');
                     const writeStore = writeTx.objectStore(STORE_NAME);
                     writeStore.clear();
                     mergedEntries.forEach(item => writeStore.put(item));
                     await new Promise(resolve => writeTx.oncomplete = resolve);
- 
+
                     entries = mergedEntries;
                     renderList();
                     if (isAdmin) renderAdminPortal();
                     setupWorkspaceUI();
                 }
- 
+
                 showToast("☁️ Full synchronization complete!");
             } catch (e) {
                 showMsg("Force sync failed: " + e.message);
@@ -6071,98 +6171,6 @@
                     if (closeLaterBtn) closeLaterBtn.style.display = 'none';
                     renderEmptyHistoricalEOD();
                 }
-            }
-        }
-
-        function renderUnclosedPastSession(dateStr) {
-            // Clear EOD table — not relevant for unclosed sessions
-            document.getElementById('admin-opening-cash-display').innerText = 'Opening Cash: —';
-            document.getElementById('summary-total-sales').innerText = 'Pending';
-            document.getElementById('summary-cash-sales').innerText = '—';
-            document.getElementById('summary-other-sales').innerText = '—';
-            const tbody = document.getElementById('daily-table-body');
-            tbody.innerHTML = '';
-            const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
-            notes.forEach(n => { const el = document.getElementById(n); if (el) el.value = 0; });
-            document.getElementById('split-take-home').innerText = 'NPR 0';
-            document.getElementById('split-change').innerText = 'NPR 0';
-            document.getElementById('split-total-cash').innerText = 'NPR 0';
-
-            // Show unclosed entries for that date grouped by counter
-            renderUnclosedSessionEntries(dateStr);
-        }
-
-        function renderUnclosedSessionEntries(dateStr) {
-            const container = document.getElementById('historical-eod-sessions-content');
-            const wrapper = document.getElementById('historical-eod-sessions');
-            if (!container || !wrapper) return;
-            container.innerHTML = '';
-            wrapper.style.display = 'flex';
-
-            const dayEntries = entries.filter(e => e.date === dateStr);
-
-            if (dayEntries.length === 0) {
-                container.innerHTML = '<div style="color:#9ca3af; padding:16px;">No entries found for this date.</div>';
-                return;
-            }
-
-            // Group by counterId
-            const groups = {};
-            dayEntries.forEach(e => {
-                const cid = e.counterId || 'unknown';
-                if (!groups[cid]) groups[cid] = { closed: [], open: [] };
-                if (e.sessionStatus === 'closed') groups[cid].closed.push(e);
-                else groups[cid].open.push(e);
-            });
-
-            Object.keys(groups).sort().forEach(cid => {
-                const g = groups[cid];
-                const allClosed = g.open.length === 0;
-
-                const header = document.createElement('div');
-                header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding:8px 0; border-bottom:1px solid #374151;';
-                header.innerHTML = `
-                    <div style="font-weight:700; color:${allClosed ? '#10b981' : '#f59e0b'}; font-size:13px;">
-                        ${allClosed ? '✅' : '⚠️'} Counter ${cid} ${allClosed ? '(Closed)' : '(OPEN — not closed)'}
-                    </div>
-                    ${!allClosed ? `<button onclick="closePastSession('${cid}','${dateStr}')" style="background:#ef4444; color:#fff; border:none; border-radius:8px; padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer;">🔒 Close Now</button>` : ''}
-                `;
-                container.appendChild(header);
-
-                // Show open entries with edit capability
-                if (g.open.length > 0) {
-                    g.open.slice().reverse().forEach(entry => {
-                        const card = createAdminEntryCard(entry);
-                        container.appendChild(card);
-                    });
-                }
-
-                // Show closed entries (read-only)
-                if (g.closed.length > 0) {
-                    const closedLabel = document.createElement('div');
-                    closedLabel.style.cssText = 'font-size:11px; color:#6b7280; margin-top:8px; margin-bottom:4px;';
-                    closedLabel.innerText = 'Closed entries:';
-                    container.appendChild(closedLabel);
-                    g.closed.slice().reverse().forEach(entry => {
-                        const card = createAdminEntryCard(entry);
-                        card.style.opacity = '0.7';
-                        container.appendChild(card);
-                    });
-                }
-            });
-        }
-
-        async function closePastSession(cid, dateStr) {
-            if (!confirm(`Close Counter ${cid}'s session from ${dateStr}? All its entries will be marked closed.`)) return;
-            const remarks = prompt('Enter closing remarks (optional):', '') || '';
-            try {
-                await callGas('ARCHIVE_SESSION', { counterId: cid, remarks: `Past close ${dateStr}: ${remarks}` });
-                showToast(`Counter ${cid} session from ${dateStr} closed.`);
-                // Re-sync to reflect the closed status
-                await syncWithServer();
-                handleEodDateChange();
-            } catch (e) {
-                showMsg('Failed to close past session: ' + e.message);
             }
         }
 
@@ -6365,7 +6373,7 @@
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            
+
             // Do not lock if camera stream is active (user is actively framing/taking picture)
             if (stream) return;
 
@@ -6410,13 +6418,13 @@
             if (!targetAdDate) return;
 
             const repEntries = entries.filter(e => e.date === targetAdDate && !e.isVoid);
-            
+
             let grossSales = 0, cashSales = 0, digitalSales = 0, deferredSales = 0;
             let voidCount = entries.filter(e => e.date === targetAdDate && e.isVoid).length;
             let netCashFlow = 0; // cash sales + cash collections - opening cash
             let collectionsCash = 0;
-            
-            const counterTotals = { '0':0, '1':0, '2':0, '3':0, '4':0, '5':0 };
+
+            const counterTotals = { '0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0 };
             const hourlyPeaks = {};
             const cncLedgerHTML = [];
 
@@ -6429,14 +6437,14 @@
                 const online = e.online || 0;
                 const chq = e.cheque || 0;
                 const crd = e.credit || 0;
-                
+
                 const cid = String(e.counterId);
                 const isSales = cid !== '0';
-                
+
                 const digital = qr + pos + ips + esewa + online;
                 const deferred = chq + crd;
                 const total = c + digital + deferred;
-                
+
                 if (isSales) {
                     grossSales += total;
                     cashSales += c;
@@ -6447,14 +6455,14 @@
                     digitalSales += digital;
                     deferredSales += deferred;
                 }
-                
+
                 counterTotals[cid] = (counterTotals[cid] || 0) + total;
-                
+
                 const hr = new Date(parseInt(e.id)).getHours();
                 hourlyPeaks[hr] = (hourlyPeaks[hr] || 0) + 1;
-                
+
                 if (deferred > 0) {
-                    const timeStr = new Date(parseInt(e.id)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const timeStr = new Date(parseInt(e.id)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     cncLedgerHTML.push(`
                         <tr style="border-bottom: 1px solid #374151;">
                             <td style="padding: 8px; color: #fff;">${cid}</td>
@@ -6465,46 +6473,46 @@
                     `);
                 }
             });
-            
+
             const todayKey = 'adminOpeningCash_' + targetAdDate;
             const localOpeningCash = parseFloat(localStorage.getItem(todayKey) || localStorage.getItem('adminOpeningCash')) || 0;
             const opening = historicalClosings.find(x => x.date === targetAdDate)?.openingCash || localOpeningCash;
             netCashFlow = (cashSales + collectionsCash) - opening;
-            
+
             const totalForPct = cashSales + collectionsCash + digitalSales + deferredSales;
             const pctCash = totalForPct ? Math.round(((cashSales + collectionsCash) / totalForPct) * 100) : 0;
             const pctDig = totalForPct ? Math.round((digitalSales / totalForPct) * 100) : 0;
             const pctDef = totalForPct ? Math.round((deferredSales / totalForPct) * 100) : 0;
-            
+
             document.getElementById('rep-gross-sales').innerText = 'NPR ' + grossSales.toLocaleString();
             document.getElementById('rep-net-cash').innerText = 'NPR ' + netCashFlow.toLocaleString();
-            
+
             const salesCount = repEntries.filter(e => String(e.counterId) !== '0').length;
             document.getElementById('rep-atv').innerText = 'NPR ' + (salesCount ? Math.round(grossSales / salesCount).toLocaleString() : '0');
             document.getElementById('rep-voids').innerText = voidCount;
-            
+
             document.getElementById('rep-bar-cash').style.width = pctCash + '%';
             document.getElementById('rep-bar-digital').style.width = pctDig + '%';
             document.getElementById('rep-bar-deferred').style.width = pctDef + '%';
-            
+
             document.getElementById('rep-pct-cash').innerText = pctCash + '%';
             document.getElementById('rep-pct-digital').innerText = pctDig + '%';
             document.getElementById('rep-pct-deferred').innerText = pctDef + '%';
-            
+
             let ldbHTML = '';
             for (let i = 0; i <= 5; i++) {
                 if (counterTotals[String(i)] > 0) {
                     ldbHTML += `
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #374151; padding-bottom: 4px;">
-                            <div style="color: #fff;">Counter ${i} ${i===0?'(Coll)':''}</div>
+                            <div style="color: #fff;">Counter ${i} ${i === 0 ? '(Coll)' : ''}</div>
                             <div style="font-weight: 700; color: #10b981;">${counterTotals[String(i)].toLocaleString()}</div>
                         </div>`;
                 }
             }
             document.getElementById('rep-leaderboard').innerHTML = ldbHTML || '<div style="color:#9ca3af; font-size:12px;">No activity</div>';
-            
+
             let hmpHTML = '';
-            Object.keys(hourlyPeaks).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(hr => {
+            Object.keys(hourlyPeaks).sort((a, b) => parseInt(a) - parseInt(b)).forEach(hr => {
                 const ampm = hr >= 12 ? 'PM' : 'AM';
                 const hr12 = hr % 12 || 12;
                 hmpHTML += `
@@ -6514,7 +6522,7 @@
                     </div>`;
             });
             document.getElementById('rep-heatmap').innerHTML = hmpHTML || '<div style="color:#9ca3af; font-size:12px;">No activity</div>';
-            
+
             document.getElementById('rep-cnc-ledger').innerHTML = cncLedgerHTML.join('') || '<tr><td colspan="4" style="text-align:center; padding:12px; color:#9ca3af;">No Cheque or Credit transactions</td></tr>';
         }
     </script>
