@@ -1501,37 +1501,118 @@
             color: var(--ui-muted) !important;
         }
 
-        /* Crisp wide 8px inputs & selects (easy to read numbers, zero pill clipping) */
+        /* Hide browser number spinners so tabular money inputs stay clean and wide */
+        #view-admin input[type=number]::-webkit-inner-spin-button,
+        #view-admin input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #view-admin input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Soft Neumorphic Debossed Well Inputs (Image 2 style — Light & Dark) */
         #view-admin input,
         #view-admin select,
         #collection-workspace input {
             background: var(--ui-input-bg) !important;
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 8px !important;
+            border: 1px solid transparent !important;
+            border-radius: 10px !important;
             color: var(--ui-text) !important;
             font-variant-numeric: tabular-nums;
-            transition: border-color 0.16s ease, box-shadow 0.16s ease;
+            box-shadow:
+                inset 2.5px 2.5px 6px rgba(0, 0, 0, 0.65),
+                inset -1.5px -1.5px 4px rgba(255, 255, 255, 0.06) !important;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+        }
+
+        body.theme-light #view-admin input,
+        body.theme-light #view-admin select,
+        body.theme-light #collection-workspace input {
+            background: rgba(235, 240, 248, 0.82) !important;
+            box-shadow:
+                inset 2.5px 2.5px 6px rgba(148, 163, 184, 0.42),
+                inset -2.5px -2.5px 6px rgba(255, 255, 255, 0.95) !important;
         }
 
         #view-admin input:focus,
         #view-admin select:focus,
         #collection-workspace input:focus {
             outline: none !important;
-            border-color: var(--ui-info) !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18) !important;
+            border-color: rgba(99, 102, 241, 0.55) !important;
+            box-shadow:
+                inset 2px 2px 5px rgba(0, 0, 0, 0.5),
+                0 0 0 3px rgba(99, 102, 241, 0.22) !important;
+        }
+
+        body.theme-light #view-admin input:focus,
+        body.theme-light #view-admin select:focus,
+        body.theme-light #collection-workspace input:focus {
+            border-color: rgba(37, 99, 235, 0.5) !important;
+            box-shadow:
+                inset 2px 2px 5px rgba(148, 163, 184, 0.35),
+                0 0 0 3px rgba(37, 99, 235, 0.16) !important;
         }
 
         #view-admin .eod-input {
-            padding: 6px 8px !important;
-            font-size: 12.5px !important;
-            min-width: 84px;
+            padding: 7px 10px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            min-width: 88px;
             box-sizing: border-box;
         }
 
+        /* Read-only ledger totals look like crisp financial figures, not disabled boxes */
         #view-admin .eod-input[readonly] {
-            background: var(--ui-pill-bg) !important;
+            background: transparent !important;
             border-color: transparent !important;
-            color: var(--ui-text-soft) !important;
+            box-shadow: none !important;
+            color: var(--ui-text) !important;
+            font-weight: 700 !important;
+            padding: 4px 2px !important;
+            pointer-events: none;
+        }
+
+        /* Active Counter Ledger: Minimal Underline Ghost Inputs (Image 1 style — zero box clutter) */
+        #view-admin input.ledger-cell-input {
+            width: 66px !important;
+            min-width: 66px !important;
+            padding: 5px 4px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            text-align: right !important;
+            background: transparent !important;
+            border: none !important;
+            border-bottom: 1.5px solid var(--ui-border) !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            color: var(--ui-text) !important;
+            transition: border-color 0.16s ease, background 0.16s ease, border-radius 0.16s ease;
+        }
+
+        #view-admin input.ledger-cell-input::placeholder {
+            color: var(--ui-muted);
+            opacity: 0.35;
+        }
+
+        #view-admin input.ledger-cell-input:hover {
+            border-bottom-color: var(--ui-border-strong) !important;
+            background: var(--ui-row-hover) !important;
+            border-radius: 6px 6px 0 0 !important;
+        }
+
+        #view-admin input.ledger-cell-input:focus {
+            background: var(--ui-input-bg) !important;
+            border: none !important;
+            border-bottom: 2px solid var(--ui-info) !important;
+            border-radius: 6px 6px 2px 2px !important;
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        body.theme-light #view-admin input.ledger-cell-input:focus {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-bottom: 2px solid #2563eb !important;
+            box-shadow: inset 1.5px 1.5px 4px rgba(148, 163, 184, 0.3) !important;
         }
 
         /* High-density crisp tables */
@@ -4996,18 +5077,18 @@
                 const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${escapeHtml(e.remarks)})</span>` : '';
 
                 tr.innerHTML = `
-                    <td style="padding:6px; font-weight:600; color:#9ca3af; text-align:center;">${snMap[e.id] || ''}</td>
-                    <td style="padding:6px; font-weight:600; color:#3b82f6; cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.cash || ''}" oninput="updateActiveEntryField('${e.id}', 'cash', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.qr || ''}" oninput="updateActiveEntryField('${e.id}', 'qr', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.pos || ''}" oninput="updateActiveEntryField('${e.id}', 'pos', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.ips || ''}" oninput="updateActiveEntryField('${e.id}', 'ips', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.esewa || ''}" oninput="updateActiveEntryField('${e.id}', 'esewa', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.online || ''}" oninput="updateActiveEntryField('${e.id}', 'online', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:6px; text-align:right; color:#10b981; font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.cheque || ''}" oninput="updateActiveEntryField('${e.id}', 'cheque', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" value="${e.credit || ''}" oninput="updateActiveEntryField('${e.id}', 'credit', this.value)" style="width: 54px; background:#111827; color:#fff; border:1px solid #374151; padding:2px; font-size:10px; text-align:right; border-radius:4px; outline:none;" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:6px; text-align:right; color:#ef4444; font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
+                    <td style="padding:6px; font-weight:600; color:var(--ui-muted); text-align:center;">${snMap[e.id] || ''}</td>
+                    <td style="padding:6px; font-weight:600; color:var(--ui-info); cursor:pointer; white-space:nowrap;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cash || ''}" oninput="updateActiveEntryField('${e.id}', 'cash', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.qr || ''}" oninput="updateActiveEntryField('${e.id}', 'qr', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.pos || ''}" oninput="updateActiveEntryField('${e.id}', 'pos', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.ips || ''}" oninput="updateActiveEntryField('${e.id}', 'ips', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.esewa || ''}" oninput="updateActiveEntryField('${e.id}', 'esewa', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.online || ''}" oninput="updateActiveEntryField('${e.id}', 'online', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:6px; text-align:right; color:var(--ui-pos); font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cheque || ''}" oninput="updateActiveEntryField('${e.id}', 'cheque', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.credit || ''}" oninput="updateActiveEntryField('${e.id}', 'credit', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:6px; text-align:right; color:var(--ui-neg); font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
                     <td style="padding:6px; text-align:right; font-weight:700;" class="tot-sales-cell">${totSales.toLocaleString()}</td>
                 `;
                 tbody.appendChild(tr);
