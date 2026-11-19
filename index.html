@@ -5580,8 +5580,8 @@
         function createAdminEntryCard(entry) {
             const card = document.createElement('div');
             card.className = 'entry-card';
-            card.style.background = '#1f2937';
-            card.style.color = '#fff';
+            card.style.background = 'var(--ui-card)';
+            card.style.color = 'var(--ui-text)';
 
             const isPending = !entry.isVoid && entry.cash === 0 && entry.qr === 0 && entry.ips === 0 && entry.pos === 0 && entry.esewa === 0 && entry.online === 0 && entry.cheque === 0 && entry.credit === 0;
             if (isPending) card.style.border = "1px solid var(--c-pos)";
@@ -5827,9 +5827,9 @@
                     tr.style.fontWeight = '700';
                 }
                 if (r.highlight) {
-                    tr.style.background = '#374151';
-                    tr.style.borderTop = '2px solid #4b5563';
-                    tr.style.borderBottom = '2px solid #4b5563';
+                    tr.style.background = 'var(--ui-thead-bg)';
+                    tr.style.borderTop = '2px solid var(--ui-border-strong)';
+                    tr.style.borderBottom = '2px solid var(--ui-border-strong)';
                 }
 
                 // If row doesn't have an actual value (e.g. Sales rows that roll up into Totals), display '---------------'
@@ -6186,13 +6186,15 @@
                 const isExpanded = accordionStates[divId] || false;
 
                 const wrapper = document.createElement('div');
-                wrapper.style.border = '1px solid #374151';
-                wrapper.style.borderRadius = '8px';
+                wrapper.style.border = '1px solid var(--ui-border)';
+                wrapper.style.borderRadius = '12px';
                 wrapper.style.overflow = 'hidden';
                 wrapper.style.marginBottom = '8px';
+                wrapper.style.background = 'var(--ui-card-inner)';
 
                 const header = document.createElement('div');
-                header.style.background = '#2d3748';
+                header.style.background = 'var(--ui-thead-bg)';
+                header.style.color = 'var(--ui-text)';
                 header.style.padding = '12px 16px';
                 header.style.cursor = 'pointer';
                 header.style.display = 'flex';
@@ -6204,14 +6206,14 @@
 
                 header.innerHTML = `
                     <span>CTR: ${cid}</span>
-                    <span>C: ${totalCash.toLocaleString()} | T: ${totalSales.toLocaleString()} <span class="acc-indicator" style="font-size:10px; color:#9ca3af; margin-left:8px;">${isExpanded ? '▲' : '▼'}</span></span>
+                    <span style="font-variant-numeric:tabular-nums;">C: ${totalCash.toLocaleString()} &nbsp;|&nbsp; T: ${totalSales.toLocaleString()} <span class="acc-indicator" style="font-size:10px; color:var(--ui-muted); margin-left:8px;">${isExpanded ? '▲' : '▼'}</span></span>
                 `;
                 wrapper.appendChild(header);
 
                 const content = document.createElement('div');
                 content.id = divId;
                 content.style.display = isExpanded ? 'block' : 'none';
-                content.style.background = '#1a202c';
+                content.style.background = 'var(--ui-card)';
                 content.style.padding = '8px';
 
                 // Nested Table
@@ -6222,28 +6224,28 @@
                 table.className = 'eod-table';
                 table.style.width = '100%';
                 table.style.borderCollapse = 'collapse';
-                table.style.fontSize = '11px';
+                table.style.fontSize = '11.5px';
 
                 table.innerHTML = `
                     <thead>
-                        <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568;">
-                            <th class="th-sn" style="padding:6px; text-align:center; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'sn')">S.N ⇅</th>
-                            <th class="th-time" style="padding:6px; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'time')">B.N (Time) ⇅</th>
-                            <th class="th-cash" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'cash')">C ⇅</th>
-                            <th class="th-qr" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'qr')">Q ⇅</th>
-                            <th class="th-pos" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'pos')">POS ⇅</th>
-                            <th class="th-ips" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'ips')">IPS ⇅</th>
-                            <th class="th-esewa" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'esewa')">Esewa ⇅</th>
-                            <th class="th-online" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'online')">Online ⇅</th>
-                            <th class="th-totcash" style="padding:6px; text-align:right; color:#10b981; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totCash')">Tot Cash ⇅</th>
-                            <th class="th-cheque" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'cheque')">Cheque ⇅</th>
-                            <th class="th-credit" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'credit')">Credit ⇅</th>
-                            <th class="th-totcredit" style="padding:6px; text-align:right; color:#ef4444; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totCredit')">Tot Credit ⇅</th>
-                            <th class="th-totsales" style="padding:6px; text-align:right; font-weight:700; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totSales')">Tot Sales ⇅</th>
+                        <tr>
+                            <th class="th-sn" style="text-align:center; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'sn')">S.N ⇅</th>
+                            <th class="th-time" style="cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'time')">B.N (Time) ⇅</th>
+                            <th class="th-cash" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'cash')">C ⇅</th>
+                            <th class="th-qr" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'qr')">Q ⇅</th>
+                            <th class="th-pos" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'pos')">POS ⇅</th>
+                            <th class="th-ips" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'ips')">IPS ⇅</th>
+                            <th class="th-esewa" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'esewa')">Esewa ⇅</th>
+                            <th class="th-online" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'online')">Online ⇅</th>
+                            <th class="th-totcash" style="text-align:right; color:var(--ui-pos); cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totCash')">Tot Cash ⇅</th>
+                            <th class="th-cheque" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'cheque')">Cheque ⇅</th>
+                            <th class="th-credit" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'credit')">Credit ⇅</th>
+                            <th class="th-totcredit" style="text-align:right; color:var(--ui-neg); cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totCredit')">Tot Credit ⇅</th>
+                            <th class="th-totsales" style="text-align:right; cursor:pointer;" onclick="sortAccordionTable('${suffix}', '${cid}', 'totSales')">Tot Sales ⇅</th>
                         </tr>
                     </thead>
                     <tbody id="tbody-acc-${suffix}-${cid}"></tbody>
-                    <tfoot style="color: #fff; font-weight: 800; border-top: 2px solid #4a5568; background: #1a202c;">
+                    <tfoot style="font-weight: 800;">
                         <tr id="tfoot-acc-${suffix}-${cid}"></tr>
                     </tfoot>
                 `;
@@ -6839,7 +6841,8 @@
                 } else {
                     if (banner) {
                         banner.style.display = 'block';
-                        banner.style.background = '#1f2937';
+                        banner.style.background = 'var(--ui-card-inner)';
+                        banner.style.color = 'var(--ui-text)';
                         banner.innerText = `ℹ️ NO DATA FOUND FOR ${selectedEodDate}`;
                     }
                     if (submitBtn) submitBtn.style.display = 'none';
@@ -6927,9 +6930,9 @@
 
                 if (r.bold) tr.style.fontWeight = '700';
                 if (r.highlight) {
-                    tr.style.background = '#374151';
-                    tr.style.borderTop = '2px solid #4b5563';
-                    tr.style.borderBottom = '2px solid #4b5563';
+                    tr.style.background = 'var(--ui-thead-bg)';
+                    tr.style.borderTop = '2px solid var(--ui-border-strong)';
+                    tr.style.borderBottom = '2px solid var(--ui-border-strong)';
                 }
 
                 const hasValue = (r.out !== null);
@@ -7139,11 +7142,11 @@
                 if (deferred > 0) {
                     const timeStr = new Date(parseInt(e.id)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     cncLedgerHTML.push(`
-                        <tr style="border-bottom: 1px solid #374151;">
-                            <td style="padding: 8px; color: #fff;">${cid}</td>
-                            <td style="padding: 8px; color: #fff;">${timeStr}</td>
-                            <td style="padding: 8px; text-align: right; color: #10b981;">${chq.toLocaleString()}</td>
-                            <td style="padding: 8px; text-align: right; color: #ef4444;">${crd.toLocaleString()}</td>
+                        <tr>
+                            <td style="padding: 8px; color: var(--ui-text);">${cid}</td>
+                            <td style="padding: 8px; color: var(--ui-text);">${timeStr}</td>
+                            <td style="padding: 8px; text-align: right; color: var(--ui-pos);">${chq.toLocaleString()}</td>
+                            <td style="padding: 8px; text-align: right; color: var(--ui-neg);">${crd.toLocaleString()}</td>
                         </tr>
                     `);
                 }
