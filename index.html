@@ -1125,6 +1125,293 @@
             border: 2px dashed #bbb !important;
         }
 
+        /* ==================== 2027 OBSIDIAN GLASS / WEB3 SLEEK POLISH ==================== */
+        #view-admin,
+        #collection-workspace {
+            background:
+                radial-gradient(1100px 520px at 10% -10%, rgba(148, 163, 184, 0.11), transparent 60%),
+                radial-gradient(900px 480px at 92% 8%, rgba(56, 189, 248, 0.06), transparent 58%),
+                radial-gradient(800px 520px at 50% 110%, rgba(99, 102, 241, 0.06), transparent 60%),
+                #06080d !important;
+            color: #e5e7eb !important;
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        }
+
+        #view-admin {
+            padding: 16px 20px 40px !important;
+        }
+
+        /* Sticky frosted glass header */
+        #view-admin .admin-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            margin: -16px -20px 14px;
+            padding: 14px 20px !important;
+            background: rgba(6, 8, 13, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+            box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.8);
+        }
+
+        #view-admin #admin-title {
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.025em;
+            color: #f8fafc !important;
+        }
+
+        /* Segmented frosted pill tabs */
+        #view-admin .admin-tabs {
+            display: inline-flex !important;
+            flex-wrap: wrap;
+            gap: 4px !important;
+            padding: 4px !important;
+            margin: 0 0 18px 0 !important;
+            background: rgba(255, 255, 255, 0.035) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07) !important;
+            border-radius: 14px !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        #view-admin .admin-tab {
+            padding: 8px 15px !important;
+            border-radius: 10px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.01em;
+            color: #94a3b8 !important;
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #view-admin .admin-tab:hover {
+            color: #f1f5f9 !important;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        #view-admin .admin-tab.active {
+            background: rgba(255, 255, 255, 0.11) !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.14) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 4px 16px -4px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Glassy panels, cards, KPI boxes, and accordions */
+        #view-admin .admin-content > div,
+        #view-admin .entry-card,
+        #view-admin .history-log-box,
+        #collection-workspace > div:nth-child(2) {
+            background: rgba(15, 19, 28, 0.58) !important;
+            backdrop-filter: blur(18px) saturate(130%);
+            -webkit-backdrop-filter: blur(18px) saturate(130%);
+            border: 1px solid rgba(255, 255, 255, 0.075) !important;
+            border-radius: 16px !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.055),
+                0 14px 36px -16px rgba(0, 0, 0, 0.72) !important;
+        }
+
+        #view-admin #admin-archived-main-view,
+        #view-admin #archived-eod-reconciler-wrap,
+        #view-admin #counters-accordion-container,
+        #view-admin #archived-counters-accordion-container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+
+        #view-admin .counter-group-title {
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.09em !important;
+            color: #94a3b8 !important;
+            border-left: 2px solid rgba(255, 255, 255, 0.35) !important;
+            padding-left: 10px !important;
+        }
+
+        /* Restrained glassy buttons inside Admin */
+        #view-admin button {
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.01em;
+            transition: transform 0.14s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        #view-admin button:hover {
+            filter: brightness(1.08);
+        }
+
+        #view-admin button:active {
+            transform: scale(0.97);
+        }
+
+        #view-admin .admin-header button,
+        #view-admin .btn-void {
+            background: rgba(255, 255, 255, 0.055) !important;
+            color: #e2e8f0 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+
+        #view-admin .admin-header button:hover,
+        #view-admin .btn-void:hover {
+            background: rgba(255, 255, 255, 0.11) !important;
+            border-color: rgba(255, 255, 255, 0.18) !important;
+        }
+
+        /* Recessed foggy inputs & selects */
+        #view-admin input,
+        #view-admin select,
+        #collection-workspace input {
+            background: rgba(5, 7, 12, 0.62) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 10px !important;
+            color: #f8fafc !important;
+            font-variant-numeric: tabular-nums;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        #view-admin input:focus,
+        #view-admin select:focus,
+        #collection-workspace input:focus {
+            outline: none !important;
+            border-color: rgba(255, 255, 255, 0.28) !important;
+            background: rgba(8, 11, 18, 0.85) !important;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06) !important;
+        }
+
+        #view-admin .eod-input[readonly] {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #cbd5e1 !important;
+        }
+
+        /* Crisp tabular data tables */
+        #view-admin table {
+            border-collapse: separate !important;
+            border-spacing: 0 !important;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #view-admin table thead th {
+            background: rgba(255, 255, 255, 0.035) !important;
+            color: #94a3b8 !important;
+            font-size: 10.5px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 9px 8px !important;
+        }
+
+        #view-admin table tbody td,
+        #view-admin .eod-table td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+            padding: 9px 8px !important;
+            color: #e2e8f0;
+        }
+
+        #view-admin table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.028);
+        }
+
+        /* Sleek frosted Fast-Lane floating pill */
+        .fast-lane-bar {
+            background: rgba(9, 12, 19, 0.72) !important;
+            backdrop-filter: blur(20px) saturate(150%) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 16px 36px -10px rgba(0, 0, 0, 0.75) !important;
+        }
+
+        .fast-input {
+            background: rgba(255, 255, 255, 0.07) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .fast-input:focus {
+            border-color: rgba(255, 255, 255, 0.32) !important;
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .fast-save-btn {
+            background: #f8fafc !important;
+            color: #090d16 !important;
+            box-shadow: 0 4px 14px -2px rgba(255, 255, 255, 0.25);
+        }
+
+        /* Glassy bottom sheets & modals */
+        .bottom-sheet {
+            background: rgba(12, 16, 24, 0.92) !important;
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            color: #f1f5f9 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.75) !important;
+        }
+
+        .bottom-sheet .sheet-header,
+        .bottom-sheet .sheet-footer {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            background: transparent !important;
+        }
+
+        .bottom-sheet .input-field {
+            background: rgba(5, 7, 12, 0.65) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #f8fafc !important;
+            border-radius: 10px !important;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .bottom-sheet .entry-card {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 14px !important;
+            color: #f1f5f9 !important;
+        }
+
+        .modal-box {
+            background: rgba(13, 17, 26, 0.88) !important;
+            backdrop-filter: blur(24px) saturate(150%);
+            -webkit-backdrop-filter: blur(24px) saturate(150%);
+            color: #f1f5f9 !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 64px rgba(0, 0, 0, 0.8) !important;
+        }
+
+        /* Subtle thin scrollbars */
+        #view-admin ::-webkit-scrollbar,
+        #view-admin::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        #view-admin ::-webkit-scrollbar-track,
+        #view-admin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #view-admin ::-webkit-scrollbar-thumb,
+        #view-admin::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 99px;
+        }
+
+        #view-admin ::-webkit-scrollbar-thumb:hover,
+        #view-admin::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.24);
+        }
+
         @keyframes blink-red {
 
             0%,
