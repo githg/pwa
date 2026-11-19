@@ -967,68 +967,72 @@
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        /* ==================== 2027 EXPRESSIVE PILL & FROSTED GLASS (DARK MIDNIGHT + LIGHT ICE-LAVENDER) ==================== */
+        /* ==================== 2027 DUAL-THEME GLASS DESIGN SYSTEM (DARK MIDNIGHT + LIGHT ICE-LAVENDER) ==================== */
         :root {
-            /* Dark Midnight Frosted Glass (Image 5 bottom-right: #1A2A45 / #171E35 + periwinkle glow) */
+            /* Dark Midnight Glass — deep obsidian contrast, crisp specular rims, zero muddy gray */
             --ui-canvas:
-                radial-gradient(640px 440px at 8% 4%, rgba(124, 109, 240, 0.24), transparent 62%),
-                radial-gradient(620px 460px at 92% 14%, rgba(56, 189, 248, 0.16), transparent 60%),
-                radial-gradient(700px 500px at 48% 105%, rgba(167, 139, 250, 0.16), transparent 64%),
-                linear-gradient(155deg, #11182b 0%, #171e35 52%, #121829 100%);
-            --ui-header: rgba(19, 26, 46, 0.62);
-            --ui-card: rgba(29, 39, 66, 0.46);
-            --ui-card-hover: rgba(38, 50, 82, 0.58);
-            --ui-card-inner: rgba(17, 24, 43, 0.48);
-            --ui-border: rgba(210, 224, 255, 0.14);
-            --ui-border-strong: rgba(210, 224, 255, 0.26);
-            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-            --ui-shadow: 0 20px 48px -18px rgba(4, 8, 22, 0.72);
-            --ui-text: #f3f6ff;
-            --ui-text-soft: #cfd8f3;
-            --ui-muted: #8f9dc4;
-            --ui-pill-bg: rgba(255, 255, 255, 0.075);
-            --ui-pill-active: linear-gradient(135deg, #7c6df0 0%, #6366f1 100%);
+                radial-gradient(760px 460px at 8% -6%, rgba(99, 102, 241, 0.22), transparent 60%),
+                radial-gradient(720px 440px at 92% 4%, rgba(56, 189, 248, 0.14), transparent 58%),
+                radial-gradient(680px 420px at 50% 108%, rgba(139, 92, 246, 0.12), transparent 62%),
+                #080b12;
+            --ui-header: rgba(8, 11, 18, 0.78);
+            --ui-card: rgba(17, 22, 34, 0.74);
+            --ui-card-hover: rgba(23, 30, 46, 0.86);
+            --ui-card-inner: rgba(11, 15, 25, 0.72);
+            --ui-border: rgba(255, 255, 255, 0.085);
+            --ui-border-strong: rgba(255, 255, 255, 0.17);
+            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+            --ui-shadow: 0 18px 42px -18px rgba(0, 0, 0, 0.82);
+            --ui-text: #f8fafc;
+            --ui-text-soft: #cbd5e1;
+            --ui-muted: #8592a6;
+            --ui-pill-bg: rgba(255, 255, 255, 0.055);
+            --ui-pill-active: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             --ui-pill-active-text: #ffffff;
-            --ui-input-bg: rgba(14, 20, 38, 0.58);
-            --ui-row-hover: rgba(199, 210, 254, 0.05);
-            --ui-thead-bg: rgba(199, 210, 254, 0.05);
-            --ui-pos: #5eead4;
+            --ui-input-bg: rgba(7, 10, 17, 0.82);
+            --ui-row-hover: rgba(255, 255, 255, 0.035);
+            --ui-thead-bg: rgba(255, 255, 255, 0.035);
+            --ui-pos: #34d399;
+            --ui-pos-soft: rgba(52, 211, 153, 0.14);
             --ui-neg: #fb7185;
-            --ui-warn: #fcd34d;
-            --ui-info: #a5b4fc;
-            --ui-btn-primary-bg: linear-gradient(135deg, #8b7cf6 0%, #6366f1 100%);
+            --ui-neg-soft: rgba(251, 113, 133, 0.14);
+            --ui-warn: #fbbf24;
+            --ui-info: #818cf8;
+            --ui-btn-primary-bg: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
             --ui-btn-primary-text: #ffffff;
         }
 
         body.theme-light {
-            /* Light Ice-Cyan & Expressive Lavender Frosted Glass (Images 1, 3, 4, 5) */
+            /* Light Ice-Cyan & Lavender Frosted Glass */
             --ui-canvas:
-                radial-gradient(680px 480px at 10% 4%, rgba(165, 243, 252, 0.82), transparent 60%),
-                radial-gradient(660px 520px at 90% 10%, rgba(196, 181, 253, 0.72), transparent 60%),
-                radial-gradient(760px 520px at 50% 100%, rgba(199, 210, 254, 0.75), transparent 64%),
+                radial-gradient(680px 480px at 10% 4%, rgba(165, 243, 252, 0.80), transparent 60%),
+                radial-gradient(660px 520px at 90% 10%, rgba(196, 181, 253, 0.68), transparent 60%),
+                radial-gradient(760px 520px at 50% 100%, rgba(199, 210, 254, 0.72), transparent 64%),
                 linear-gradient(148deg, #ddf6fb 0%, #e7e6fc 48%, #d9d6fa 100%);
-            --ui-header: rgba(255, 255, 255, 0.42);
-            --ui-card: rgba(255, 255, 255, 0.44);
-            --ui-card-hover: rgba(255, 255, 255, 0.62);
-            --ui-card-inner: rgba(255, 255, 255, 0.52);
-            --ui-border: rgba(255, 255, 255, 0.74);
-            --ui-border-strong: rgba(124, 109, 240, 0.34);
-            --ui-specular: inset 0 1.5px 0 rgba(255, 255, 255, 0.92);
-            --ui-shadow: 0 22px 46px -18px rgba(79, 70, 145, 0.20), 0 4px 12px -4px rgba(79, 70, 145, 0.08);
-            --ui-text: #272052;
-            --ui-text-soft: #463d7a;
-            --ui-muted: #6e6899;
-            --ui-pill-bg: rgba(255, 255, 255, 0.66);
-            --ui-pill-active: linear-gradient(135deg, #6250a8 0%, #7c6df0 100%);
+            --ui-header: rgba(255, 255, 255, 0.54);
+            --ui-card: rgba(255, 255, 255, 0.56);
+            --ui-card-hover: rgba(255, 255, 255, 0.74);
+            --ui-card-inner: rgba(255, 255, 255, 0.62);
+            --ui-border: rgba(255, 255, 255, 0.82);
+            --ui-border-strong: rgba(99, 102, 241, 0.34);
+            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+            --ui-shadow: 0 18px 40px -18px rgba(79, 70, 145, 0.18), 0 2px 10px -2px rgba(79, 70, 145, 0.07);
+            --ui-text: #1e1b4b;
+            --ui-text-soft: #3f3a70;
+            --ui-muted: #686296;
+            --ui-pill-bg: rgba(255, 255, 255, 0.68);
+            --ui-pill-active: linear-gradient(135deg, #5b4bb7 0%, #7c6df0 100%);
             --ui-pill-active-text: #ffffff;
-            --ui-input-bg: rgba(255, 255, 255, 0.68);
-            --ui-row-hover: rgba(124, 109, 240, 0.06);
-            --ui-thead-bg: rgba(124, 109, 240, 0.07);
-            --ui-pos: #0d9488;
+            --ui-input-bg: rgba(255, 255, 255, 0.84);
+            --ui-row-hover: rgba(99, 102, 241, 0.055);
+            --ui-thead-bg: rgba(99, 102, 241, 0.065);
+            --ui-pos: #059669;
+            --ui-pos-soft: rgba(5, 150, 105, 0.12);
             --ui-neg: #e11d48;
+            --ui-neg-soft: rgba(225, 29, 72, 0.11);
             --ui-warn: #d97706;
-            --ui-info: #6355c7;
-            --ui-btn-primary-bg: linear-gradient(135deg, #6250a8 0%, #8373f5 100%);
+            --ui-info: #5b4bb7;
+            --ui-btn-primary-bg: linear-gradient(135deg, #5b4bb7 0%, #7c6df0 100%);
             --ui-btn-primary-text: #ffffff;
         }
 
@@ -1038,11 +1042,11 @@
             background-attachment: fixed !important;
             color: var(--ui-text) !important;
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-            transition: background 0.3s ease, color 0.25s ease;
+            transition: background 0.28s ease, color 0.2s ease;
         }
 
         #view-admin {
-            padding: 16px 20px 48px !important;
+            padding: 16px 20px 56px !important;
             max-width: 100%;
             box-sizing: border-box;
         }
@@ -1052,17 +1056,17 @@
             position: sticky;
             top: 0;
             z-index: 40;
-            margin: -16px -20px 18px;
-            padding: 14px 22px !important;
+            margin: -16px -20px 16px;
+            padding: 13px 22px !important;
             background: var(--ui-header) !important;
-            backdrop-filter: blur(28px) saturate(170%);
-            -webkit-backdrop-filter: blur(28px) saturate(170%);
-            border-bottom: 1.5px solid var(--ui-border) !important;
+            backdrop-filter: blur(24px) saturate(165%);
+            -webkit-backdrop-filter: blur(24px) saturate(165%);
+            border-bottom: 1px solid var(--ui-border) !important;
             box-shadow: var(--ui-specular);
         }
 
         #view-admin #admin-title {
-            font-size: 17px !important;
+            font-size: 16px !important;
             font-weight: 800 !important;
             letter-spacing: -0.025em;
             color: var(--ui-text) !important;
@@ -1071,67 +1075,84 @@
             gap: 8px;
         }
 
-        /* Material 3 Expressive Floating Pill Dock (Image 1 & 4 style) */
+        /* Clean segmented tab bar (crisp 10px corners, never squished pills) */
         #view-admin .admin-tabs {
             display: inline-flex !important;
             flex-wrap: wrap;
-            gap: 5px !important;
-            padding: 5px !important;
-            margin: 0 0 20px 0 !important;
+            gap: 4px !important;
+            padding: 4px !important;
+            margin: 0 0 18px 0 !important;
             background: var(--ui-pill-bg) !important;
-            backdrop-filter: blur(24px) saturate(170%);
-            -webkit-backdrop-filter: blur(24px) saturate(170%);
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 999px !important;
-            box-shadow: var(--ui-specular), var(--ui-shadow);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 12px !important;
+            box-shadow: var(--ui-specular);
         }
 
         #view-admin .admin-tab {
-            padding: 9px 18px !important;
-            border-radius: 999px !important;
+            padding: 8px 15px !important;
+            border-radius: 9px !important;
             font-size: 12.5px !important;
-            font-weight: 700 !important;
+            font-weight: 600 !important;
             letter-spacing: -0.01em;
             color: var(--ui-muted) !important;
             border: 1px solid transparent;
-            transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: all 0.18s ease;
         }
 
         #view-admin .admin-tab:hover {
             color: var(--ui-text) !important;
+            background: var(--ui-row-hover);
         }
 
         #view-admin .admin-tab.active {
             background: var(--ui-pill-active) !important;
             color: var(--ui-pill-active-text) !important;
-            border-color: rgba(255, 255, 255, 0.22) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 8px 20px -6px rgba(99, 102, 241, 0.55);
+            border-color: rgba(255, 255, 255, 0.16) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 6px 16px -6px rgba(99, 102, 241, 0.55);
         }
 
-        /* Frosted 24px Rounded Glass Cards */
+        /* Architectural Frosted Glass Cards (16px radius — sleek & practical) */
         .glass-card {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(26px) saturate(165%);
-            -webkit-backdrop-filter: blur(26px) saturate(165%);
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 26px !important;
-            padding: 20px !important;
+            backdrop-filter: blur(22px) saturate(155%);
+            -webkit-backdrop-filter: blur(22px) saturate(155%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 16px !important;
+            padding: 18px !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
             box-sizing: border-box;
         }
 
         .glass-subcard {
             background: var(--ui-card-inner) !important;
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 20px !important;
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 12px !important;
             padding: 14px 16px !important;
             box-shadow: var(--ui-specular);
+        }
+
+        .table-shell {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--ui-border);
+            background: var(--ui-card);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: var(--ui-specular), var(--ui-shadow);
         }
 
         .bento-kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-            gap: 14px;
+            gap: 12px;
+        }
+
+        .bento-3col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
         }
 
         .bento-2col {
@@ -1142,21 +1163,21 @@
 
         .kpi-tile {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(26px) saturate(165%);
-            -webkit-backdrop-filter: blur(26px) saturate(165%);
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 26px !important;
-            padding: 20px 20px 18px !important;
+            backdrop-filter: blur(22px) saturate(155%);
+            -webkit-backdrop-filter: blur(22px) saturate(155%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 16px !important;
+            padding: 16px 18px !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 10px;
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, background 0.2s ease;
+            gap: 8px;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
         }
 
         .kpi-tile:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             border-color: var(--ui-border-strong) !important;
             background: var(--ui-card-hover) !important;
         }
@@ -1173,19 +1194,19 @@
         }
 
         .kpi-value {
-            font-size: 27px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: -0.03em;
             color: var(--ui-text);
             font-variant-numeric: tabular-nums;
-            line-height: 1.1;
+            line-height: 1.15;
         }
 
         .kpi-badge {
             font-size: 10px;
             font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 999px;
+            padding: 3px 8px;
+            border-radius: 6px;
             background: var(--ui-pill-bg);
             border: 1px solid var(--ui-border);
             color: var(--ui-info);
@@ -1197,18 +1218,71 @@
             letter-spacing: 0.07em;
             text-transform: uppercase;
             color: var(--ui-muted);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 8px;
         }
 
-        /* Vertical pill bar chart (Image 5 purple-cyan capsule bars) */
+        /* Active Sessions Counter Access Cards */
+        .counter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .counter-card {
+            background: var(--ui-card-inner);
+            border: 1px solid var(--ui-border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .counter-card:hover {
+            border-color: var(--ui-border-strong);
+        }
+
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .status-chip.open {
+            background: var(--ui-pos-soft);
+            color: var(--ui-pos);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+        }
+
+        .status-chip.locked {
+            background: var(--ui-neg-soft);
+            color: var(--ui-neg);
+            border: 1px solid rgba(251, 113, 133, 0.25);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Vertical bar chart */
         .pill-chart-wrap {
             display: flex;
             align-items: flex-end;
             gap: 10px;
-            height: 140px;
+            height: 136px;
             padding: 12px 6px 4px;
             overflow-x: auto;
         }
@@ -1226,22 +1300,22 @@
 
         .pill-track {
             width: 12px;
-            height: 94px;
-            border-radius: 999px;
+            height: 92px;
+            border-radius: 6px;
             background: var(--ui-pill-bg);
-            border: 1.5px solid var(--ui-border);
+            border: 1px solid var(--ui-border);
             display: flex;
             align-items: flex-end;
             overflow: hidden;
-            padding: 1.5px;
+            padding: 1px;
         }
 
         .pill-fill {
             width: 100%;
-            border-radius: 999px;
-            background: linear-gradient(180deg, #6366f1 0%, #5eead4 100%);
+            border-radius: 4px;
+            background: linear-gradient(180deg, #6366f1 0%, #34d399 100%);
             transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-            min-height: 8px;
+            min-height: 6px;
         }
 
         .pill-lbl {
@@ -1262,63 +1336,61 @@
         .rank-row {
             display: flex;
             flex-direction: column;
-            gap: 7px;
-            padding: 12px 14px;
-            border-radius: 18px;
+            gap: 6px;
+            padding: 11px 13px;
+            border-radius: 12px;
             background: var(--ui-card-inner);
-            border: 1.5px solid var(--ui-border);
+            border: 1px solid var(--ui-border);
         }
 
         .rank-bar-bg {
-            height: 6px;
+            height: 5px;
             width: 100%;
-            border-radius: 999px;
+            border-radius: 4px;
             background: var(--ui-pill-bg);
             overflow: hidden;
         }
 
         .rank-bar-fill {
             height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #7c6df0, #5eead4);
+            border-radius: 4px;
+            background: linear-gradient(90deg, #6366f1, #34d399);
         }
 
-        /* Expressive Full-Pill Glass Buttons (Image 1 & 3 style) */
+        /* Crisp Practical Buttons (9px radius — full readable width, zero pill squish) */
         .glass-btn {
             background: var(--ui-pill-bg) !important;
             color: var(--ui-text) !important;
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 999px !important;
-            padding: 8px 16px !important;
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 9px !important;
+            padding: 7px 13px !important;
             font-size: 12px !important;
-            font-weight: 700 !important;
+            font-weight: 600 !important;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             box-shadow: var(--ui-specular);
-            transition: transform 0.14s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+            transition: transform 0.12s ease, background 0.16s ease, border-color 0.16s ease;
+            white-space: nowrap;
         }
 
         .glass-btn:hover {
             background: var(--ui-card-hover) !important;
             border-color: var(--ui-border-strong) !important;
-            box-shadow: var(--ui-specular), 0 8px 20px -10px rgba(99, 102, 241, 0.35);
         }
 
         .glass-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.97);
         }
 
         .glass-btn-primary {
             background: var(--ui-btn-primary-bg) !important;
             color: var(--ui-btn-primary-text) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            border-radius: 999px !important;
-            padding: 11px 22px !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            border-radius: 9px !important;
+            padding: 10px 16px !important;
             font-size: 12.5px !important;
             font-weight: 700 !important;
             cursor: pointer;
@@ -1326,60 +1398,78 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 12px 26px -8px rgba(99, 102, 241, 0.5);
-            transition: transform 0.14s ease, filter 0.18s ease;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 20px -8px rgba(99, 102, 241, 0.55);
+            transition: transform 0.12s ease, filter 0.16s ease;
+            white-space: nowrap;
         }
 
         .glass-btn-primary:hover {
-            filter: brightness(1.07);
+            filter: brightness(1.08);
         }
 
         .glass-btn-primary:active {
-            transform: scale(0.96);
+            transform: scale(0.97);
         }
 
-        /* Legacy dynamic admin blocks adapt seamlessly to Dark & Light Frosted Glass */
-        #view-admin .admin-content > div:not(.bento-kpi-grid):not(.bento-2col):not(.glass-card),
+        .glass-btn-danger {
+            background: var(--ui-neg-soft) !important;
+            color: var(--ui-neg) !important;
+            border: 1px solid rgba(251, 113, 133, 0.24) !important;
+            border-radius: 8px !important;
+            padding: 6px 10px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: background 0.16s ease, border-color 0.16s ease;
+        }
+
+        .glass-btn-danger:hover {
+            background: rgba(251, 113, 133, 0.22) !important;
+            border-color: rgba(251, 113, 133, 0.4) !important;
+        }
+
+        /* Entry cards & history logs inside Admin */
         #view-admin .entry-card,
         #view-admin .history-log-box {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 24px !important;
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 14px !important;
             color: var(--ui-text) !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
         }
 
-        #view-admin button:not(.glass-btn):not(.glass-btn-primary) {
-            border-radius: 999px !important;
+        #view-admin .counter-group-title {
+            font-size: 12px !important;
             font-weight: 700 !important;
-            transition: transform 0.14s ease, filter 0.18s ease;
+            letter-spacing: 0.06em !important;
+            color: var(--ui-text) !important;
+            border-left: 3px solid var(--ui-info) !important;
+            padding-left: 10px !important;
         }
 
-        #view-admin button:not(.glass-btn):not(.glass-btn-primary):active {
-            transform: scale(0.96);
+        /* Adapt remaining legacy inline dark boxes cleanly in BOTH Dark & Light themes */
+        #view-admin [style*="background: #1f2937"],
+        #view-admin [style*="background:#1f2937"] {
+            background: var(--ui-card) !important;
+            border-color: var(--ui-border) !important;
         }
 
-        #view-admin #admin-archived-main-view,
-        #view-admin #archived-eod-reconciler-wrap,
-        #view-admin #counters-accordion-container,
-        #view-admin #archived-counters-accordion-container {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            backdrop-filter: none !important;
+        #view-admin [style*="background: #111827"],
+        #view-admin [style*="background:#111827"],
+        #view-admin [style*="background: #1a202c"],
+        #view-admin [style*="background:#1a202c"],
+        #view-admin [style*="background: #2d3748"],
+        #view-admin [style*="background:#2d3748"] {
+            background: var(--ui-card-inner) !important;
+            border-color: var(--ui-border) !important;
         }
 
-        /* Ensure inline dark colors in JS-rendered admin panels adapt in Light Frosted Glass mode */
-        body.theme-light #view-admin [style*="background: #1f2937"],
-        body.theme-light #view-admin [style*="background:#1f2937"],
-        body.theme-light #view-admin [style*="background: #2d3748"],
-        body.theme-light #view-admin [style*="background:#2d3748"],
-        body.theme-light #view-admin [style*="background: #111827"],
-        body.theme-light #view-admin [style*="background:#111827"],
-        body.theme-light #view-admin [style*="background: #1a202c"],
-        body.theme-light #view-admin [style*="background:#1a202c"],
         body.theme-light #view-admin [style*="background: #374151"],
         body.theme-light #view-admin [style*="background:#374151"] {
             background: var(--ui-card-inner) !important;
@@ -1399,24 +1489,29 @@
             color: var(--ui-muted) !important;
         }
 
-        /* Frosted pill inputs & selects */
+        /* Crisp wide 8px inputs & selects (easy to read numbers, zero pill clipping) */
         #view-admin input,
         #view-admin select,
         #collection-workspace input {
             background: var(--ui-input-bg) !important;
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 14px !important;
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 8px !important;
             color: var(--ui-text) !important;
             font-variant-numeric: tabular-nums;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease;
         }
 
         #view-admin input:focus,
         #view-admin select:focus,
         #collection-workspace input:focus {
             outline: none !important;
-            border-color: var(--ui-border-strong) !important;
-            box-shadow: 0 0 0 3px rgba(124, 109, 240, 0.2) !important;
+            border-color: var(--ui-info) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18) !important;
+        }
+
+        #view-admin .eod-input {
+            padding: 6px 8px !important;
+            font-size: 12.5px !important;
         }
 
         #view-admin .eod-input[readonly] {
@@ -1425,7 +1520,7 @@
             color: var(--ui-text-soft) !important;
         }
 
-        /* Crisp frosted data tables */
+        /* High-density crisp tables */
         #view-admin table {
             border-collapse: separate !important;
             border-spacing: 0 !important;
@@ -1438,16 +1533,16 @@
             color: var(--ui-muted) !important;
             font-size: 10.5px !important;
             font-weight: 700 !important;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
             border-bottom: 1px solid var(--ui-border) !important;
-            padding: 10px 8px !important;
+            padding: 9px 8px !important;
         }
 
         #view-admin table tbody td,
         #view-admin .eod-table td {
             border-bottom: 1px solid var(--ui-border) !important;
-            padding: 10px 8px !important;
+            padding: 8px !important;
             color: var(--ui-text);
         }
 
@@ -1455,37 +1550,44 @@
             background: var(--ui-row-hover);
         }
 
-        /* Sleek frosted Fast-Lane floating pill */
+        #view-admin table tfoot td {
+            background: var(--ui-thead-bg) !important;
+            border-top: 1px solid var(--ui-border-strong) !important;
+            color: var(--ui-text) !important;
+        }
+
+        /* Sleek Fast-Lane bar (clean 12px rounded dock, not overly pinched) */
         .fast-lane-bar {
-            background: rgba(17, 24, 43, 0.68) !important;
-            backdrop-filter: blur(26px) saturate(170%) !important;
-            -webkit-backdrop-filter: blur(26px) saturate(170%) !important;
-            border: 1.5px solid rgba(210, 224, 255, 0.24) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 18px 40px -12px rgba(4, 8, 22, 0.72) !important;
+            background: rgba(11, 15, 25, 0.80) !important;
+            backdrop-filter: blur(22px) saturate(160%) !important;
+            -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            border-radius: 14px !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 16px 36px -12px rgba(0, 0, 0, 0.78) !important;
         }
 
         .fast-input {
-            background: rgba(255, 255, 255, 0.10) !important;
-            border: 1px solid rgba(255, 255, 255, 0.18) !important;
-            border-radius: 999px !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            border-radius: 8px !important;
             font-variant-numeric: tabular-nums;
         }
 
         .fast-save-btn {
-            background: linear-gradient(135deg, #8b7cf6 0%, #6366f1 100%) !important;
+            background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%) !important;
             color: #ffffff !important;
-            border-radius: 999px !important;
+            border-radius: 8px !important;
         }
 
         /* Glassy bottom sheets & modals */
         .bottom-sheet {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(30px) saturate(175%);
-            -webkit-backdrop-filter: blur(30px) saturate(175%);
+            backdrop-filter: blur(28px) saturate(165%);
+            -webkit-backdrop-filter: blur(28px) saturate(165%);
             color: var(--ui-text) !important;
-            border-top: 1.5px solid var(--ui-border) !important;
-            border-radius: 30px 30px 0 0 !important;
-            box-shadow: 0 -20px 54px rgba(15, 23, 42, 0.35) !important;
+            border-top: 1px solid var(--ui-border-strong) !important;
+            border-radius: 22px 22px 0 0 !important;
+            box-shadow: 0 -20px 54px rgba(0, 0, 0, 0.45) !important;
         }
 
         .bottom-sheet .sheet-header,
@@ -1496,26 +1598,26 @@
 
         .bottom-sheet .input-field {
             background: var(--ui-input-bg) !important;
-            border: 1.5px solid var(--ui-border) !important;
+            border: 1px solid var(--ui-border) !important;
             color: var(--ui-text) !important;
-            border-radius: 16px !important;
+            border-radius: 8px !important;
             font-variant-numeric: tabular-nums;
         }
 
         .bottom-sheet .entry-card {
             background: var(--ui-card-inner) !important;
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 20px !important;
+            border: 1px solid var(--ui-border) !important;
+            border-radius: 14px !important;
             color: var(--ui-text) !important;
         }
 
         .modal-box {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(30px) saturate(175%);
-            -webkit-backdrop-filter: blur(30px) saturate(175%);
+            backdrop-filter: blur(28px) saturate(165%);
+            -webkit-backdrop-filter: blur(28px) saturate(165%);
             color: var(--ui-text) !important;
-            border: 1.5px solid var(--ui-border) !important;
-            border-radius: 28px !important;
+            border: 1px solid var(--ui-border-strong) !important;
+            border-radius: 18px !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
         }
 
@@ -1528,7 +1630,7 @@
         #view-admin ::-webkit-scrollbar-thumb,
         #view-admin::-webkit-scrollbar-thumb {
             background: var(--ui-border-strong);
-            border-radius: 999px;
+            border-radius: 6px;
         }
 
         @keyframes blink-red {
@@ -2055,171 +2157,153 @@
 
         <!-- EOD Closing Tab Content -->
         <div class="admin-content" id="admin-eod-content"
-            style="display: none; background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; flex-direction: column;">
+            style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box;">
             <!-- Sales Summary Dashboard Widgets -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
-                <div
-                    style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total
-                        Sales</div>
-                    <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;"
-                        id="summary-total-sales">NPR 0</div>
+            <div class="bento-3col">
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Total Sales</span><span class="kpi-badge">ALL</span></div>
+                    <div class="kpi-value" id="summary-total-sales">NPR 0</div>
                 </div>
-                <div
-                    style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total
-                        Cash (C)</div>
-                    <div style="font-size: 15px; font-weight: 800; color: #10b981; margin-top: 4px;"
-                        id="summary-cash-sales">NPR 0</div>
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Total Cash (C)</span><span class="kpi-badge">CASH</span></div>
+                    <div class="kpi-value" style="color: var(--ui-pos);" id="summary-cash-sales">NPR 0</div>
                 </div>
-                <div
-                    style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                    <div style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Total
-                        QR/Bank</div>
-                    <div style="font-size: 15px; font-weight: 800; color: #f59e0b; margin-top: 4px;"
-                        id="summary-other-sales">NPR 0</div>
+                <div class="kpi-tile">
+                    <div class="kpi-label"><span>Total QR / Bank</span><span class="kpi-badge">DIGITAL</span></div>
+                    <div class="kpi-value" style="color: var(--ui-warn);" id="summary-other-sales">NPR 0</div>
                 </div>
             </div>
 
             <!-- Historical Banner Alert -->
             <div id="historical-banner"
-                style="display: none; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 800; text-align: center; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                style="display: none; padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; text-align: center; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">
             </div>
 
-            <!-- Daily Reconciliation Table -->
-            <div
-                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                    <div
-                        style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px;">
-                        Daily Reconciliation</div>
-
-                    <!-- Static Today Label -->
-                    <div
-                        style="display:inline-flex; align-items:center; gap:6px; background:#111827; padding:6px 12px; border-radius:8px; border:1px solid #374151; margin-left:8px;">
-                        <span class="material-icons" style="font-size:16px; color:#FF5A5F;">today</span>
-                        <span id="today-eod-date-label" style="font-size:12px; font-weight:700; color:#fff;"></span>
+            <!-- Daily Reconciliation Card -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <div class="counter-group-title" style="margin:0;">Daily Reconciliation</div>
+                        <div class="glass-subcard" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px !important; border-radius:9px !important;">
+                            <span class="material-icons" style="font-size:15px; color:var(--ui-info);">today</span>
+                            <span id="today-eod-date-label" style="font-size:12px; font-weight:700; color:var(--ui-text);"></span>
+                        </div>
+                        <button onclick="forceSync()" id="btn-sync-today-eod" class="glass-btn" style="padding:6px 12px !important;">
+                            <span class="material-icons" style="font-size:14px;">sync</span> Sync
+                        </button>
                     </div>
-
-                    <button onclick="forceSync()" id="btn-sync-today-eod"
-                        style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:2px;"><span
-                            class="material-icons" style="font-size:12px;">sync</span> SYNC</button>
+                    <button type="button" class="glass-btn" id="opening-cash-display" onclick="promptResetOpeningCash()" title="Tap to edit Opening Cash">
+                        Opening Cash: NPR 0
+                    </button>
                 </div>
-                <div style="font-size:12px; color:#9ca3af; font-weight:600; cursor:pointer;" id="opening-cash-display"
-                    onclick="promptResetOpeningCash()">Opening Cash: NPR 0</div>
-            </div>
-            <div style="overflow-x: auto; margin-bottom: 24px;">
-                <table class="eod-table"
-                    style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; color: #f3f4f6;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid #374151; color: #9ca3af; font-weight: 700;">
-                            <th style="padding: 8px;">Particulars</th>
-                            <th style="padding: 8px; text-align: right; width: 120px;">IN (Expected)</th>
-                            <th style="padding: 8px; text-align: right; width: 140px;">OUT (Actual)</th>
-                            <th style="padding: 8px; text-align: right; width: 150px;">Variance</th>
-                        </tr>
-                    </thead>
-                    <tbody id="daily-table-body">
-                        <!-- Dynamic reconciliation rows go here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Counters Table -->
-            <div
-                style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; margin-top: 24px; margin-bottom: 12px; border-left: 3px solid var(--primary); padding-left: 8px;">
-                Counters Investigation Ledger</div>
-            <div id="counters-accordion-container"
-                style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
-                <!-- Dynamic Accordions go here -->
-            </div>
-
-            <!-- Cash Denomination & final split -->
-            <div
-                style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; margin-top: 24px; margin-bottom: 12px; border-left: 3px solid var(--primary); padding-left: 8px;">
-                Physical Cash Denomination & Split</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">1000 (x1000)</label>
-                    <input type="number" id="denom-1000" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">500 (x500)</label>
-                    <input type="number" id="denom-500" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">100 (x100)</label>
-                    <input type="number" id="denom-100" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">50 (x50)</label>
-                    <input type="number" id="denom-50" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">20 (x20)</label>
-                    <input type="number" id="denom-20" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">10 (x10)</label>
-                    <input type="number" id="denom-10" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">5 (x5)</label>
-                    <input type="number" id="denom-5" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0">
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10px; color:#9ca3af;">INR (x1.6)</label>
-                    <input type="number" id="denom-ic500" class="input-field eod-input" value="0"
-                        oninput="calculateDenominations()" style="text-align:center;" min="0" placeholder="Amount">
+                <div style="overflow-x: auto;">
+                    <table class="eod-table" style="width: 100%; font-size: 13px;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Particulars</th>
+                                <th style="text-align: right; width: 125px;">IN (Expected)</th>
+                                <th style="text-align: right; width: 145px;">OUT (Actual)</th>
+                                <th style="text-align: right; width: 135px;">Variance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-table-body">
+                            <!-- Dynamic reconciliation rows go here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div
-                style="background: #111827; padding: 16px; border-radius: 8px; border: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; font-size: 13px; gap: 8px; flex-wrap: wrap;">
-                <div>
-                    <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">Take Home
-                        (INR + 1000 + 500)</div>
-                    <div style="font-size: 16px; font-weight:800; color:#10b981; margin-top:4px;" id="split-take-home">
-                        NPR 0</div>
+            <!-- Counters Investigation Ledger Card -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
+                <div class="section-kicker" style="margin-bottom:0;">
+                    <span>Counters Investigation Ledger</span>
+                    <span class="kpi-badge">BY COUNTER</span>
                 </div>
-                <div>
-                    <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">Tomorrow's
-                        Change (100 to 5)</div>
-                    <div style="font-size: 16px; font-weight:800; color:#f59e0b; margin-top:4px;" id="split-change">NPR
-                        0</div>
-                </div>
-                <div>
-                    <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">Total
-                        Physical Cash</div>
-                    <div style="font-size: 16px; font-weight:800; color:#fff; margin-top:4px;" id="split-total-cash">NPR
-                        0</div>
+                <div id="counters-accordion-container" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Dynamic Accordions go here -->
                 </div>
             </div>
 
-            <div style="display: flex; gap: 8px; margin-top: 16px; width: 100%;">
-                <button onclick="submitDailyEod()" id="btn-submit-eod"
-                    style="background:#10b981; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 2; text-transform:uppercase; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Submit
-                    & Lock Daily EOD</button>
-                <button onclick="closeEodLater()" id="btn-close-later-eod"
-                    style="background:#4b5563; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 1; text-transform:uppercase; box-shadow:0 4px 12px rgba(75,85,99,0.3);">Close
-                    Later</button>
+            <!-- Cash Denomination & Split Card -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:14px;">
+                <div class="section-kicker" style="margin-bottom:0;">
+                    <span>Physical Cash Denomination & Split</span>
+                    <span class="kpi-badge">COUNT</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">1000 (x1000)</label>
+                        <input type="number" id="denom-1000" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">500 (x500)</label>
+                        <input type="number" id="denom-500" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">100 (x100)</label>
+                        <input type="number" id="denom-100" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">50 (x50)</label>
+                        <input type="number" id="denom-50" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">20 (x20)</label>
+                        <input type="number" id="denom-20" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">10 (x10)</label>
+                        <input type="number" id="denom-10" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">5 (x5)</label>
+                        <input type="number" id="denom-5" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">INR (x1.6)</label>
+                        <input type="number" id="denom-ic500" class="input-field eod-input" value="0"
+                            oninput="calculateDenominations()" style="text-align:center;" min="0" placeholder="Amount">
+                    </div>
+                </div>
+
+                <div class="glass-subcard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
+                    <div>
+                        <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Take Home (INR + 1000 + 500)</div>
+                        <div style="font-size: 18px; font-weight:800; color:var(--ui-pos); margin-top:4px; font-variant-numeric:tabular-nums;" id="split-take-home">NPR 0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Tomorrow's Change (100 to 5)</div>
+                        <div style="font-size: 18px; font-weight:800; color:var(--ui-warn); margin-top:4px; font-variant-numeric:tabular-nums;" id="split-change">NPR 0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Total Physical Cash</div>
+                        <div style="font-size: 18px; font-weight:800; color:var(--ui-text); margin-top:4px; font-variant-numeric:tabular-nums;" id="split-total-cash">NPR 0</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; width: 100%; flex-wrap: wrap;">
+                    <button onclick="submitDailyEod()" id="btn-submit-eod" class="glass-btn-primary" style="flex: 2; min-width: 200px;">
+                        <span class="material-icons" style="font-size:16px;">lock</span> Submit & Lock Daily EOD
+                    </button>
+                    <button onclick="closeEodLater()" id="btn-close-later-eod" class="glass-btn" style="flex: 1; min-width: 120px;">
+                        Close Later
+                    </button>
+                </div>
             </div>
 
             <!-- Historical Counter Sessions Section -->
-            <div id="historical-eod-sessions"
-                style="display: none; flex-direction: column; gap: 16px; margin-top: 24px; border-top: 1px solid #374151; padding-top: 20px; width: 100%;">
-                <div
-                    style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px; margin-bottom: 8px;">
-                    Counter Sessions & Entries for this Day</div>
+            <div id="historical-eod-sessions" class="glass-card"
+                style="display: none; flex-direction: column; gap: 14px; width: 100%;">
+                <div class="counter-group-title" style="margin:0;">Counter Sessions & Entries for this Day</div>
                 <div id="historical-eod-sessions-content"
-                    style="display: flex; flex-direction: column; gap: 16px; width: 100%;"></div>
+                    style="display: flex; flex-direction: column; gap: 14px; width: 100%;"></div>
             </div>
         </div>
 
@@ -4960,11 +5044,7 @@
 
             // Render Access Control Panel at the top
             const accessCard = document.createElement('div');
-            accessCard.style.background = '#1f2937';
-            accessCard.style.border = '1px solid #374151';
-            accessCard.style.borderRadius = '12px';
-            accessCard.style.padding = '16px';
-            accessCard.style.marginBottom = '20px';
+            accessCard.className = 'glass-card';
             accessCard.style.display = 'flex';
             accessCard.style.flexDirection = 'column';
             accessCard.style.gap = '12px';
@@ -4974,33 +5054,34 @@
             for (let i = 0; i <= 5; i++) {
                 const counterIdStr = i.toString();
                 const enabled = (counterPermissions[counterIdStr] !== false);
-
-                const btnStyle = enabled
-                    ? 'background: #059669; color: #fff;'
-                    : 'background: #dc2626; color: #fff;';
-                const label = enabled ? '🟢 OPEN' : '🔴 LOCKED';
-                const actionLabel = enabled ? 'LOCK ACCESS' : 'ALLOW ACCESS';
+                const chipClass = enabled ? 'open' : 'locked';
+                const label = enabled ? 'OPEN' : 'LOCKED';
+                const actionLabel = enabled ? 'Lock' : 'Unlock';
+                const counterName = i === 0 ? 'Counter 0 · Collections' : `Counter ${i}`;
 
                 statusGridHtml += `
-                    <div style="display:flex; flex-direction:column; gap:8px; background:#111827; padding:12px; border-radius:8px; border:1px solid #2A2D31;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-weight:700; font-size:13px; color:#fff;">Counter ${i}</span>
-                            <span style="font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; ${btnStyle}">${label}</span>
+                    <div class="counter-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                            <span style="font-weight:700; font-size:13px; color:var(--ui-text);">${counterName}</span>
+                            <span class="status-chip ${chipClass}"><span class="status-dot"></span>${label}</span>
                         </div>
-                        <div style="display:flex; gap:6px;">
-                            <button onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="background:#374151; color:#fff; border:none; padding:6px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer; flex:1; text-align:center;">${actionLabel}</button>
-                            <button onclick="adminEnterWorkspace('${counterIdStr}')" style="background:#3b82f6; color:#fff; border:none; padding:6px; border-radius:4px; font-size:10px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:2px; flex:1;"><span class="material-icons" style="font-size:11px;">login</span> ENTER</button>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            <button class="glass-btn" onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="padding:7px 10px !important; font-size:11.5px !important;">${actionLabel}</button>
+                            <button class="glass-btn-primary" onclick="adminEnterWorkspace('${counterIdStr}')" style="padding:7px 10px !important; font-size:11.5px !important;"><span class="material-icons" style="font-size:13px;">login</span> Enter</button>
                         </div>
-                        <button onclick="forceResetCounterSession('${counterIdStr}')" style="background:#7f1d1d; color:#fecaca; border:1px solid #991b1b; padding:4px; border-radius:4px; font-size:9px; font-weight:700; cursor:pointer; width:100%; text-align:center; margin-top:2px;">🔄 FORCE RESET SESSION</button>
+                        <button class="glass-btn-danger" onclick="forceResetCounterSession('${counterIdStr}')" style="width:100%;">
+                            <span class="material-icons" style="font-size:13px;">restart_alt</span> Reset Session Lease
+                        </button>
                     </div>
                 `;
             }
 
             accessCard.innerHTML = `
-                <div style="font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; border-bottom:1px solid #374151; padding-bottom:6px; margin-bottom:4px;">
-                    🛡️ Counter Login Access Control
+                <div class="section-kicker" style="margin-bottom:0;">
+                    <span>Counter Login Access Control</span>
+                    <span class="kpi-badge">6 COUNTERS</span>
                 </div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+                <div class="counter-grid">
                     ${statusGridHtml}
                 </div>
             `;
@@ -5008,25 +5089,21 @@
 
             // Symmetrical division for Active Sessions
             const sessionTitle = document.createElement('div');
-            sessionTitle.style.fontSize = '11px';
-            sessionTitle.style.fontWeight = '700';
-            sessionTitle.style.color = '#9ca3af';
-            sessionTitle.style.textTransform = 'uppercase';
-            sessionTitle.style.marginTop = '16px';
-            sessionTitle.style.borderBottom = '1px solid #374151';
-            sessionTitle.style.paddingBottom = '6px';
-            sessionTitle.innerText = '📈 Current Active Counter Sessions';
+            sessionTitle.className = 'section-kicker';
+            sessionTitle.style.marginTop = '8px';
+            sessionTitle.style.marginBottom = '0';
+            sessionTitle.innerHTML = '<span>Current Active Counter Sessions</span><span class="kpi-badge">LIVE</span>';
             container.appendChild(sessionTitle);
 
             const activeEntries = entries.filter(e => e.sessionStatus !== 'closed');
 
             if (activeEntries.length === 0) {
                 const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'glass-card';
                 emptyMsg.style.textAlign = 'center';
-                emptyMsg.style.padding = '40px';
-                emptyMsg.style.color = '#9ca3af';
-                emptyMsg.style.fontSize = '12px';
-                emptyMsg.style.fontStyle = 'italic';
+                emptyMsg.style.padding = '36px';
+                emptyMsg.style.color = 'var(--ui-muted)';
+                emptyMsg.style.fontSize = '13px';
                 emptyMsg.innerText = 'No active cashier counter sessions currently open.';
                 container.appendChild(emptyMsg);
                 return;
@@ -5040,66 +5117,58 @@
             });
 
             Object.keys(groups).sort().forEach(cid => {
-                // Symmetrical header container for counter name + entry button
+                // Clean header bar for counter name + enter button (no accidental outer card)
                 const headerWrapper = document.createElement('div');
                 headerWrapper.style.display = 'flex';
                 headerWrapper.style.justifyContent = 'space-between';
                 headerWrapper.style.alignItems = 'center';
-                headerWrapper.style.marginTop = '16px';
+                headerWrapper.style.marginTop = '10px';
+                headerWrapper.style.gap = '10px';
 
                 const groupTitle = document.createElement('div');
                 groupTitle.className = 'counter-group-title';
                 groupTitle.style.marginTop = '0';
-                groupTitle.innerText = `Counter ${cid} Active`;
+                groupTitle.innerText = cid === '0' ? 'Counter 0 · Collections Active' : `Counter ${cid} Active`;
 
                 const enterBtn = document.createElement('button');
-                enterBtn.className = 'btn-void';
-                enterBtn.style.background = 'var(--primary)';
-                enterBtn.style.color = 'var(--primary-text)';
-                enterBtn.style.padding = '4px 10px';
-                enterBtn.style.fontSize = '11px';
-                enterBtn.style.fontWeight = '700';
-                enterBtn.innerText = 'ENTER PORTAL';
+                enterBtn.className = 'glass-btn';
+                enterBtn.innerHTML = '<span class="material-icons" style="font-size:14px;">open_in_new</span> Enter Portal';
                 enterBtn.onclick = () => adminEnterWorkspace(cid);
 
                 headerWrapper.appendChild(groupTitle);
                 headerWrapper.appendChild(enterBtn);
                 container.appendChild(headerWrapper);
 
-                // Nested Table (investigation ledger layout)
+                // Clean frosted table shell
                 const tableWrap = document.createElement('div');
-                tableWrap.style.overflowX = 'auto';
-                tableWrap.style.marginTop = '8px';
-                tableWrap.style.marginBottom = '16px';
-                tableWrap.style.borderRadius = '8px';
-                tableWrap.style.border = '1px solid #374151';
+                tableWrap.className = 'table-shell';
+                tableWrap.style.marginBottom = '10px';
 
                 const table = document.createElement('table');
                 table.className = 'eod-table';
                 table.style.width = '100%';
-                table.style.borderCollapse = 'collapse';
-                table.style.fontSize = '11px';
+                table.style.fontSize = '11.5px';
 
                 table.innerHTML = `
                     <thead>
-                        <tr style="color: #9ca3af; font-weight: 700; border-bottom: 1px solid #4a5568; background: #1f2937;">
-                            <th class="th-sn" style="padding:6px; text-align:center; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'sn')">S.N ⇅</th>
-                            <th class="th-time" style="padding:6px; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')">B.N (Time) ⇅</th>
-                            <th class="th-cash" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">C ⇅</th>
-                            <th class="th-qr" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">Q ⇅</th>
-                            <th class="th-pos" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'pos')">POS ⇅</th>
-                            <th class="th-ips" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'ips')">IPS ⇅</th>
-                            <th class="th-esewa" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'esewa')">Esewa ⇅</th>
-                            <th class="th-online" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'online')">Online ⇅</th>
-                            <th class="th-totcash" style="padding:6px; text-align:right; color:#10b981; font-weight:700; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCash')">Tot Cash ⇅</th>
-                            <th class="th-cheque" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cheque')">Cheque ⇅</th>
-                            <th class="th-credit" style="padding:6px; text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'credit')">Credit ⇅</th>
-                            <th class="th-totcredit" style="padding:6px; text-align:right; color:#ef4444; font-weight:700; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCredit')">Tot Credit ⇅</th>
-                            <th class="th-totsales" style="padding:6px; text-align:right; font-weight:700; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Tot Sales ⇅</th>
+                        <tr>
+                            <th class="th-sn" style="text-align:center; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'sn')">S.N ⇅</th>
+                            <th class="th-time" style="cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')">B.N (Time) ⇅</th>
+                            <th class="th-cash" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">C ⇅</th>
+                            <th class="th-qr" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">Q ⇅</th>
+                            <th class="th-pos" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'pos')">POS ⇅</th>
+                            <th class="th-ips" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'ips')">IPS ⇅</th>
+                            <th class="th-esewa" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'esewa')">Esewa ⇅</th>
+                            <th class="th-online" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'online')">Online ⇅</th>
+                            <th class="th-totcash" style="text-align:right; color:var(--ui-pos); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCash')">Tot Cash ⇅</th>
+                            <th class="th-cheque" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cheque')">Cheque ⇅</th>
+                            <th class="th-credit" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'credit')">Credit ⇅</th>
+                            <th class="th-totcredit" style="text-align:right; color:var(--ui-neg); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCredit')">Tot Credit ⇅</th>
+                            <th class="th-totsales" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Tot Sales ⇅</th>
                         </tr>
                     </thead>
                     <tbody class="active-sess-tbody-${cid}"></tbody>
-                    <tfoot style="color: #fff; font-weight: 800; border-top: 2px solid #4a5568; background: #1f2937;">
+                    <tfoot style="font-weight: 800;">
                         <tr id="tfoot-acc-active-${cid}"></tr>
                     </tfoot>
                 `;
