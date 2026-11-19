@@ -2112,7 +2112,8 @@
             <div class="admin-tab active" onclick="switchAdminTab('active')">Active Sessions</div>
             <div class="admin-tab" onclick="switchAdminTab('archived')">Archived Logs</div>
             <div class="admin-tab" onclick="switchAdminTab('eod')">EOD Closing</div>
-            <div class="admin-tab" onclick="switchAdminTab('reports')">Reports / Dashboard</div>
+            <div class="admin-tab" onclick="switchAdminTab('reports')">Daily Report</div>
+            <div class="admin-tab" onclick="switchAdminTab('analytics')">Analytics & History</div>
         </div>
         <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 14px; width: 100%;">
             <!-- Quick Counter Selection Bar for Admins -->
@@ -2346,19 +2347,33 @@
         <!-- EOD Closing Tab Content -->
         <div class="admin-content" id="admin-eod-content"
             style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box;">
-            <!-- Sales Summary Dashboard Widgets -->
-            <div class="bento-3col">
-                <div class="kpi-tile">
+            <!-- Compact Sales Summary Widgets + Live Payment Split Donut -->
+            <div class="bento-kpi-grid">
+                <div class="kpi-tile" style="padding:13px 15px !important;">
                     <div class="kpi-label"><span>Total Sales</span><span class="kpi-badge">ALL</span></div>
-                    <div class="kpi-value" id="summary-total-sales">NPR 0</div>
+                    <div class="kpi-value" style="font-size:21px;" id="summary-total-sales">NPR 0</div>
                 </div>
-                <div class="kpi-tile">
-                    <div class="kpi-label"><span>Total Cash (C)</span><span class="kpi-badge">CASH</span></div>
-                    <div class="kpi-value" style="color: var(--ui-pos);" id="summary-cash-sales">NPR 0</div>
+                <div class="kpi-tile" style="padding:13px 15px !important;">
+                    <div class="kpi-label"><span>Total Cash</span><span class="kpi-badge">CASH</span></div>
+                    <div class="kpi-value" style="font-size:21px; color: var(--ui-pos);" id="summary-cash-sales">NPR 0</div>
                 </div>
-                <div class="kpi-tile">
-                    <div class="kpi-label"><span>Total QR / Bank</span><span class="kpi-badge">DIGITAL</span></div>
-                    <div class="kpi-value" style="color: var(--ui-warn);" id="summary-other-sales">NPR 0</div>
+                <div class="kpi-tile" style="padding:13px 15px !important;">
+                    <div class="kpi-label"><span>QR / Bank</span><span class="kpi-badge">DIGITAL</span></div>
+                    <div class="kpi-value" style="font-size:21px; color: var(--ui-warn);" id="summary-other-sales">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:12px 15px !important; flex-direction:row; align-items:center; gap:12px;">
+                    <svg id="eod-mini-pie" viewBox="0 0 64 64" style="width:54px; height:54px; flex-shrink:0; transform:rotate(-90deg);">
+                        <circle cx="32" cy="32" r="24" fill="none" stroke="var(--ui-pill-bg)" stroke-width="8" />
+                        <circle id="eod-pie-cash" cx="32" cy="32" r="24" fill="none" stroke="var(--ui-pos)" stroke-width="8" stroke-dasharray="0 151" />
+                        <circle id="eod-pie-other" cx="32" cy="32" r="24" fill="none" stroke="var(--ui-warn)" stroke-width="8" stroke-dasharray="0 151" />
+                        <circle id="eod-pie-credit" cx="32" cy="32" r="24" fill="none" stroke="var(--ui-neg)" stroke-width="8" stroke-dasharray="0 151" />
+                    </svg>
+                    <div style="display:flex; flex-direction:column; gap:3px; font-size:10.5px; font-weight:700; font-variant-numeric:tabular-nums;">
+                        <div style="color:var(--ui-muted); text-transform:uppercase; font-size:9.5px; letter-spacing:0.06em;">Mix</div>
+                        <div style="color:var(--ui-pos);">Cash <span id="eod-pie-cash-pct">0%</span></div>
+                        <div style="color:var(--ui-warn);">QR/Bank <span id="eod-pie-other-pct">0%</span></div>
+                        <div style="color:var(--ui-neg);">Credit <span id="eod-pie-credit-pct">0%</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -2611,6 +2626,153 @@
                             <tbody id="rep-cnc-ledger"></tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Analytics & Multi-Filter Reports Tab -->
+        <div class="admin-content" id="admin-analytics-content"
+            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
+
+            <!-- Filters & Period Modulation Bar -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <div style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ui-muted);">Historical Intelligence</div>
+                        <div style="font-size:16px; font-weight:800; color:var(--ui-text);">Multi-Period Analytics & Filters</div>
+                    </div>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="glass-btn ana-preset-btn" data-range="7" onclick="setAnalyticsPreset('7')">7D Weekly</button>
+                        <button class="glass-btn ana-preset-btn" data-range="30" onclick="setAnalyticsPreset('30')">30D Monthly</button>
+                        <button class="glass-btn ana-preset-btn" data-range="90" onclick="setAnalyticsPreset('90')">90D Quarter</button>
+                        <button class="glass-btn ana-preset-btn" data-range="all" onclick="setAnalyticsPreset('all')">All Time</button>
+                        <button class="glass-btn-primary" onclick="exportAnalyticsCsv()" style="padding:7px 12px !important; font-size:11.5px !important;">
+                            <span class="material-icons" style="font-size:14px;">download</span> CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:10px; align-items:end;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">From Date</label>
+                        <input type="date" id="ana-from-date" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">To Date</label>
+                        <input type="date" id="ana-to-date" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Counter</label>
+                        <select id="ana-counter-filter" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
+                            <option value="all">All Counters (0–5)</option>
+                            <option value="sales">Sales Only (1–5)</option>
+                            <option value="0">Counter 0 (Collections)</option>
+                            <option value="1">Counter 1</option>
+                            <option value="2">Counter 2</option>
+                            <option value="3">Counter 3</option>
+                            <option value="4">Counter 4</option>
+                            <option value="5">Counter 5</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Payment Mode</label>
+                        <select id="ana-mode-filter" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
+                            <option value="all">All Payment Modes</option>
+                            <option value="cash">Cash</option>
+                            <option value="qr">QR</option>
+                            <option value="ips">IPS / EBL</option>
+                            <option value="pos">POS</option>
+                            <option value="esewa">eSewa</option>
+                            <option value="online">Online</option>
+                            <option value="cheque">Cheque</option>
+                            <option value="credit">Credit</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4-up Compact KPI Row -->
+            <div class="bento-kpi-grid">
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Filtered Total</span><span class="kpi-badge" id="ana-days-badge">0D</span></div>
+                    <div class="kpi-value" style="font-size:22px;" id="ana-total-rev">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Daily Average</span><span class="kpi-badge">AVG/DAY</span></div>
+                    <div class="kpi-value" style="font-size:22px; color:var(--ui-pos);" id="ana-avg-day">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Transactions</span><span class="kpi-badge">BILLS</span></div>
+                    <div class="kpi-value" style="font-size:22px;" id="ana-tx-count">0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Peak Day</span><span class="kpi-badge">BEST</span></div>
+                    <div class="kpi-value" style="font-size:18px; color:var(--ui-info);" id="ana-peak-day">—</div>
+                </div>
+            </div>
+
+            <!-- Row 1: Daily Trend Chart + Payment Mode Pie/Donut -->
+            <div class="bento-2col">
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>Revenue Trend (By Date)</span>
+                        <span class="kpi-badge" id="ana-trend-meta">DAILY</span>
+                    </div>
+                    <div id="ana-trend-chart" class="pill-chart-wrap" style="height:165px;"></div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>Breakdown by Payment Mode</span>
+                        <span class="kpi-badge">8 MODES</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+                        <svg id="ana-mode-donut" viewBox="0 0 120 120" style="width:124px; height:124px; flex-shrink:0; transform:rotate(-90deg);"></svg>
+                        <div id="ana-mode-legend" style="flex:1; min-width:150px; display:flex; flex-direction:column; gap:6px; font-size:11.5px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 2: By Day of Week + By Time of Day -->
+            <div class="bento-2col">
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>By Day of Week (Sun – Sat)</span>
+                        <span class="kpi-badge">WEEKLY PATTERN</span>
+                    </div>
+                    <div id="ana-weekday-chart" class="pill-chart-wrap" style="height:150px;"></div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="section-kicker">
+                        <span>By Time of Day (Hourly)</span>
+                        <span class="kpi-badge">PEAK HOURS</span>
+                    </div>
+                    <div id="ana-hourly-chart" class="pill-chart-wrap" style="height:150px;"></div>
+                </div>
+            </div>
+
+            <!-- Row 3: Counter Breakdown Table -->
+            <div class="glass-card">
+                <div class="section-kicker">
+                    <span>Counter Performance Matrix</span>
+                    <span class="kpi-badge">SUMMARY</span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table style="width:100%; font-size:12px;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Counter</th>
+                                <th style="text-align:right;">Bills</th>
+                                <th style="text-align:right;">Cash</th>
+                                <th style="text-align:right;">Digital</th>
+                                <th style="text-align:right;">Chq/Credit</th>
+                                <th style="text-align:right;">Avg Bill</th>
+                                <th style="text-align:right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ana-counter-tbody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -4972,6 +5134,8 @@
             document.getElementById('admin-archived-content').style.display = 'none';
             document.getElementById('admin-eod-content').style.display = 'none';
             document.getElementById('admin-reports-content').style.display = 'none';
+            const anaEl = document.getElementById('admin-analytics-content');
+            if (anaEl) anaEl.style.display = 'none';
 
             if (tab === 'active') {
                 document.querySelectorAll('.admin-tab')[0].classList.add('active');
@@ -5025,6 +5189,15 @@
                 fetchHistoricalClosings().then(() => {
                     renderAdminReports();
                 });
+            } else if (tab === 'analytics') {
+                document.querySelectorAll('.admin-tab')[4].classList.add('active');
+                const anaEl = document.getElementById('admin-analytics-content');
+                if (anaEl) anaEl.style.display = 'flex';
+                if (!document.getElementById('ana-from-date').value) {
+                    setAnalyticsPreset('30');
+                } else {
+                    renderAdminAnalytics();
+                }
             }
         }
 
@@ -5038,6 +5211,8 @@
                     handleEodDateChange();
                 } else if (activeAdminTab === 'reports') {
                     renderAdminReports();
+                } else if (activeAdminTab === 'analytics') {
+                    renderAdminAnalytics();
                 }
             } catch (err) {
                 console.error("Error rendering admin portal:", err);
@@ -5772,6 +5947,29 @@
             const sum_total = getEodElement('summary-total-sales'); if (sum_total) sum_total.innerText = `NPR ${totalSales.toLocaleString()}`;
             const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
             const sum_other = getEodElement('summary-other-sales'); if (sum_other) sum_other.innerText = `NPR ${totalOtherSales.toLocaleString()}`;
+
+            // Update compact EOD Payment Split Mini-Donut (r=24 -> circumference ~= 150.8)
+            const pieCash = document.getElementById('eod-pie-cash');
+            const pieOther = document.getElementById('eod-pie-other');
+            const pieCredit = document.getElementById('eod-pie-credit');
+            if (pieCash && pieOther && pieCredit && dateKey === getLocalTodayStr()) {
+                const C = 150.8;
+                const pCash = totalSales ? Math.round((totalCashSales / totalSales) * 100) : 0;
+                const pOther = totalSales ? Math.round((totalOtherSales / totalSales) * 100) : 0;
+                const pCredit = totalSales ? Math.max(0, 100 - pCash - pOther) : 0;
+                const lCash = (pCash / 100) * C;
+                const lOther = (pOther / 100) * C;
+                const lCredit = (pCredit / 100) * C;
+                pieCash.setAttribute('stroke-dasharray', `${lCash} ${C}`);
+                pieCash.setAttribute('stroke-dashoffset', '0');
+                pieOther.setAttribute('stroke-dasharray', `${lOther} ${C}`);
+                pieOther.setAttribute('stroke-dashoffset', `${-lCash}`);
+                pieCredit.setAttribute('stroke-dasharray', `${lCredit} ${C}`);
+                pieCredit.setAttribute('stroke-dashoffset', `${-(lCash + lOther)}`);
+                const e1 = document.getElementById('eod-pie-cash-pct'); if (e1) e1.innerText = `${pCash}%`;
+                const e2 = document.getElementById('eod-pie-other-pct'); if (e2) e2.innerText = `${pOther}%`;
+                const e3 = document.getElementById('eod-pie-credit-pct'); if (e3) e3.innerText = `${pCredit}%`;
+            }
 
             // Expected Totals as per Google Sheet formulas
             const expTotalC = expSalesC + expCollC;
@@ -6902,6 +7100,29 @@
             const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
             const sum_other = getEodElement('summary-other-sales'); if (sum_other) sum_other.innerText = `NPR ${totalOtherSales.toLocaleString()}`;
 
+            // Update compact EOD Payment Split Mini-Donut (r=24 -> circumference ~= 150.8)
+            const pieCash = document.getElementById('eod-pie-cash');
+            const pieOther = document.getElementById('eod-pie-other');
+            const pieCredit = document.getElementById('eod-pie-credit');
+            if (pieCash && pieOther && pieCredit && dateKey === getLocalTodayStr()) {
+                const C = 150.8;
+                const pCash = totalSales ? Math.round((totalCashSales / totalSales) * 100) : 0;
+                const pOther = totalSales ? Math.round((totalOtherSales / totalSales) * 100) : 0;
+                const pCredit = totalSales ? Math.max(0, 100 - pCash - pOther) : 0;
+                const lCash = (pCash / 100) * C;
+                const lOther = (pOther / 100) * C;
+                const lCredit = (pCredit / 100) * C;
+                pieCash.setAttribute('stroke-dasharray', `${lCash} ${C}`);
+                pieCash.setAttribute('stroke-dashoffset', '0');
+                pieOther.setAttribute('stroke-dasharray', `${lOther} ${C}`);
+                pieOther.setAttribute('stroke-dashoffset', `${-lCash}`);
+                pieCredit.setAttribute('stroke-dasharray', `${lCredit} ${C}`);
+                pieCredit.setAttribute('stroke-dashoffset', `${-(lCash + lOther)}`);
+                const e1 = document.getElementById('eod-pie-cash-pct'); if (e1) e1.innerText = `${pCash}%`;
+                const e2 = document.getElementById('eod-pie-other-pct'); if (e2) e2.innerText = `${pOther}%`;
+                const e3 = document.getElementById('eod-pie-credit-pct'); if (e3) e3.innerText = `${pCredit}%`;
+            }
+
             const rows = [
                 { id: 'sales_c', name: '1. C (Cash Sales)', in: exp.sales_c, out: null },
                 { id: 'sales_qr', name: '2. QR', in: exp.sales_qr, out: null },
@@ -7247,6 +7468,279 @@
             document.getElementById('rep-heatmap').innerHTML = hmpHTML || '<div style="color:var(--ui-muted); font-size:12px; align-self:center; margin:auto;">No activity yet</div>';
 
             document.getElementById('rep-cnc-ledger').innerHTML = cncLedgerHTML.join('') || '<tr><td colspan="4" style="text-align:center; padding:14px; color:var(--ui-muted);">No Cheque or Credit transactions</td></tr>';
+        }
+
+        // ==================== HISTORICAL ANALYTICS & MULTI-FILTER ENGINE ====================
+        function setAnalyticsPreset(range) {
+            const toInput = document.getElementById('ana-to-date');
+            const fromInput = document.getElementById('ana-from-date');
+            if (!toInput || !fromInput) return;
+
+            const today = new Date();
+            toInput.value = getLocalTodayStr(today);
+
+            if (range === 'all') {
+                const dates = entries.map(e => e.date).filter(Boolean).sort();
+                fromInput.value = dates.length ? dates[0] : getLocalTodayStr(today);
+            } else {
+                const days = parseInt(range, 10) || 30;
+                const start = new Date(today);
+                start.setDate(start.getDate() - (days - 1));
+                fromInput.value = getLocalTodayStr(start);
+            }
+
+            document.querySelectorAll('.ana-preset-btn').forEach(btn => {
+                const isActive = btn.dataset.range === String(range);
+                btn.style.borderColor = isActive ? 'var(--ui-info)' : '';
+                btn.style.color = isActive ? 'var(--ui-info)' : '';
+            });
+
+            renderAdminAnalytics();
+        }
+
+        function getAnalyticsFilteredEntries() {
+            const fromDate = document.getElementById('ana-from-date')?.value || '';
+            const toDate = document.getElementById('ana-to-date')?.value || '';
+            const counterFilter = document.getElementById('ana-counter-filter')?.value || 'all';
+            const modeFilter = document.getElementById('ana-mode-filter')?.value || 'all';
+
+            return entries.filter(e => {
+                if (e.isVoid) return false;
+                if (fromDate && (!e.date || e.date < fromDate)) return false;
+                if (toDate && (!e.date || e.date > toDate)) return false;
+                const cid = String(e.counterId);
+                if (counterFilter === 'sales' && cid === '0') return false;
+                if (counterFilter !== 'all' && counterFilter !== 'sales' && cid !== counterFilter) return false;
+                if (modeFilter !== 'all' && !(Number(e[modeFilter]) > 0)) return false;
+                return true;
+            });
+        }
+
+        function getEntryFilteredAmount(e, modeFilter) {
+            if (modeFilter && modeFilter !== 'all') return Number(e[modeFilter]) || 0;
+            return (e.cash || 0) + (e.qr || 0) + (e.ips || 0) + (e.pos || 0) + (e.esewa || 0) + (e.online || 0) + (e.cheque || 0) + (e.credit || 0);
+        }
+
+        function renderAdminAnalytics() {
+            const list = getAnalyticsFilteredEntries();
+            const modeFilter = document.getElementById('ana-mode-filter')?.value || 'all';
+
+            const byDate = {};
+            const byWeekday = [0, 0, 0, 0, 0, 0, 0]; // Sun..Sat
+            const byHour = {};
+            const byMode = { cash: 0, qr: 0, ips: 0, pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0 };
+            const byCounter = {};
+
+            let totalRev = 0;
+
+            list.forEach(e => {
+                const amt = getEntryFilteredAmount(e, modeFilter);
+                totalRev += amt;
+
+                const dKey = e.date || 'Unknown';
+                byDate[dKey] = (byDate[dKey] || 0) + amt;
+
+                if (e.date) {
+                    const utcMs = parseYmdUtc(e.date);
+                    if (!isNaN(utcMs)) {
+                        const wd = new Date(utcMs).getUTCDay();
+                        byWeekday[wd] += amt;
+                    }
+                }
+
+                // Extract hour from timestamp "HH:mm ..." or fallback to entry id epoch
+                let hr = null;
+                if (e.timestamp && /^\d{1,2}:\d{2}/.test(e.timestamp)) {
+                    hr = parseInt(e.timestamp.split(':')[0], 10);
+                } else if (!isNaN(parseInt(e.id, 10))) {
+                    hr = new Date(parseInt(e.id, 10)).getHours();
+                }
+                if (hr !== null && !isNaN(hr) && hr >= 0 && hr <= 23) {
+                    byHour[hr] = (byHour[hr] || 0) + amt;
+                }
+
+                Object.keys(byMode).forEach(m => {
+                    if (modeFilter === 'all' || modeFilter === m) {
+                        byMode[m] += Number(e[m]) || 0;
+                    }
+                });
+
+                const cid = String(e.counterId);
+                if (!byCounter[cid]) byCounter[cid] = { bills: 0, cash: 0, digital: 0, deferred: 0, total: 0 };
+                byCounter[cid].bills += 1;
+                byCounter[cid].cash += Number(e.cash) || 0;
+                byCounter[cid].digital += (Number(e.qr) || 0) + (Number(e.ips) || 0) + (Number(e.pos) || 0) + (Number(e.esewa) || 0) + (Number(e.online) || 0);
+                byCounter[cid].deferred += (Number(e.cheque) || 0) + (Number(e.credit) || 0);
+                byCounter[cid].total += amt;
+            });
+
+            // 1. KPI Strip
+            const dateKeys = Object.keys(byDate).filter(d => d !== 'Unknown').sort();
+            const activeDays = dateKeys.length;
+            const avgDay = activeDays ? Math.round(totalRev / activeDays) : 0;
+            let peakDate = '—', peakAmt = 0;
+            dateKeys.forEach(d => {
+                if (byDate[d] > peakAmt) { peakAmt = byDate[d]; peakDate = d; }
+            });
+
+            const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+            setTxt('ana-days-badge', `${activeDays}D`);
+            setTxt('ana-total-rev', `NPR ${totalRev.toLocaleString()}`);
+            setTxt('ana-avg-day', `NPR ${avgDay.toLocaleString()}`);
+            setTxt('ana-tx-count', list.length.toLocaleString());
+            setTxt('ana-peak-day', peakAmt > 0 ? `${peakDate.slice(5)} (${peakAmt.toLocaleString()})` : '—');
+
+            // 2. Daily Revenue Trend Bar Chart
+            const trendEl = document.getElementById('ana-trend-chart');
+            if (trendEl) {
+                if (dateKeys.length === 0) {
+                    trendEl.innerHTML = '<div style="color:var(--ui-muted); font-size:12px; margin:auto;">No data in selected range</div>';
+                } else {
+                    const maxDay = Math.max(...dateKeys.map(d => byDate[d]), 1);
+                    trendEl.innerHTML = dateKeys.map(d => {
+                        const val = byDate[d];
+                        const pct = Math.max(8, Math.round((val / maxDay) * 100));
+                        const shortVal = val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val;
+                        return `
+                            <div class="pill-col" title="${d}: NPR ${val.toLocaleString()}">
+                                <span class="pill-val">${shortVal}</span>
+                                <div class="pill-track" style="height:104px;"><div class="pill-fill" style="height:${pct}%;"></div></div>
+                                <span class="pill-lbl">${d.slice(5)}</span>
+                            </div>`;
+                    }).join('');
+                }
+            }
+
+            // 3. Payment Mode 8-Slice Donut + Legend
+            const modeColors = {
+                cash: '#34d399', qr: '#6366f1', ips: '#38bdf8', pos: '#a78bfa',
+                esewa: '#22c55e', online: '#06b6d4', cheque: '#fbbf24', credit: '#fb7185'
+            };
+            const modeLabels = {
+                cash: 'Cash', qr: 'QR', ips: 'IPS/EBL', pos: 'POS',
+                esewa: 'eSewa', online: 'Online', cheque: 'Cheque', credit: 'Credit'
+            };
+            const donutEl = document.getElementById('ana-mode-donut');
+            const legendEl = document.getElementById('ana-mode-legend');
+            const modeTotal = Object.values(byMode).reduce((a, b) => a + b, 0);
+            if (donutEl && legendEl) {
+                const C = 289.03;
+                let offset = 0;
+                let circles = `<circle cx="60" cy="60" r="46" fill="none" stroke="var(--ui-pill-bg)" stroke-width="14" />`;
+                let legHtml = '';
+                Object.entries(byMode)
+                    .filter(([, v]) => v > 0)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([m, v]) => {
+                        const frac = modeTotal ? (v / modeTotal) : 0;
+                        const len = frac * C;
+                        circles += `<circle cx="60" cy="60" r="46" fill="none" stroke="${modeColors[m]}" stroke-width="14" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-offset}" />`;
+                        offset += len;
+                        const pct = Math.round(frac * 100);
+                        legHtml += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                <span style="display:inline-flex; align-items:center; gap:6px; color:var(--ui-text-soft); font-weight:600;">
+                                    <span style="width:8px; height:8px; border-radius:2px; background:${modeColors[m]}; display:inline-block;"></span>${modeLabels[m]}
+                                </span>
+                                <span style="font-weight:700; color:var(--ui-text); font-variant-numeric:tabular-nums;">${v.toLocaleString()} <span style="color:var(--ui-muted); font-weight:600;">(${pct}%)</span></span>
+                            </div>`;
+                    });
+                donutEl.innerHTML = circles;
+                legendEl.innerHTML = legHtml || '<div style="color:var(--ui-muted);">No transactions</div>';
+            }
+
+            // 4. By Day of Week (Sun..Sat)
+            const wdNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const wdEl = document.getElementById('ana-weekday-chart');
+            if (wdEl) {
+                const maxWd = Math.max(...byWeekday, 1);
+                wdEl.innerHTML = wdNames.map((name, idx) => {
+                    const val = byWeekday[idx];
+                    const pct = val > 0 ? Math.max(10, Math.round((val / maxWd) * 100)) : 4;
+                    const shortVal = val >= 1000 ? `${(val / 1000).toFixed(1)}k` : (val || '0');
+                    return `
+                        <div class="pill-col" title="${name}: NPR ${val.toLocaleString()}">
+                            <span class="pill-val">${shortVal}</span>
+                            <div class="pill-track"><div class="pill-fill" style="height:${pct}%; opacity:${val > 0 ? 1 : 0.25};"></div></div>
+                            <span class="pill-lbl">${name}</span>
+                        </div>`;
+                }).join('');
+            }
+
+            // 5. By Time of Day (Hourly)
+            const hrEl = document.getElementById('ana-hourly-chart');
+            if (hrEl) {
+                const hrs = Object.keys(byHour).map(Number).sort((a, b) => a - b);
+                if (hrs.length === 0) {
+                    hrEl.innerHTML = '<div style="color:var(--ui-muted); font-size:12px; margin:auto;">No hourly data</div>';
+                } else {
+                    const maxHr = Math.max(...hrs.map(h => byHour[h]), 1);
+                    hrEl.innerHTML = hrs.map(h => {
+                        const val = byHour[h];
+                        const pct = Math.max(10, Math.round((val / maxHr) * 100));
+                        const ampm = h >= 12 ? 'P' : 'A';
+                        const hr12 = h % 12 || 12;
+                        const shortVal = val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val;
+                        return `
+                            <div class="pill-col" title="${hr12}:00 ${ampm}M: NPR ${val.toLocaleString()}">
+                                <span class="pill-val">${shortVal}</span>
+                                <div class="pill-track"><div class="pill-fill" style="height:${pct}%;"></div></div>
+                                <span class="pill-lbl">${hr12}${ampm}</span>
+                            </div>`;
+                    }).join('');
+                }
+            }
+
+            // 6. Counter Performance Table
+            const tbody = document.getElementById('ana-counter-tbody');
+            if (tbody) {
+                const cids = Object.keys(byCounter).sort();
+                if (cids.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:16px; color:var(--ui-muted);">No matching transactions</td></tr>';
+                } else {
+                    tbody.innerHTML = cids.map(cid => {
+                        const c = byCounter[cid];
+                        const avg = c.bills ? Math.round(c.total / c.bills) : 0;
+                        return `
+                            <tr>
+                                <td style="font-weight:700;">Counter ${cid}${cid === '0' ? ' (Coll)' : ''}</td>
+                                <td style="text-align:right;">${c.bills}</td>
+                                <td style="text-align:right; color:var(--ui-pos);">${c.cash.toLocaleString()}</td>
+                                <td style="text-align:right; color:var(--ui-info);">${c.digital.toLocaleString()}</td>
+                                <td style="text-align:right; color:var(--ui-neg);">${c.deferred.toLocaleString()}</td>
+                                <td style="text-align:right;">${avg.toLocaleString()}</td>
+                                <td style="text-align:right; font-weight:800;">${c.total.toLocaleString()}</td>
+                            </tr>`;
+                    }).join('');
+                }
+            }
+        }
+
+        function exportAnalyticsCsv() {
+            const list = getAnalyticsFilteredEntries();
+            if (list.length === 0) {
+                showMsg("No entries in the current filter to export.");
+                return;
+            }
+            const headers = ['Date', 'Timestamp', 'Counter', 'Cash', 'QR', 'IPS_EBL', 'POS', 'eSewa', 'Online', 'Cheque', 'Credit', 'Total', 'Status', 'Remarks'];
+            const esc = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+            const rows = [headers.join(',')];
+            list.forEach(e => {
+                const tot = getEntryFilteredAmount(e, 'all');
+                rows.push([
+                    e.date, e.timestamp, e.counterId, e.cash || 0, e.qr || 0, e.ips || 0,
+                    e.pos || 0, e.esewa || 0, e.online || 0, e.cheque || 0, e.credit || 0,
+                    tot, e.sessionStatus || 'active', e.remarks || ''
+                ].map(esc).join(','));
+            });
+            const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `somaira_report_${getLocalTodayStr()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(`Exported ${list.length} rows to CSV!`);
         }
     </script>
 </body>
