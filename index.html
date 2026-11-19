@@ -967,70 +967,75 @@
             box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        /* ==================== 2027 DUAL-THEME BENTO GLASS (DARK OBSIDIAN + LIGHT LIQUID GLASS) ==================== */
+        /* ==================== 2027 EXPRESSIVE PILL & FROSTED GLASS (DARK MIDNIGHT + LIGHT ICE-LAVENDER) ==================== */
         :root {
+            /* Dark Midnight Frosted Glass (Image 5 bottom-right: #1A2A45 / #171E35 + periwinkle glow) */
             --ui-canvas:
-                radial-gradient(1200px 560px at 12% -12%, rgba(56, 189, 248, 0.10), transparent 58%),
-                radial-gradient(1000px 520px at 88% -6%, rgba(129, 140, 248, 0.11), transparent 56%),
-                radial-gradient(900px 500px at 50% 112%, rgba(45, 212, 191, 0.06), transparent 60%),
-                #07090e;
-            --ui-header: rgba(7, 9, 14, 0.72);
-            --ui-card: rgba(16, 20, 29, 0.68);
-            --ui-card-hover: rgba(22, 28, 40, 0.78);
-            --ui-card-inner: rgba(9, 12, 19, 0.64);
-            --ui-border: rgba(255, 255, 255, 0.08);
-            --ui-border-strong: rgba(255, 255, 255, 0.15);
-            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.075);
-            --ui-shadow: 0 18px 42px -18px rgba(0, 0, 0, 0.78);
-            --ui-text: #f8fafc;
-            --ui-text-soft: #cbd5e1;
-            --ui-muted: #7f8ca3;
-            --ui-pill-bg: rgba(255, 255, 255, 0.045);
-            --ui-pill-active: rgba(255, 255, 255, 0.13);
-            --ui-input-bg: rgba(6, 9, 15, 0.7);
-            --ui-row-hover: rgba(255, 255, 255, 0.032);
-            --ui-thead-bg: rgba(255, 255, 255, 0.03);
-            --ui-pos: #34d399;
+                radial-gradient(640px 440px at 8% 4%, rgba(124, 109, 240, 0.24), transparent 62%),
+                radial-gradient(620px 460px at 92% 14%, rgba(56, 189, 248, 0.16), transparent 60%),
+                radial-gradient(700px 500px at 48% 105%, rgba(167, 139, 250, 0.16), transparent 64%),
+                linear-gradient(155deg, #11182b 0%, #171e35 52%, #121829 100%);
+            --ui-header: rgba(19, 26, 46, 0.62);
+            --ui-card: rgba(29, 39, 66, 0.46);
+            --ui-card-hover: rgba(38, 50, 82, 0.58);
+            --ui-card-inner: rgba(17, 24, 43, 0.48);
+            --ui-border: rgba(210, 224, 255, 0.14);
+            --ui-border-strong: rgba(210, 224, 255, 0.26);
+            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            --ui-shadow: 0 20px 48px -18px rgba(4, 8, 22, 0.72);
+            --ui-text: #f3f6ff;
+            --ui-text-soft: #cfd8f3;
+            --ui-muted: #8f9dc4;
+            --ui-pill-bg: rgba(255, 255, 255, 0.075);
+            --ui-pill-active: linear-gradient(135deg, #7c6df0 0%, #6366f1 100%);
+            --ui-pill-active-text: #ffffff;
+            --ui-input-bg: rgba(14, 20, 38, 0.58);
+            --ui-row-hover: rgba(199, 210, 254, 0.05);
+            --ui-thead-bg: rgba(199, 210, 254, 0.05);
+            --ui-pos: #5eead4;
             --ui-neg: #fb7185;
-            --ui-warn: #fbbf24;
-            --ui-info: #60a5fa;
-            --ui-btn-primary-bg: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
-            --ui-btn-primary-text: #07090e;
+            --ui-warn: #fcd34d;
+            --ui-info: #a5b4fc;
+            --ui-btn-primary-bg: linear-gradient(135deg, #8b7cf6 0%, #6366f1 100%);
+            --ui-btn-primary-text: #ffffff;
         }
 
         body.theme-light {
+            /* Light Ice-Cyan & Expressive Lavender Frosted Glass (Images 1, 3, 4, 5) */
             --ui-canvas:
-                radial-gradient(1100px 560px at 12% -8%, rgba(56, 189, 248, 0.18), transparent 58%),
-                radial-gradient(900px 520px at 88% 4%, rgba(167, 139, 250, 0.16), transparent 56%),
-                radial-gradient(900px 520px at 50% 108%, rgba(52, 211, 153, 0.12), transparent 60%),
-                #eef2f7;
-            --ui-header: rgba(238, 242, 247, 0.74);
-            --ui-card: rgba(255, 255, 255, 0.72);
-            --ui-card-hover: rgba(255, 255, 255, 0.88);
-            --ui-card-inner: rgba(241, 245, 249, 0.76);
-            --ui-border: rgba(15, 23, 42, 0.08);
-            --ui-border-strong: rgba(15, 23, 42, 0.16);
-            --ui-specular: inset 0 1px 0 rgba(255, 255, 255, 0.92);
-            --ui-shadow: 0 18px 40px -16px rgba(15, 23, 42, 0.12), 0 2px 8px -2px rgba(15, 23, 42, 0.05);
-            --ui-text: #0f172a;
-            --ui-text-soft: #334155;
-            --ui-muted: #64748b;
-            --ui-pill-bg: rgba(255, 255, 255, 0.65);
-            --ui-pill-active: #0f172a;
-            --ui-input-bg: rgba(255, 255, 255, 0.85);
-            --ui-row-hover: rgba(15, 23, 42, 0.03);
-            --ui-thead-bg: rgba(15, 23, 42, 0.035);
-            --ui-pos: #059669;
+                radial-gradient(680px 480px at 10% 4%, rgba(165, 243, 252, 0.82), transparent 60%),
+                radial-gradient(660px 520px at 90% 10%, rgba(196, 181, 253, 0.72), transparent 60%),
+                radial-gradient(760px 520px at 50% 100%, rgba(199, 210, 254, 0.75), transparent 64%),
+                linear-gradient(148deg, #ddf6fb 0%, #e7e6fc 48%, #d9d6fa 100%);
+            --ui-header: rgba(255, 255, 255, 0.42);
+            --ui-card: rgba(255, 255, 255, 0.44);
+            --ui-card-hover: rgba(255, 255, 255, 0.62);
+            --ui-card-inner: rgba(255, 255, 255, 0.52);
+            --ui-border: rgba(255, 255, 255, 0.74);
+            --ui-border-strong: rgba(124, 109, 240, 0.34);
+            --ui-specular: inset 0 1.5px 0 rgba(255, 255, 255, 0.92);
+            --ui-shadow: 0 22px 46px -18px rgba(79, 70, 145, 0.20), 0 4px 12px -4px rgba(79, 70, 145, 0.08);
+            --ui-text: #272052;
+            --ui-text-soft: #463d7a;
+            --ui-muted: #6e6899;
+            --ui-pill-bg: rgba(255, 255, 255, 0.66);
+            --ui-pill-active: linear-gradient(135deg, #6250a8 0%, #7c6df0 100%);
+            --ui-pill-active-text: #ffffff;
+            --ui-input-bg: rgba(255, 255, 255, 0.68);
+            --ui-row-hover: rgba(124, 109, 240, 0.06);
+            --ui-thead-bg: rgba(124, 109, 240, 0.07);
+            --ui-pos: #0d9488;
             --ui-neg: #e11d48;
             --ui-warn: #d97706;
-            --ui-info: #2563eb;
-            --ui-btn-primary-bg: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            --ui-info: #6355c7;
+            --ui-btn-primary-bg: linear-gradient(135deg, #6250a8 0%, #8373f5 100%);
             --ui-btn-primary-text: #ffffff;
         }
 
         #view-admin,
         #collection-workspace {
             background: var(--ui-canvas) !important;
+            background-attachment: fixed !important;
             color: var(--ui-text) !important;
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
             transition: background 0.3s ease, color 0.25s ease;
@@ -1047,17 +1052,18 @@
             position: sticky;
             top: 0;
             z-index: 40;
-            margin: -16px -20px 16px;
+            margin: -16px -20px 18px;
             padding: 14px 22px !important;
             background: var(--ui-header) !important;
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border-bottom: 1px solid var(--ui-border) !important;
+            backdrop-filter: blur(28px) saturate(170%);
+            -webkit-backdrop-filter: blur(28px) saturate(170%);
+            border-bottom: 1.5px solid var(--ui-border) !important;
+            box-shadow: var(--ui-specular);
         }
 
         #view-admin #admin-title {
-            font-size: 16px !important;
-            font-weight: 700 !important;
+            font-size: 17px !important;
+            font-weight: 800 !important;
             letter-spacing: -0.025em;
             color: var(--ui-text) !important;
             display: inline-flex;
@@ -1065,30 +1071,30 @@
             gap: 8px;
         }
 
-        /* Floating segmented pill navigation */
+        /* Material 3 Expressive Floating Pill Dock (Image 1 & 4 style) */
         #view-admin .admin-tabs {
             display: inline-flex !important;
             flex-wrap: wrap;
-            gap: 4px !important;
-            padding: 4px !important;
-            margin: 0 0 18px 0 !important;
+            gap: 5px !important;
+            padding: 5px !important;
+            margin: 0 0 20px 0 !important;
             background: var(--ui-pill-bg) !important;
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 16px !important;
+            backdrop-filter: blur(24px) saturate(170%);
+            -webkit-backdrop-filter: blur(24px) saturate(170%);
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 999px !important;
             box-shadow: var(--ui-specular), var(--ui-shadow);
         }
 
         #view-admin .admin-tab {
-            padding: 9px 16px !important;
-            border-radius: 12px !important;
+            padding: 9px 18px !important;
+            border-radius: 999px !important;
             font-size: 12.5px !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
             letter-spacing: -0.01em;
             color: var(--ui-muted) !important;
             border: 1px solid transparent;
-            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: all 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         #view-admin .admin-tab:hover {
@@ -1097,27 +1103,27 @@
 
         #view-admin .admin-tab.active {
             background: var(--ui-pill-active) !important;
-            color: #ffffff !important;
-            border-color: var(--ui-border-strong) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px -6px rgba(0, 0, 0, 0.45);
+            color: var(--ui-pill-active-text) !important;
+            border-color: rgba(255, 255, 255, 0.22) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 8px 20px -6px rgba(99, 102, 241, 0.55);
         }
 
-        /* Bento Glass Cards */
+        /* Frosted 24px Rounded Glass Cards */
         .glass-card {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(22px) saturate(150%);
-            -webkit-backdrop-filter: blur(22px) saturate(150%);
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 20px !important;
-            padding: 18px !important;
+            backdrop-filter: blur(26px) saturate(165%);
+            -webkit-backdrop-filter: blur(26px) saturate(165%);
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 26px !important;
+            padding: 20px !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
             box-sizing: border-box;
         }
 
         .glass-subcard {
             background: var(--ui-card-inner) !important;
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 16px !important;
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 20px !important;
             padding: 14px 16px !important;
             box-shadow: var(--ui-specular);
         }
@@ -1125,7 +1131,7 @@
         .bento-kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-            gap: 12px;
+            gap: 14px;
         }
 
         .bento-2col {
@@ -1136,29 +1142,29 @@
 
         .kpi-tile {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(22px) saturate(150%);
-            -webkit-backdrop-filter: blur(22px) saturate(150%);
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 20px !important;
-            padding: 18px 18px 16px !important;
+            backdrop-filter: blur(26px) saturate(165%);
+            -webkit-backdrop-filter: blur(26px) saturate(165%);
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 26px !important;
+            padding: 20px 20px 18px !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             gap: 10px;
-            transition: transform 0.18s ease, border-color 0.2s ease, background 0.2s ease;
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, background 0.2s ease;
         }
 
         .kpi-tile:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             border-color: var(--ui-border-strong) !important;
             background: var(--ui-card-hover) !important;
         }
 
         .kpi-label {
             font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.04em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             color: var(--ui-muted);
             display: flex;
@@ -1167,7 +1173,7 @@
         }
 
         .kpi-value {
-            font-size: 26px;
+            font-size: 27px;
             font-weight: 800;
             letter-spacing: -0.03em;
             color: var(--ui-text);
@@ -1178,31 +1184,31 @@
         .kpi-badge {
             font-size: 10px;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 99px;
+            padding: 4px 10px;
+            border-radius: 999px;
             background: var(--ui-pill-bg);
             border: 1px solid var(--ui-border);
-            color: var(--ui-muted);
+            color: var(--ui-info);
         }
 
         .section-kicker {
             font-size: 11px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.07em;
             text-transform: uppercase;
             color: var(--ui-muted);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        /* Vertical pill bar chart (Fintech Image 2 style) */
+        /* Vertical pill bar chart (Image 5 purple-cyan capsule bars) */
         .pill-chart-wrap {
             display: flex;
             align-items: flex-end;
             gap: 10px;
-            height: 136px;
+            height: 140px;
             padding: 12px 6px 4px;
             overflow-x: auto;
         }
@@ -1219,28 +1225,28 @@
         }
 
         .pill-track {
-            width: 10px;
-            height: 92px;
-            border-radius: 99px;
+            width: 12px;
+            height: 94px;
+            border-radius: 999px;
             background: var(--ui-pill-bg);
-            border: 1px solid var(--ui-border);
+            border: 1.5px solid var(--ui-border);
             display: flex;
             align-items: flex-end;
             overflow: hidden;
-            padding: 1px;
+            padding: 1.5px;
         }
 
         .pill-fill {
             width: 100%;
-            border-radius: 99px;
-            background: linear-gradient(180deg, var(--ui-info) 0%, var(--ui-pos) 100%);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #6366f1 0%, #5eead4 100%);
             transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-            min-height: 6px;
+            min-height: 8px;
         }
 
         .pill-lbl {
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--ui-muted);
             white-space: nowrap;
         }
@@ -1252,64 +1258,67 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* Ranked leaderboard rows (Robinhood/Fintech style) */
+        /* Ranked leaderboard rows */
         .rank-row {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            padding: 10px 12px;
-            border-radius: 12px;
+            gap: 7px;
+            padding: 12px 14px;
+            border-radius: 18px;
             background: var(--ui-card-inner);
-            border: 1px solid var(--ui-border);
+            border: 1.5px solid var(--ui-border);
         }
 
         .rank-bar-bg {
-            height: 5px;
+            height: 6px;
             width: 100%;
-            border-radius: 99px;
+            border-radius: 999px;
             background: var(--ui-pill-bg);
             overflow: hidden;
         }
 
         .rank-bar-fill {
             height: 100%;
-            border-radius: 99px;
-            background: linear-gradient(90deg, var(--ui-pos), var(--ui-info));
+            border-radius: 999px;
+            background: linear-gradient(90deg, #7c6df0, #5eead4);
         }
 
-        /* Glassy Buttons */
+        /* Expressive Full-Pill Glass Buttons (Image 1 & 3 style) */
         .glass-btn {
             background: var(--ui-pill-bg) !important;
             color: var(--ui-text) !important;
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 12px !important;
-            padding: 8px 14px !important;
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 999px !important;
+            padding: 8px 16px !important;
             font-size: 12px !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             box-shadow: var(--ui-specular);
-            transition: transform 0.14s ease, background 0.18s ease, border-color 0.18s ease;
+            transition: transform 0.14s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         .glass-btn:hover {
             background: var(--ui-card-hover) !important;
             border-color: var(--ui-border-strong) !important;
+            box-shadow: var(--ui-specular), 0 8px 20px -10px rgba(99, 102, 241, 0.35);
         }
 
         .glass-btn:active {
-            transform: scale(0.97);
+            transform: scale(0.96);
         }
 
         .glass-btn-primary {
             background: var(--ui-btn-primary-bg) !important;
             color: var(--ui-btn-primary-text) !important;
-            border: none !important;
-            border-radius: 12px !important;
-            padding: 11px 18px !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            border-radius: 999px !important;
+            padding: 11px 22px !important;
             font-size: 12.5px !important;
             font-weight: 700 !important;
             cursor: pointer;
@@ -1317,29 +1326,39 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.35);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 12px 26px -8px rgba(99, 102, 241, 0.5);
             transition: transform 0.14s ease, filter 0.18s ease;
         }
 
         .glass-btn-primary:hover {
-            filter: brightness(1.06);
+            filter: brightness(1.07);
         }
 
         .glass-btn-primary:active {
-            transform: scale(0.97);
+            transform: scale(0.96);
         }
 
-        /* Legacy dynamic admin blocks adapt seamlessly to Dark & Light */
+        /* Legacy dynamic admin blocks adapt seamlessly to Dark & Light Frosted Glass */
         #view-admin .admin-content > div:not(.bento-kpi-grid):not(.bento-2col):not(.glass-card),
         #view-admin .entry-card,
         #view-admin .history-log-box {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(20px) saturate(140%);
-            -webkit-backdrop-filter: blur(20px) saturate(140%);
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 18px !important;
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 24px !important;
             color: var(--ui-text) !important;
             box-shadow: var(--ui-specular), var(--ui-shadow) !important;
+        }
+
+        #view-admin button:not(.glass-btn):not(.glass-btn-primary) {
+            border-radius: 999px !important;
+            font-weight: 700 !important;
+            transition: transform 0.14s ease, filter 0.18s ease;
+        }
+
+        #view-admin button:not(.glass-btn):not(.glass-btn-primary):active {
+            transform: scale(0.96);
         }
 
         #view-admin #admin-archived-main-view,
@@ -1352,7 +1371,7 @@
             backdrop-filter: none !important;
         }
 
-        /* Ensure inline dark colors in JS-rendered admin panels adapt in Light Liquid Glass mode */
+        /* Ensure inline dark colors in JS-rendered admin panels adapt in Light Frosted Glass mode */
         body.theme-light #view-admin [style*="background: #1f2937"],
         body.theme-light #view-admin [style*="background:#1f2937"],
         body.theme-light #view-admin [style*="background: #2d3748"],
@@ -1380,13 +1399,13 @@
             color: var(--ui-muted) !important;
         }
 
-        /* Recessed inputs & selects */
+        /* Frosted pill inputs & selects */
         #view-admin input,
         #view-admin select,
         #collection-workspace input {
             background: var(--ui-input-bg) !important;
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 10px !important;
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 14px !important;
             color: var(--ui-text) !important;
             font-variant-numeric: tabular-nums;
             transition: border-color 0.18s ease, box-shadow 0.18s ease;
@@ -1397,7 +1416,7 @@
         #collection-workspace input:focus {
             outline: none !important;
             border-color: var(--ui-border-strong) !important;
-            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15) !important;
+            box-shadow: 0 0 0 3px rgba(124, 109, 240, 0.2) !important;
         }
 
         #view-admin .eod-input[readonly] {
@@ -1406,7 +1425,7 @@
             color: var(--ui-text-soft) !important;
         }
 
-        /* Terminal precision data tables */
+        /* Crisp frosted data tables */
         #view-admin table {
             border-collapse: separate !important;
             border-spacing: 0 !important;
@@ -1438,33 +1457,35 @@
 
         /* Sleek frosted Fast-Lane floating pill */
         .fast-lane-bar {
-            background: rgba(9, 12, 19, 0.74) !important;
-            backdrop-filter: blur(22px) saturate(160%) !important;
-            -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 40px -12px rgba(0, 0, 0, 0.78) !important;
+            background: rgba(17, 24, 43, 0.68) !important;
+            backdrop-filter: blur(26px) saturate(170%) !important;
+            -webkit-backdrop-filter: blur(26px) saturate(170%) !important;
+            border: 1.5px solid rgba(210, 224, 255, 0.24) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 18px 40px -12px rgba(4, 8, 22, 0.72) !important;
         }
 
         .fast-input {
-            background: rgba(255, 255, 255, 0.08) !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            background: rgba(255, 255, 255, 0.10) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            border-radius: 999px !important;
             font-variant-numeric: tabular-nums;
         }
 
         .fast-save-btn {
-            background: #f8fafc !important;
-            color: #07090e !important;
+            background: linear-gradient(135deg, #8b7cf6 0%, #6366f1 100%) !important;
+            color: #ffffff !important;
+            border-radius: 999px !important;
         }
 
         /* Glassy bottom sheets & modals */
         .bottom-sheet {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(28px) saturate(160%);
-            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            backdrop-filter: blur(30px) saturate(175%);
+            -webkit-backdrop-filter: blur(30px) saturate(175%);
             color: var(--ui-text) !important;
-            border-top: 1px solid var(--ui-border-strong) !important;
-            border-radius: 26px 26px 0 0 !important;
-            box-shadow: 0 -20px 54px rgba(0, 0, 0, 0.45) !important;
+            border-top: 1.5px solid var(--ui-border) !important;
+            border-radius: 30px 30px 0 0 !important;
+            box-shadow: 0 -20px 54px rgba(15, 23, 42, 0.35) !important;
         }
 
         .bottom-sheet .sheet-header,
@@ -1475,27 +1496,27 @@
 
         .bottom-sheet .input-field {
             background: var(--ui-input-bg) !important;
-            border: 1px solid var(--ui-border) !important;
+            border: 1.5px solid var(--ui-border) !important;
             color: var(--ui-text) !important;
-            border-radius: 12px !important;
+            border-radius: 16px !important;
             font-variant-numeric: tabular-nums;
         }
 
         .bottom-sheet .entry-card {
             background: var(--ui-card-inner) !important;
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 16px !important;
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 20px !important;
             color: var(--ui-text) !important;
         }
 
         .modal-box {
             background: var(--ui-card) !important;
-            backdrop-filter: blur(28px) saturate(160%);
-            -webkit-backdrop-filter: blur(28px) saturate(160%);
+            backdrop-filter: blur(30px) saturate(175%);
+            -webkit-backdrop-filter: blur(30px) saturate(175%);
             color: var(--ui-text) !important;
-            border: 1px solid var(--ui-border-strong) !important;
-            border-radius: 22px !important;
-            box-shadow: var(--ui-specular), 0 24px 64px rgba(0, 0, 0, 0.55) !important;
+            border: 1.5px solid var(--ui-border) !important;
+            border-radius: 28px !important;
+            box-shadow: var(--ui-specular), var(--ui-shadow) !important;
         }
 
         #view-admin ::-webkit-scrollbar,
@@ -1507,7 +1528,7 @@
         #view-admin ::-webkit-scrollbar-thumb,
         #view-admin::-webkit-scrollbar-thumb {
             background: var(--ui-border-strong);
-            border-radius: 99px;
+            border-radius: 999px;
         }
 
         @keyframes blink-red {
