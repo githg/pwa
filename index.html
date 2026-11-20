@@ -1185,6 +1185,73 @@
         .chq-returned_to_customer { background: rgba(168, 85, 247, 0.16); color: #a855f7; border-color: rgba(168, 85, 247, 0.35); }
         .chq-canceled { background: rgba(100, 116, 139, 0.18); color: var(--ui-muted); border-color: var(--ui-border); text-decoration: line-through; }
 
+        /* Inline Row Controls (Move Counter, Cheque Status, Info Log) */
+        .row-move-sel {
+            font-size: 10.5px !important;
+            font-weight: 700 !important;
+            padding: 2px 4px !important;
+            border-radius: 6px !important;
+            background: var(--ui-pill-bg) !important;
+            color: var(--ui-text-soft) !important;
+            border: 1px solid var(--ui-border) !important;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        .row-info-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1px solid var(--ui-border);
+            background: var(--ui-pill-bg);
+            color: var(--ui-muted);
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 4px;
+            padding: 0;
+            position: relative;
+        }
+        .row-info-btn.has-log {
+            color: var(--ui-info);
+            border-color: var(--ui-border-strong);
+        }
+        .chq-inline-sel {
+            padding: 5px 8px !important;
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            border-radius: 8px !important;
+            border: 1px solid var(--ui-border-strong) !important;
+            background: var(--ui-card-inner) !important;
+            color: var(--ui-text) !important;
+            max-width: 195px;
+            cursor: pointer;
+        }
+        #admin-undo-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120%);
+            z-index: 320;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px 10px 16px;
+            border-radius: 12px;
+            background: var(--ui-sheet-card);
+            color: var(--ui-text);
+            border: 1px solid var(--ui-border-strong);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+            font-size: 12.5px;
+            font-weight: 600;
+            transition: transform 0.22s ease;
+            max-width: 92vw;
+        }
+        #admin-undo-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
         #view-admin,
         #collection-workspace {
             background: var(--ui-canvas) !important;
@@ -2397,6 +2464,9 @@
                 </div>
             </div>
             <div style="display:flex; gap:8px; align-items:center;">
+                <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
+                    <span class="material-icons" style="font-size:15px;">undo</span> <span id="admin-undo-cnt">Undo</span>
+                </button>
                 <button class="glass-btn" id="btn-theme-toggle" onclick="toggleTheme()"><span
                         class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label">Light</span></button>
                 <button class="glass-btn" onclick="lockApp()"><span class="material-icons"
@@ -3102,14 +3172,16 @@
             <!-- Filter & Action Bar -->
             <div class="glass-card" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; padding:14px 16px !important;">
                 <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; flex:1;">
-                    <select id="chq-filter-status" onchange="renderAdminCheques()" style="padding:8px 12px; font-size:12.5px; min-width:170px;">
+                    <select id="chq-filter-status" onchange="renderAdminCheques()" style="padding:8px 12px; font-size:12.5px; min-width:185px;">
                         <option value="all">All Statuses</option>
                         <option value="received">Received (In Hand)</option>
-                        <option value="sent_to_bank">Sent to Bank</option>
-                        <option value="cleared">Cleared</option>
+                        <option value="sent_to_bank">Sent to Bank (EBL)</option>
+                        <option value="cleared">Cashed into EBL</option>
                         <option value="returned_from_bank">Returned from Bank</option>
                         <option value="bounced">Bounced</option>
-                        <option value="returned_to_customer">Returned to Customer</option>
+                        <option value="returned_to_customer_cash">Returned → Cash</option>
+                        <option value="returned_to_customer_qr">Returned → QR</option>
+                        <option value="returned_to_customer_credit">Returned → Credit</option>
                         <option value="canceled">Canceled</option>
                     </select>
                     <input type="text" id="chq-search" oninput="renderAdminCheques()" placeholder="Search party, bank, cheque #, remarks..." style="padding:8px 12px; font-size:12.5px; flex:1; min-width:180px;">
@@ -3217,23 +3289,18 @@
                     <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Status</label>
                     <select id="chq-inp-status" onchange="toggleChequeSettlementFields()" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
                         <option value="received">Received (In Hand)</option>
-                        <option value="sent_to_bank">Sent to Bank (In Clearing)</option>
-                        <option value="cleared">Cleared</option>
+                        <option value="sent_to_bank">Sent to Bank (EBL)</option>
+                        <option value="cleared">Cashed into EBL (Default Bank Deposit)</option>
                         <option value="returned_from_bank">Returned from Bank</option>
                         <option value="bounced">Bounced</option>
-                        <option value="returned_to_customer">Returned to Customer (Settled)</option>
+                        <option value="returned_to_customer_cash">Returned to Customer — Cash</option>
+                        <option value="returned_to_customer_qr">Returned to Customer — QR</option>
+                        <option value="returned_to_customer_credit">Returned to Customer — Credit</option>
                         <option value="canceled">Canceled</option>
                     </select>
                 </div>
                 <div id="chq-settle-wrap" class="input-group" style="display:none;">
-                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Returned Against (Settlement Mode)</label>
-                    <select id="chq-inp-settled-via" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
-                        <option value="Cash">Cash</option>
-                        <option value="QR">QR / Online</option>
-                        <option value="Credit">Credit (Moved to Ledger)</option>
-                        <option value="Replacement Cheque">Replacement Cheque</option>
-                        <option value="Other">Other / No Settlement</option>
-                    </select>
+                    <input type="hidden" id="chq-inp-settled-via" value="">
                 </div>
                 <div class="input-group">
                     <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Reason / Bank Remarks</label>
@@ -3245,6 +3312,28 @@
                 <button class="glass-btn-primary" onclick="saveChequeDetails()">Save Cheque</button>
             </div>
         </div>
+    </div>
+
+    <!-- Universal Change Log & Version Restore Modal -->
+    <div id="entry-history-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeEntryHistoryModal()">
+        <div class="ledger-modal-card" style="max-width:540px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border);">
+                <div>
+                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="hist-modal-sub">Audit Log &amp; Version History</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="hist-modal-title">Change History</div>
+                </div>
+                <button class="glass-btn" onclick="closeEntryHistoryModal()" style="padding:6px 10px !important;">
+                    <span class="material-icons" style="font-size:16px;">close</span>
+                </button>
+            </div>
+            <div id="hist-modal-body" style="padding:14px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; max-height:65vh;"></div>
+        </div>
+    </div>
+
+    <!-- Floating Undo Toast -->
+    <div id="admin-undo-toast">
+        <span id="admin-undo-msg">Change saved</span>
+        <button class="glass-btn-primary" onclick="performAdminUndo()" style="padding:5px 11px !important; font-size:11.5px !important;">Undo</button>
     </div>
 
     <!-- Collection Entry Edit Modal (Counter 0) -->
@@ -5849,19 +5938,26 @@
                 }
 
                 const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${escapeHtml(e.remarks)})</span>` : '';
+                const hasHist = Array.isArray(e.history) && e.history.length > 0;
+                const moveOpts = ['0','1','2','3','4','5'].map(c => `<option value="${c}" ${String(e.counterId)===c?'selected':''}>C${c}</option>`).join('');
 
                 tr.innerHTML = `
                     <td style="padding:6px; font-weight:600; color:var(--ui-muted); text-align:center;">${snMap[e.id] || ''}</td>
-                    <td style="padding:6px; font-weight:600; color:var(--ui-info); cursor:pointer; white-space:nowrap;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}${remarksSpan}</td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cash || ''}" oninput="updateActiveEntryField('${e.id}', 'cash', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.qr || ''}" oninput="updateActiveEntryField('${e.id}', 'qr', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.pos || ''}" oninput="updateActiveEntryField('${e.id}', 'pos', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.ips || ''}" oninput="updateActiveEntryField('${e.id}', 'ips', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.esewa || ''}" oninput="updateActiveEntryField('${e.id}', 'esewa', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.online || ''}" oninput="updateActiveEntryField('${e.id}', 'online', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:6px; font-weight:600; color:var(--ui-info); white-space:nowrap;">
+                        <span style="cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}</span>
+                        <select class="row-move-sel" title="Move invoice to another counter" onclick="event.stopPropagation()" onchange="moveEntryCounter('${e.id}', this.value)">${moveOpts}</select>
+                        <button class="row-info-btn ${hasHist ? 'has-log' : ''}" title="View change history &amp; undo" onclick="event.stopPropagation(); openEntryHistoryModal('${e.id}')"><span class="material-icons" style="font-size:13px;">info</span></button>
+                        ${remarksSpan}
+                    </td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cash || ''}" onchange="updateActiveEntryField('${e.id}', 'cash', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.qr || ''}" onchange="updateActiveEntryField('${e.id}', 'qr', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.pos || ''}" onchange="updateActiveEntryField('${e.id}', 'pos', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.ips || ''}" onchange="updateActiveEntryField('${e.id}', 'ips', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.esewa || ''}" onchange="updateActiveEntryField('${e.id}', 'esewa', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.online || ''}" onchange="updateActiveEntryField('${e.id}', 'online', this.value)" placeholder="0" inputmode="decimal"></td>
                     <td style="padding:6px; text-align:right; color:var(--ui-pos); font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cheque || ''}" oninput="updateActiveEntryField('${e.id}', 'cheque', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.credit || ''}" oninput="updateActiveEntryField('${e.id}', 'credit', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cheque || ''}" onchange="updateActiveEntryField('${e.id}', 'cheque', this.value)" placeholder="0" inputmode="decimal"></td>
+                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.credit || ''}" onchange="updateActiveEntryField('${e.id}', 'credit', this.value)" placeholder="0" inputmode="decimal"></td>
                     <td style="padding:6px; text-align:right; color:var(--ui-neg); font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
                     <td style="padding:6px; text-align:right; font-weight:700;" class="tot-sales-cell">${totSales.toLocaleString()}</td>
                 `;
@@ -6114,19 +6210,19 @@
             const entry = entries.find(e => String(e.id) === String(entryId));
             if (!entry) return;
 
+            const prevVal = Number(entry[field] || 0);
             const val = parseFloat(value) || 0;
-            entry[field] = val;
+            if (prevVal === val) return;
 
+            entry[field] = val;
             entry.totalIn = entry.isVoid ? 0 : ((entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0));
             entry.totalCredit = entry.isVoid ? 0 : ((entry.cheque || 0) + (entry.credit || 0));
             entry.synced = false;
 
-            if (!entry.history) entry.history = [];
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr();
-            entry.history.push({
-                timestamp,
-                user: 'Admin',
-                changes: [`In-row edit of ${field} to ${val}`]
+            const summary = `Edited ${field}: ${prevVal.toLocaleString()} → ${val.toLocaleString()}`;
+            recordEntryVersion(entry, summary, { [field]: prevVal });
+            pushAdminUndo(summary, async () => {
+                await applyEntryRestore(entry.id, { [field]: prevVal }, `Undid ${field} edit (restored ${prevVal.toLocaleString()})`);
             });
 
             const db = await dbPromise;
@@ -7930,18 +8026,296 @@
         }
 
         // ============================================================
-        // ADMIN CHEQUES MASTER PANEL (Lifecycle Tracking & Settlement)
+        // UNIVERSAL AUDIT LOG, VERSION RESTORE, UNDO & COUNTER MOVE
+        // ============================================================
+        const adminUndoStack = [];
+        let undoToastTimer = null;
+
+        function recordEntryVersion(entry, summary, prevSnapshot) {
+            if (!Array.isArray(entry.history)) entry.history = [];
+            const ts = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr();
+            entry.history.push({
+                timestamp: ts,
+                user: 'Admin',
+                changes: [summary],
+                prev: prevSnapshot ? JSON.parse(JSON.stringify(prevSnapshot)) : null
+            });
+        }
+
+        function updateUndoButtonUI() {
+            const btn = document.getElementById('btn-admin-undo');
+            const lbl = document.getElementById('admin-undo-cnt');
+            if (!btn) return;
+            if (adminUndoStack.length > 0) {
+                btn.style.display = 'inline-flex';
+                if (lbl) lbl.innerText = `Undo (${adminUndoStack.length})`;
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        function pushAdminUndo(label, undoFn) {
+            adminUndoStack.push({ label, undoFn });
+            if (adminUndoStack.length > 30) adminUndoStack.shift();
+            updateUndoButtonUI();
+            const toast = document.getElementById('admin-undo-toast');
+            const msg = document.getElementById('admin-undo-msg');
+            if (toast && msg) {
+                msg.innerText = label;
+                toast.classList.add('show');
+                clearTimeout(undoToastTimer);
+                undoToastTimer = setTimeout(() => toast.classList.remove('show'), 6000);
+            }
+        }
+
+        async function performAdminUndo() {
+            const item = adminUndoStack.pop();
+            updateUndoButtonUI();
+            const toast = document.getElementById('admin-undo-toast');
+            if (toast) toast.classList.remove('show');
+            if (!item || typeof item.undoFn !== 'function') return;
+            await item.undoFn();
+        }
+
+        async function persistAndSyncEntry(entry) {
+            entry.synced = false;
+            await saveEntryToIDB(entry);
+            try {
+                await callGas('SYNC_ENTRIES', { data: entry });
+                entry.synced = true;
+                await saveEntryToIDB(entry);
+            } catch (e) {
+                console.warn('Background sync deferred:', e);
+            }
+        }
+
+        async function applyEntryRestore(entryId, prevSnapshot, logLabel) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry || !prevSnapshot) return;
+
+            const prevLinkedId = entry.chequeInfo && entry.chequeInfo.linkedSettlementId;
+            const currentCopy = {};
+            Object.keys(prevSnapshot).forEach(k => { currentCopy[k] = entry[k]; });
+            Object.keys(prevSnapshot).forEach(k => {
+                entry[k] = prevSnapshot[k] === undefined ? undefined : JSON.parse(JSON.stringify(prevSnapshot[k]));
+            });
+
+            entry.totalIn = entry.isVoid ? 0 : ((entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0));
+            entry.totalCredit = entry.isVoid ? 0 : ((entry.cheque || 0) + (entry.credit || 0));
+            recordEntryVersion(entry, logLabel || 'Restored previous version', currentCopy);
+
+            // If restoring a cheque status, preserve linkedSettlementId so syncLinkedChequeSettlement voids/updates it cleanly
+            if (prevSnapshot.chequeInfo !== undefined) {
+                if (!entry.chequeInfo) entry.chequeInfo = {};
+                if (prevLinkedId && !entry.chequeInfo.linkedSettlementId) {
+                    entry.chequeInfo.linkedSettlementId = prevLinkedId;
+                }
+                const st = normalizeChequeStatus(entry.chequeInfo);
+                await syncLinkedChequeSettlement(entry, st);
+            }
+
+            await persistAndSyncEntry(entry);
+            renderAdminPortal();
+        }
+
+        async function moveEntryCounter(entryId, newCounterId) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            const oldCid = String(entry.counterId);
+            const nextCid = String(newCounterId);
+            if (oldCid === nextCid) return;
+
+            entry.counterId = nextCid;
+            const summary = `Moved invoice from Counter ${oldCid} → Counter ${nextCid}`;
+            recordEntryVersion(entry, summary, { counterId: oldCid });
+            await persistAndSyncEntry(entry);
+            renderAdminActive();
+            if (activeAdminTab === 'eod') renderAdminEOD();
+
+            pushAdminUndo(summary, async () => {
+                await applyEntryRestore(entry.id, { counterId: oldCid }, `Undid move: Counter ${nextCid} → Counter ${oldCid}`);
+            });
+        }
+
+        function openEntryHistoryModal(entryId) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            const titleEl = document.getElementById('hist-modal-title');
+            const subEl = document.getElementById('hist-modal-sub');
+            const bodyEl = document.getElementById('hist-modal-body');
+            if (!bodyEl) return;
+
+            if (titleEl) titleEl.innerText = `History · C${entry.counterId} (${entry.timestamp || entry.date || ''})`;
+            if (subEl) subEl.innerText = `Entry #${entry.id} · ${Array.isArray(entry.history) ? entry.history.length : 0} logged changes`;
+
+            const hist = Array.isArray(entry.history) ? entry.history : [];
+            if (hist.length === 0) {
+                bodyEl.innerHTML = '<div style="text-align:center; padding:28px; color:var(--ui-muted); font-size:13px;">No edits or status changes recorded yet.</div>';
+            } else {
+                const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+                bodyEl.innerHTML = hist.slice().reverse().map((h, revIdx) => {
+                    const origIdx = hist.length - 1 - revIdx;
+                    const changesText = Array.isArray(h.changes) ? h.changes.join(' · ') : String(h.changes || '');
+                    const restoreBtn = h.prev
+                        ? `<button class="glass-btn" onclick="restoreEntryVersion('${entry.id}', ${origIdx})" style="padding:4px 10px !important; font-size:11px !important; color:var(--ui-warn) !important;">↶ Restore Before This</button>`
+                        : '';
+                    return `<div class="glass-subcard" style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px !important; border-radius:10px !important;">
+                        <div>
+                            <div style="font-size:12.5px; font-weight:700; color:var(--ui-text);">${esc(changesText)}</div>
+                            <div style="font-size:10.5px; color:var(--ui-muted); margin-top:2px;">${esc(h.timestamp || '')} · ${esc(h.user || 'Admin')}</div>
+                        </div>
+                        ${restoreBtn}
+                    </div>`;
+                }).join('');
+            }
+            const modal = document.getElementById('entry-history-modal');
+            if (modal) modal.classList.add('open');
+        }
+
+        async function restoreEntryVersion(entryId, histIndex) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry || !Array.isArray(entry.history) || !entry.history[histIndex] || !entry.history[histIndex].prev) return;
+            const snap = entry.history[histIndex].prev;
+            closeEntryHistoryModal();
+            await applyEntryRestore(entryId, snap, `Restored version prior to: ${(entry.history[histIndex].changes || ['edit'])[0]}`);
+        }
+
+        function closeEntryHistoryModal() {
+            const modal = document.getElementById('entry-history-modal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        // ============================================================
+        // ADMIN CHEQUES MASTER PANEL (Inline Status + Auto EBL Ledger)
         // ============================================================
         const CHEQUE_STATUS_LABELS = {
             received: 'Received (In Hand)',
-            sent_to_bank: 'Sent to Bank',
-            cleared: 'Cleared',
+            sent_to_bank: 'Sent to Bank (EBL)',
+            cleared: 'Cashed into EBL',
             returned_from_bank: 'Returned from Bank',
             bounced: 'Bounced',
-            returned_to_customer: 'Returned to Customer',
+            returned_to_customer_cash: 'Returned → Cash',
+            returned_to_customer_qr: 'Returned → QR',
+            returned_to_customer_credit: 'Returned → Credit',
             canceled: 'Canceled'
         };
         let editingChequeEntryId = null;
+
+        function normalizeChequeStatus(info) {
+            if (!info || !info.status) return 'received';
+            if (info.status === 'returned_to_customer') {
+                const via = (info.settledVia || '').toLowerCase();
+                if (via.includes('qr')) return 'returned_to_customer_qr';
+                if (via.includes('credit')) return 'returned_to_customer_credit';
+                return 'returned_to_customer_cash';
+            }
+            return info.status;
+        }
+
+        // Automatically posts or voids a linked Counter 0 settlement entry for TODAY's EBL / Cash / QR bucket
+        async function syncLinkedChequeSettlement(chequeEntry, status) {
+            if (!chequeEntry.chequeInfo) chequeEntry.chequeInfo = {};
+            const info = chequeEntry.chequeInfo;
+            const amt = Number(chequeEntry.cheque || 0);
+            const party = info.partyName || chequeEntry.customerName || (chequeEntry.remarks ? chequeEntry.remarks.split('—')[0].trim() : 'Cheque Party');
+            const chqRef = info.chequeNumber ? `Chq #${info.chequeNumber}` : 'Cheque';
+
+            const isEbl = (status === 'cleared');
+            const isCash = (status === 'returned_to_customer_cash');
+            const isQr = (status === 'returned_to_customer_qr');
+            const postsToToday = (isEbl || isCash || isQr) && amt > 0;
+
+            let linked = info.linkedSettlementId
+                ? entries.find(x => String(x.id) === String(info.linkedSettlementId))
+                : null;
+
+            if (postsToToday) {
+                const now = new Date();
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const today = getLocalTodayStr(now);
+                const modeLbl = isEbl ? 'EBL' : (isCash ? 'Cash' : 'QR');
+
+                if (!linked) {
+                    linked = {
+                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        counterId: '0',
+                        date: today,
+                        timestamp: `${hh}:${min} ${dd}/${mm}/${yy}`,
+                        time: `${hh}:${min}`,
+                        images: [],
+                        pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0,
+                        coll_rasid_cash: 0, coll_rasid_qr: 0,
+                        sessionStatus: 'active',
+                        history: []
+                    };
+                    entries.push(linked);
+                    info.linkedSettlementId = linked.id;
+                }
+
+                linked.isVoid = false;
+                linked.date = today;
+                linked.cash = isCash ? amt : 0;
+                linked.qr = isQr ? amt : 0;
+                linked.ips = isEbl ? amt : 0;
+                linked.coll_cheq_cash = isCash ? amt : 0;
+                linked.coll_cheq_qr = isQr ? amt : 0;
+                linked.coll_cheq_ebl = isEbl ? amt : 0;
+                linked.totalIn = amt;
+                linked.totalCredit = 0;
+                linked.customerName = party;
+                linked.remarks = `${party} (${chqRef} → ${modeLbl})`;
+                recordEntryVersion(linked, `Auto-posted from Cheque #${chequeEntry.id} (${modeLbl})`, null);
+                await persistAndSyncEntry(linked);
+            } else if (linked && !linked.isVoid) {
+                // Reversed / bounced / returned from bank / canceled -> void linked Counter 0 entry to prevent double-counting
+                linked.isVoid = true;
+                linked.totalIn = 0;
+                recordEntryVersion(linked, `Auto-voided: Cheque #${chequeEntry.id} changed to ${CHEQUE_STATUS_LABELS[status] || status}`, null);
+                await persistAndSyncEntry(linked);
+            }
+        }
+
+        async function inlineUpdateChequeStatus(entryId, newStatus) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            const prevInfo = entry.chequeInfo ? JSON.parse(JSON.stringify(entry.chequeInfo)) : {};
+            const oldStatus = normalizeChequeStatus(prevInfo);
+            if (oldStatus === newStatus) return;
+
+            let reason = prevInfo.reason || '';
+            if (newStatus === 'returned_from_bank' || newStatus === 'bounced' || newStatus === 'canceled') {
+                const input = prompt(`Reason for "${CHEQUE_STATUS_LABELS[newStatus]}" (optional):`, reason);
+                if (input === null) {
+                    renderAdminCheques();
+                    return;
+                }
+                reason = input.trim();
+            }
+
+            const party = prevInfo.partyName || entry.customerName || (entry.remarks ? entry.remarks.split('—')[0].trim() : 'Cheque');
+            entry.chequeInfo = Object.assign({}, prevInfo, {
+                partyName: party,
+                status: newStatus,
+                reason,
+                statusDate: getLocalTodayStr()
+            });
+
+            await syncLinkedChequeSettlement(entry, newStatus);
+            const ledgerNote = newStatus === 'cleared' ? ' (+Today EBL)' : (newStatus === 'returned_to_customer_cash' ? ' (+Today Cash)' : (newStatus === 'returned_to_customer_qr' ? ' (+Today QR)' : ''));
+            const summary = `${party}: ${CHEQUE_STATUS_LABELS[oldStatus] || oldStatus} → ${CHEQUE_STATUS_LABELS[newStatus] || newStatus}${ledgerNote}${reason ? ' (' + reason + ')' : ''}`;
+            recordEntryVersion(entry, summary, { chequeInfo: prevInfo });
+            await persistAndSyncEntry(entry);
+
+            renderAdminCheques();
+            if (activeAdminTab === 'eod') renderAdminEOD();
+            pushAdminUndo(summary, async () => {
+                await applyEntryRestore(entry.id, { chequeInfo: prevInfo }, `Undid cheque status change (${CHEQUE_STATUS_LABELS[newStatus]} → ${CHEQUE_STATUS_LABELS[oldStatus]})`);
+            });
+        }
 
         function renderAdminCheques() {
             const tbody = document.getElementById('chq-master-tbody');
@@ -7950,12 +8324,10 @@
             const statusFilter = document.getElementById('chq-filter-status')?.value || 'all';
             const searchQ = (document.getElementById('chq-search')?.value || '').trim().toLowerCase();
 
-            // Master list: all non-void entries with cheque > 0
             const allCheques = entries
                 .filter(e => !e.isVoid && Number(e.cheque || 0) > 0)
                 .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
 
-            // Compute KPI buckets across ALL cheques
             const stats = {
                 all: { c: 0, a: 0 },
                 hand: { c: 0, a: 0 },
@@ -7965,14 +8337,12 @@
             };
             allCheques.forEach(e => {
                 const amt = Number(e.cheque || 0);
-                const st = (e.chequeInfo && e.chequeInfo.status) || 'received';
+                const st = normalizeChequeStatus(e.chequeInfo);
                 stats.all.c++; stats.all.a += amt;
                 if (st === 'received') { stats.hand.c++; stats.hand.a += amt; }
                 else if (st === 'sent_to_bank') { stats.bank.c++; stats.bank.a += amt; }
                 else if (st === 'cleared') { stats.clr.c++; stats.clr.a += amt; }
-                else if (st === 'bounced' || st === 'returned_from_bank' || st === 'returned_to_customer' || st === 'canceled') {
-                    stats.ret.c++; stats.ret.a += amt;
-                }
+                else { stats.ret.c++; stats.ret.a += amt; }
             });
 
             const setT = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
@@ -7987,15 +8357,14 @@
             setT('chq-kpi-ret-cnt', String(stats.ret.c));
             setT('chq-kpi-ret-amt', `NPR ${stats.ret.a.toLocaleString()}`);
 
-            // Filter rows
             const filtered = allCheques.filter(e => {
                 const info = e.chequeInfo || {};
-                const st = info.status || 'received';
+                const st = normalizeChequeStatus(info);
                 if (statusFilter !== 'all' && st !== statusFilter) return false;
                 if (searchQ) {
                     const hay = [
                         info.partyName, e.customerName, info.bankName, info.chequeNumber,
-                        info.reason, info.settledVia, e.remarks, e.date
+                        info.reason, e.remarks, e.date
                     ].filter(Boolean).join(' ').toLowerCase();
                     if (!hay.includes(searchQ)) return false;
                 }
@@ -8008,17 +8377,21 @@
             }
 
             const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const statusKeys = Object.keys(CHEQUE_STATUS_LABELS);
 
             tbody.innerHTML = filtered.map(e => {
                 const info = e.chequeInfo || {};
-                const st = info.status || 'received';
+                const st = normalizeChequeStatus(info);
                 const party = info.partyName || e.customerName || (e.remarks ? e.remarks.split('—')[0].trim() : '—');
                 const bankLine = [info.bankName, info.chequeNumber ? `#${info.chequeNumber}` : ''].filter(Boolean).join(' · ') || 'Details not added';
                 const chqDate = info.chequeDate || e.date || '—';
-                const statusLabel = CHEQUE_STATUS_LABELS[st] || st;
+                const hasLog = Array.isArray(e.history) && e.history.length > 0;
 
+                const opts = statusKeys.map(k => `<option value="${k}" ${st === k ? 'selected' : ''}>${CHEQUE_STATUS_LABELS[k]}</option>`).join('');
                 const subNotes = [];
-                if (st === 'returned_to_customer' && info.settledVia) subNotes.push(`Against: ${info.settledVia}`);
+                if (st === 'cleared') subNotes.push('Posted → Today EBL');
+                else if (st === 'returned_to_customer_cash') subNotes.push('Posted → Today Cash');
+                else if (st === 'returned_to_customer_qr') subNotes.push('Posted → Today QR');
                 if (info.reason) subNotes.push(info.reason);
                 if (info.statusDate) subNotes.push(info.statusDate);
                 const subHtml = subNotes.length
@@ -8033,11 +8406,14 @@
                     <td style="white-space:nowrap;">${esc(chqDate)}</td>
                     <td style="text-align:right; font-weight:800; font-variant-numeric:tabular-nums;">NPR ${Number(e.cheque || 0).toLocaleString()}</td>
                     <td>
-                        <span class="chq-badge chq-${esc(st)}">${esc(statusLabel)}</span>
+                        <select class="chq-inline-sel" onchange="inlineUpdateChequeStatus('${e.id}', this.value)">${opts}</select>
                         ${subHtml}
                     </td>
-                    <td style="text-align:center;">
-                        <button class="glass-btn" onclick="openChequeModal('${e.id}')" style="padding:5px 10px !important; font-size:11px !important;">
+                    <td style="text-align:center; white-space:nowrap;">
+                        <button class="row-info-btn ${hasLog ? 'has-log' : ''}" onclick="openEntryHistoryModal('${e.id}')" title="Status change log &amp; undo">
+                            <span class="material-icons" style="font-size:14px;">info</span>
+                        </button>
+                        <button class="glass-btn" onclick="openChequeModal('${e.id}')" style="padding:4px 9px !important; font-size:11px !important; margin-left:4px;">
                             <span class="material-icons" style="font-size:13px;">edit</span> Edit
                         </button>
                     </td>
@@ -8046,9 +8422,7 @@
         }
 
         function toggleChequeSettlementFields() {
-            const st = document.getElementById('chq-inp-status')?.value || 'received';
-            const wrap = document.getElementById('chq-settle-wrap');
-            if (wrap) wrap.style.display = (st === 'returned_to_customer') ? 'block' : 'none';
+            // Settlement mode is now built directly into the status dropdown
         }
 
         function openChequeModal(entryId) {
@@ -8070,8 +8444,7 @@
                 document.getElementById('chq-inp-bank').value = info.bankName || '';
                 document.getElementById('chq-inp-number').value = info.chequeNumber || '';
                 document.getElementById('chq-inp-date').value = info.chequeDate || entry.date || today;
-                document.getElementById('chq-inp-status').value = info.status || 'received';
-                document.getElementById('chq-inp-settled-via').value = info.settledVia || 'Cash';
+                document.getElementById('chq-inp-status').value = normalizeChequeStatus(info);
                 document.getElementById('chq-inp-reason').value = info.reason || '';
                 document.getElementById('chq-inp-status-date').value = info.statusDate || today;
             } else {
@@ -8084,12 +8457,10 @@
                 document.getElementById('chq-inp-number').value = '';
                 document.getElementById('chq-inp-date').value = today;
                 document.getElementById('chq-inp-status').value = 'received';
-                document.getElementById('chq-inp-settled-via').value = 'Cash';
                 document.getElementById('chq-inp-reason').value = '';
                 document.getElementById('chq-inp-status-date').value = today;
             }
 
-            toggleChequeSettlementFields();
             const modal = document.getElementById('cheque-edit-modal');
             if (modal) modal.classList.add('open');
         }
@@ -8107,7 +8478,6 @@
             const chequeNumber = (document.getElementById('chq-inp-number').value || '').trim();
             const chequeDate = document.getElementById('chq-inp-date').value || getLocalTodayStr();
             const status = document.getElementById('chq-inp-status').value || 'received';
-            const settledVia = status === 'returned_to_customer' ? (document.getElementById('chq-inp-settled-via').value || 'Cash') : '';
             const reason = (document.getElementById('chq-inp-reason').value || '').trim();
             const statusDate = document.getElementById('chq-inp-status-date').value || getLocalTodayStr();
 
@@ -8116,24 +8486,16 @@
                 return;
             }
 
-            const chequeInfo = {
-                partyName,
-                bankName,
-                chequeNumber,
-                chequeDate,
-                status,
-                settledVia,
-                reason,
-                statusDate
-            };
-
             let targetEntry;
+            let prevInfo = null;
             if (editingChequeEntryId) {
                 targetEntry = entries.find(e => String(e.id) === String(editingChequeEntryId));
                 if (!targetEntry) return;
-                targetEntry.chequeInfo = chequeInfo;
+                prevInfo = targetEntry.chequeInfo ? JSON.parse(JSON.stringify(targetEntry.chequeInfo)) : {};
+                targetEntry.chequeInfo = Object.assign({}, prevInfo, {
+                    partyName, bankName, chequeNumber, chequeDate, status, reason, statusDate
+                });
                 if (partyName && !targetEntry.customerName) targetEntry.customerName = partyName;
-                targetEntry.synced = false;
             } else {
                 const now = new Date();
                 const dd = String(now.getDate()).padStart(2, '0');
@@ -8158,17 +8520,23 @@
                     isVoid: false,
                     images: [],
                     sessionStatus: 'active',
-                    chequeInfo,
-                    synced: false
+                    chequeInfo: { partyName, bankName, chequeNumber, chequeDate, status, reason, statusDate },
+                    history: []
                 };
                 entries.push(targetEntry);
             }
 
-            await saveEntryToIDB(targetEntry);
+            await syncLinkedChequeSettlement(targetEntry, status);
+            const summary = `Updated cheque (${partyName || 'Party'} · ${CHEQUE_STATUS_LABELS[status] || status})`;
+            recordEntryVersion(targetEntry, summary, prevInfo ? { chequeInfo: prevInfo } : null);
+            await persistAndSyncEntry(targetEntry);
+
             closeChequeModal();
             renderAdminCheques();
-            if (typeof syncWithServer === 'function') {
-                syncWithServer();
+            if (prevInfo) {
+                pushAdminUndo(summary, async () => {
+                    await applyEntryRestore(targetEntry.id, { chequeInfo: prevInfo }, 'Undid cheque edit');
+                });
             }
         }
 
