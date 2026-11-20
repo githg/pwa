@@ -427,65 +427,73 @@
 
         .preview-scroll {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             overflow-x: auto;
             height: 100%;
+            width: 100%;
             align-items: center;
-            padding-right: 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
         }
 
         .preview-thumb-wrap {
+            flex: 0 0 100%;
+            width: 100%;
             height: 100%;
-            aspect-ratio: 3/4;
             position: relative;
-            flex-shrink: 0;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            scroll-snap-align: center;
+            background: rgba(0, 0, 0, 0.25);
         }
 
         .preview-thumb-wrap img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 2px solid #fff;
+            object-fit: contain;
+            border-radius: 10px;
         }
 
         .preview-thumb-wrap .remove {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--c-credit);
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
             color: #fff;
-            width: 24px;
-            height: 24px;
-            border-radius: 12px;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
             font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             font-size: 14px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+            z-index: 6;
         }
 
         .add-more-btn {
-            height: 100%;
-            aspect-ratio: 3/4;
-            background: #f3f4f6;
-            border: 2px dashed #9ca3af;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            position: absolute;
+            bottom: 8px;
+            left: 10px;
+            z-index: 9;
+            background: rgba(15, 23, 42, 0.82);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 8px;
+            padding: 5px 10px;
+            display: inline-flex;
             align-items: center;
-            color: #6b7280;
+            gap: 5px;
             cursor: pointer;
-            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 700;
+            backdrop-filter: blur(8px);
         }
 
         .add-more-btn:active {
-            background: #e5e7eb;
+            transform: scale(0.96);
         }
 
         .details-area {
@@ -1726,13 +1734,138 @@
             flex-direction: column;
             overflow-y: auto;
         }
+        /* Evenly-Sized Action Rows inside Capture Sheet */
         #capture-sheet .form-header-small {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)) !important;
             gap: 6px !important;
             padding: 7px 10px !important;
-            flex-wrap: nowrap !important;
+        }
+        #capture-sheet .form-header-small button {
+            width: 100% !important;
+            justify-content: center !important;
+            height: 36px !important;
+            padding: 0 8px !important;
+            border-radius: 9px !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+        #capture-sheet .recheck-bar {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            padding: 6px 10px;
+            background: var(--ui-sheet-card);
+            border-bottom: 1px solid var(--ui-sheet-border);
+        }
+        #capture-sheet .recheck-bar.show {
+            display: grid;
+        }
+        #capture-sheet .recheck-bar button {
+            width: 100%;
+            height: 32px;
+            padding: 0 6px !important;
+            font-size: 11px !important;
+            justify-content: center;
+        }
+        .capture-ref-pill {
+            position: absolute;
+            top: calc(8px + env(safe-area-inset-top));
+            left: 10px;
+            z-index: 10;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.86);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Compact 1-Row All-Modes Live Summary Strip */
+        .all-modes-strip {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 5px;
+            padding: 7px 8px;
+            border-radius: 11px;
+            background: var(--ui-card);
+            border: 1px solid var(--ui-border);
+            font-variant-numeric: tabular-nums;
+        }
+        .ams-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 0;
+        }
+        .ams-lbl {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+        }
+        .ams-val {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--ui-text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        /* Attached Frozen Column Headers inside .sticky-sec-bar + Column Drag-Resizer */
+        .sticky-col-hdr {
+            display: grid;
+            align-items: center;
+            padding-top: 6px;
+            margin-top: 2px;
+            border-top: 1px solid var(--ui-border);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--ui-muted);
+            user-select: none;
+        }
+        .sticky-section.collapsed .sticky-col-hdr {
+            display: none !important;
+        }
+        .sticky-col-cell {
+            position: relative;
+            padding: 2px 3px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .col-resizer {
+            position: absolute;
+            top: -2px;
+            right: -3px;
+            width: 8px;
+            height: 22px;
+            cursor: col-resize;
+            touch-action: none;
+            z-index: 4;
+        }
+        .col-resizer::after {
+            content: '';
+            position: absolute;
+            right: 3px;
+            top: 4px;
+            width: 1.5px;
+            height: 12px;
+            background: var(--ui-border-strong);
+            border-radius: 1px;
+            opacity: 0.5;
         }
         #capture-sheet .form-container {
             display: grid !important;
@@ -2881,41 +3014,29 @@
 
         <div class="bottom-sheet capture-sheet" id="capture-sheet">
             <div class="preview-area">
+                <div class="capture-ref-pill" id="capture-ref-badge">NEW</div>
                 <div class="img-privacy-wm" id="img-privacy-wm"></div>
-                <div class="preview-scroll" id="preview-scroll">
-                    <div class="add-more-btn" onclick="captureMore()" title="Capture another page of this bill">
-                        <span class="material-icons" style="font-size: 26px; margin-bottom: 4px;">add_a_photo</span>
-                        <span style="font-size: 10.5px; font-weight: 600;">ADD PAGE</span>
-                    </div>
+                <div class="add-more-btn" onclick="captureMore()" title="Capture another page of this bill">
+                    <span class="material-icons" style="font-size: 16px;">add_a_photo</span> + Page
                 </div>
+                <div class="preview-scroll" id="preview-scroll"></div>
             </div>
 
             <div class="details-area">
-                <!-- Rechecking / Verification Audit Bar (step through 200 invoices + verify/flag discrepancies) -->
+                <!-- Rechecking / Verification Audit Bar (evenly sized 4-button row) -->
                 <div class="recheck-bar" id="recheck-bar">
-                    <div style="display:flex; align-items:center; gap:5px;">
-                        <button class="glass-btn" onclick="stepRecheckEntry(-1)" style="padding:4px 8px !important; font-size:11px !important;" title="Open previous invoice">← Prev</button>
-                        <button class="glass-btn" onclick="stepRecheckEntry(1)" style="padding:4px 8px !important; font-size:11px !important;" title="Open next invoice">Next →</button>
-                        <span id="recheck-status-pill" class="mode-pill" style="display:none;"></span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:5px;">
-                        <button class="glass-btn" onclick="markEntryRecheck('verified')" style="padding:5px 9px !important; font-size:11px !important; color:var(--ui-pos) !important; border-color:rgba(16,185,129,0.4) !important;" title="Mark invoice calculation verified &amp; go to next">✓ Verify</button>
-                        <button class="glass-btn-danger" onclick="markEntryRecheck('flagged')" style="padding:5px 9px !important; font-size:11px !important;" title="Flag calculation error with note for Admin">⚠ Flag</button>
-                    </div>
+                    <button class="glass-btn" onclick="stepRecheckEntry(-1)" title="Open previous invoice">← Prev</button>
+                    <button class="glass-btn" onclick="markEntryRecheck('verified')" style="color:var(--ui-pos) !important; border-color:rgba(16,185,129,0.4) !important;" title="Mark invoice calculation verified &amp; go to next">✓ Verify</button>
+                    <button class="glass-btn-danger" onclick="markEntryRecheck('flagged')" title="Flag calculation error with note for Admin">⚠ Flag</button>
+                    <button class="glass-btn" onclick="stepRecheckEntry(1)" title="Open next invoice">Next →</button>
                 </div>
+                <div id="recheck-status-pill" class="mode-pill" style="display:none; margin:4px 10px 0; align-self:flex-start;"></div>
                 <div class="form-header-small">
                     <button class="btn-cancel-capture" onclick="cancelCapture()" title="Close &amp; go back">← Back</button>
                     <span id="form-title" style="display: none;"></span>
-                    <button class="btn-next" onclick="saveAndNext()" title="Save payment amounts &amp; continue"
-                        style="padding: 8px 18px; font-size: 13.5px; font-weight: 700;"><span
-                            class="material-icons" style="font-size: 16px;">save</span> Save</button>
-                    <div style="display: flex; gap: 6px; align-items: center;">
-                        <button class="btn-void" id="btn-admin-delete" onclick="adminDeleteEntry()" title="Permanently delete entry (Admin only)"
-                            style="background:#fee2e2; color:#ef4444; display: none; border: none; padding: 7px 9px; border-radius: 8px; font-weight: 700; font-size: 11.5px; cursor: pointer; align-items: center; gap: 3px;"><span
-                                class="material-icons" style="font-size:14px;">delete</span></button>
-                        <button class="btn-void" id="btn-void-toggle" onclick="voidAndNext()" title="Mark this bill as void / canceled" style="padding: 7px 10px; font-size: 11.5px;"><span
-                                class="material-icons" style="font-size:13px;">block</span> Void</button>
-                    </div>
+                    <button class="btn-next" onclick="saveAndNext()" title="Save payment amounts &amp; continue"><span class="material-icons" style="font-size: 16px;">save</span> Save</button>
+                    <button class="btn-void" id="btn-void-toggle" onclick="voidAndNext()" title="Mark this bill as void / canceled"><span class="material-icons" style="font-size:14px;">block</span> Void</button>
+                    <button class="btn-void" id="btn-admin-delete" onclick="adminDeleteEntry()" title="Permanently delete entry (Admin only)" style="background:var(--ui-neg-soft); color:var(--ui-neg); display:none;"><span class="material-icons" style="font-size:14px;">delete</span> Del</button>
                 </div>
 
                 <div class="form-container">
@@ -2935,14 +3056,18 @@
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-cheque"></div>
                     <div class="input-group"><label class="input-label c-credit">Credit</label><input type="number"
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-credit"></div>
-                    <div class="input-group">
+                    <div class="input-group"><label class="input-label" style="color: var(--ui-muted);">Party Name</label><input type="text"
+                            class="input-field" id="inp-customer-name" placeholder="Name"></div>
+                    <div class="input-group"><label class="input-label" style="color: var(--ui-muted);">Phone #</label><input type="tel"
+                            class="input-field" id="inp-customer-phone" placeholder="98XXXXXXXX"></div>
+                    <div class="input-group" style="grid-column: span 2;">
                         <label class="input-label" style="color: var(--ui-muted);">Remarks</label>
                         <input type="text" class="input-field" id="inp-remarks"
-                            placeholder="Customer name, Rasid number, etc.">
+                            placeholder="Bank / cheque note, rasid #, etc.">
                     </div>
 
                     <!-- Admin Edit History Logs -->
-                    <div id="admin-history-box" style="grid-column: span 2; display: none;" class="history-log-box">
+                    <div id="admin-history-box" style="grid-column: span 3; display: none;" class="history-log-box">
                         <div
                             style="font-weight: 700; margin-bottom: 6px; text-transform: uppercase; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid #374151; padding-bottom: 4px;">
                             Edit History Log</div>
@@ -5873,19 +5998,17 @@
 
         function renderPreviewScroll() {
             const strip = document.getElementById('preview-scroll');
-            const existingThumbs = strip.querySelectorAll('.preview-thumb-wrap');
-            existingThumbs.forEach(t => t.remove());
-
-            const addBtn = strip.querySelector('.add-more-btn');
+            if (!strip) return;
+            strip.innerHTML = '';
 
             currentImages.forEach((img, idx) => {
                 const div = document.createElement('div');
                 div.className = 'preview-thumb-wrap';
                 div.innerHTML = `
-                    <img src="${img}" onerror="loadImgFallback(this, '${img}')" onclick="openImageEditor(${idx})" style="cursor:pointer;" title="Tap to annotate image">
-                    ${isReadOnly ? '' : `<div class="remove" onclick="removeImage(${idx})">x</div>`}
+                    <img src="${img}" onerror="loadImgFallback(this, '${img}')" onclick="openImageEditor(${idx})" style="cursor:pointer;" title="Tap to zoom or annotate image">
+                    ${isReadOnly ? '' : `<div class="remove" onclick="removeImage(${idx})" title="Remove this page">×</div>`}
                 `;
-                strip.insertBefore(div, addBtn);
+                strip.appendChild(div);
             });
         }
 
@@ -5947,12 +6070,32 @@
                     document.getElementById('inp-cheque').value = e.cheque || '';
                     document.getElementById('inp-credit').value = e.credit || '';
                     document.getElementById('inp-remarks').value = e.remarks || '';
+                    const nmEl = document.getElementById('inp-customer-name');
+                    if (nmEl) nmEl.value = e.customerName || (e.chequeInfo && e.chequeInfo.partyName) || (e.creditInfo && e.creditInfo.partyName) || '';
+                    const phEl = document.getElementById('inp-customer-phone');
+                    if (phEl) phEl.value = e.customerPhone || (e.creditInfo && e.creditInfo.phone) || '';
                 }
             } else if (!currentEditingId) {
                 currentEditingId = Date.now().toString();
                 isVoided = false;
                 document.querySelectorAll('.calc-input').forEach(i => i.value = '');
                 document.getElementById('inp-remarks').value = '';
+                const nmEl = document.getElementById('inp-customer-name'); if (nmEl) nmEl.value = '';
+                const phEl = document.getElementById('inp-customer-phone'); if (phEl) phEl.value = '';
+            }
+
+            // Show assigned human-readable entry code (e.g. 1-CsQr-1120-1) prominently
+            const refBadge = document.getElementById('capture-ref-badge');
+            if (refBadge) {
+                if (targetEntry) {
+                    const sameCtr = entries
+                        .filter(x => String(x.counterId) === String(targetEntry.counterId) && x.date === targetEntry.date)
+                        .sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+                    const sn = Math.max(1, sameCtr.findIndex(x => String(x.id) === String(targetEntry.id)) + 1);
+                    refBadge.innerText = formatEntryRef(targetEntry, sn);
+                } else {
+                    refBadge.innerText = `C${activeCounterId || '1'} · NEW`;
+                }
             }
 
             renderPreviewScroll();
@@ -5971,7 +6114,7 @@
             document.getElementById('form-title').innerText = isVoided ? 'VOIDED' : (isReadOnly ? 'Archived Capture' : 'Capture Details');
 
             // Apply read-only logic to input elements
-            const inputs = document.querySelectorAll('.calc-input, #inp-remarks');
+            const inputs = document.querySelectorAll('.calc-input, #inp-remarks, #inp-customer-name, #inp-customer-phone');
             inputs.forEach(input => {
                 if (isReadOnly) {
                     input.setAttribute('disabled', 'true');
@@ -6143,6 +6286,9 @@
                 entryCounterId = activeCounterId != null ? String(activeCounterId) : '1';
             }
 
+            const custNameVal = (document.getElementById('inp-customer-name')?.value || '').trim();
+            const custPhoneVal = (document.getElementById('inp-customer-phone')?.value || '').trim();
+
             const entryData = {
                 id: currentEditingId,
                 counterId: entryCounterId,
@@ -6153,15 +6299,19 @@
                 cash: getVal('inp-cash'), qr: getVal('inp-qr'), ips: getVal('inp-ips'),
                 pos: getVal('inp-pos'), esewa: getVal('inp-esewa'), online: getVal('inp-online'),
                 cheque: getVal('inp-cheque'), credit: getVal('inp-credit'),
-                remarks: document.getElementById('inp-remarks').value || ''
+                remarks: document.getElementById('inp-remarks').value || '',
+                customerName: custNameVal,
+                customerPhone: custPhoneVal
             };
 
             // Preserve metadata (recheck, chequeInfo, creditInfo, customerName, isFastLane, seedTag)
             if (old) {
-                ['recheck', 'chequeInfo', 'creditInfo', 'customerName', 'isFastLane', 'seedTag',
+                ['recheck', 'chequeInfo', 'creditInfo', 'isFastLane', 'seedTag',
                  'coll_rasid_cash', 'coll_rasid_qr', 'coll_cheq_cash', 'coll_cheq_ebl', 'coll_cheq_qr'].forEach(k => {
                     if (old[k] !== undefined) entryData[k] = old[k];
                 });
+                if (!entryData.customerName && old.customerName) entryData.customerName = old.customerName;
+                if (!entryData.customerPhone && old.customerPhone) entryData.customerPhone = old.customerPhone;
             }
 
             entryData.totalIn = entryData.isVoid ? 0 : (entryData.cash + entryData.qr + entryData.ips + entryData.pos + entryData.esewa + entryData.online);
@@ -6979,6 +7129,80 @@
             });
         }
 
+        const counterColWidths = {};
+
+        function getCounterColumns(cid, allCounterEntries) {
+            const hasOther = allCounterEntries.some(e => !e.isVoid && ((e.pos || 0) + (e.ips || 0) + (e.esewa || 0)) > 0);
+            const hasChqCr = allCounterEntries.some(e => !e.isVoid && ((e.cheque || 0) + (e.credit || 0)) > 0);
+
+            const cols = [
+                { key: 'time', label: 'Ref / Time', align: 'left', color: '' },
+                { key: 'cash', label: 'Cash', align: 'right', color: 'var(--ui-pos)' },
+                { key: 'qr', label: 'QR', align: 'right', color: 'var(--ui-info)' }
+            ];
+            if (hasOther) cols.push({ key: 'other', label: 'Other', align: 'right', color: '' });
+            if (hasChqCr) cols.push({ key: 'chqcr', label: 'Chq/Cr', align: 'right', color: 'var(--ui-neg)' });
+            cols.push({ key: 'totSales', label: 'Total', align: 'right', color: '' });
+            cols.push({ key: 'act', label: '', align: 'right', color: '' });
+
+            // Compute auto-snapped default widths summing to 100%
+            let defaults;
+            if (hasOther && hasChqCr) defaults = [21, 13, 14, 14, 14, 14, 10];
+            else if (hasOther || hasChqCr) defaults = [24, 16, 17, 16, 16, 11];
+            else defaults = [29, 20, 21, 19, 11];
+
+            const saved = counterColWidths[cid];
+            const widths = (saved && saved.length === cols.length) ? saved : defaults.slice();
+            return { cols, widths, hasOther, hasChqCr };
+        }
+
+        function applyCounterColWidths(cid, widths) {
+            counterColWidths[cid] = widths;
+            const tpl = widths.map(w => w.toFixed(1) + '%').join(' ');
+            const hdr = document.getElementById(`sticky-col-hdr-${cid}`);
+            if (hdr) hdr.style.gridTemplateColumns = tpl;
+            const cg = document.getElementById(`colgroup-active-${cid}`);
+            if (cg) {
+                const colEls = cg.querySelectorAll('col');
+                colEls.forEach((el, i) => { if (widths[i] !== undefined) el.style.width = widths[i].toFixed(1) + '%'; });
+            }
+        }
+
+        function resetCounterColWidths(cid) {
+            delete counterColWidths[cid];
+            renderAdminActive();
+            showToast('Columns auto-snapped');
+        }
+
+        function startColResize(ev, cid, colIdx) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            const hdr = document.getElementById(`sticky-col-hdr-${cid}`);
+            if (!hdr) return;
+            const totalPx = hdr.getBoundingClientRect().width || 360;
+            const allCounterEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
+            const { widths } = getCounterColumns(cid, allCounterEntries);
+            const cur = widths.slice();
+            const startX = ev.clientX;
+            const startW = cur[colIdx];
+            const nextW = cur[colIdx + 1];
+            if (nextW === undefined) return;
+
+            const onMove = (m) => {
+                const deltaPct = ((m.clientX - startX) / totalPx) * 100;
+                const clamped = Math.max(-(startW - 8), Math.min(nextW - 8, deltaPct));
+                cur[colIdx] = startW + clamped;
+                cur[colIdx + 1] = nextW - clamped;
+                applyCounterColWidths(cid, cur);
+            };
+            const onUp = () => {
+                window.removeEventListener('pointermove', onMove);
+                window.removeEventListener('pointerup', onUp);
+            };
+            window.addEventListener('pointermove', onMove);
+            window.addEventListener('pointerup', onUp);
+        }
+
         function sortActiveSessionTable(cid, column, forceDesc = false, keepDir = false) {
             const key = cid;
             if (!activeSessionTableSortStates[key]) {
@@ -7035,11 +7259,14 @@
                 return state.desc ? valB - valA : valA - valB;
             });
 
+            const { cols, hasOther, hasChqCr } = getCounterColumns(cid, allCounterEntries);
+            const colSpan = cols.length;
+
             tbody.innerHTML = '';
             let sumCash = 0, sumQr = 0, sumOther = 0, sumChqCr = 0, sumTotal = 0;
 
             if (activeEntries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:22px; color:var(--ui-muted);">No entries match this filter.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center; padding:22px; color:var(--ui-muted);">No entries match this filter.</td></tr>`;
             }
 
             activeEntries.forEach(e => {
@@ -7108,8 +7335,8 @@
                     </td>
                     <td style="text-align:right;">${cashCell}</td>
                     <td style="text-align:right;">${qrCell}</td>
-                    <td style="text-align:right;">${otherCell}</td>
-                    <td style="text-align:right;">${ccCell}</td>
+                    ${hasOther ? `<td style="text-align:right;">${otherCell}</td>` : ''}
+                    ${hasChqCr ? `<td style="text-align:right;">${ccCell}</td>` : ''}
                     <td style="text-align:right; font-weight:800; color:var(--ui-text);">${tot.toLocaleString()}</td>
                     <td style="text-align:right;">
                         <button class="row-info-btn ${isOpen ? 'has-log' : ''}" onclick="toggleLedgerAccordion('${cid}', '${e.id}')" title="${isOpen ? 'Close edit' : 'Edit amounts or move counter'}">
@@ -7130,7 +7357,7 @@
                         ? `<div style="margin-bottom:8px; padding:7px 10px; border-radius:8px; background:var(--ui-neg-soft); color:var(--ui-neg); font-size:11.5px; font-weight:700;">⚠ Flagged Discrepancy: ${escapeHtml((e.recheck && e.recheck.note) || 'Needs review')}</div>`
                         : '';
                     accTr.innerHTML = `
-                        <td colspan="7">
+                        <td colspan="${colSpan}">
                             ${rcBanner}
                             <div class="ledger-acc-grid">
                                 <div class="ledger-acc-field"><label>Cash</label><input type="number" id="acc-in-${e.id}-cash" value="${e.cash || ''}" placeholder="0" inputmode="decimal"></div>
@@ -7162,8 +7389,8 @@
                     <td class="col-sticky" style="color:var(--ui-muted);">${activeEntries.length} BILLS</td>
                     <td style="text-align:right; color:var(--ui-pos);">${sumCash.toLocaleString()}</td>
                     <td style="text-align:right; color:var(--ui-info);">${sumQr.toLocaleString()}</td>
-                    <td style="text-align:right;">${sumOther.toLocaleString()}</td>
-                    <td style="text-align:right; color:var(--ui-neg);">${sumChqCr.toLocaleString()}</td>
+                    ${hasOther ? `<td style="text-align:right;">${sumOther.toLocaleString()}</td>` : ''}
+                    ${hasChqCr ? `<td style="text-align:right; color:var(--ui-neg);">${sumChqCr.toLocaleString()}</td>` : ''}
                     <td style="text-align:right;">${sumTotal.toLocaleString()}</td>
                     <td></td>
                 `;
@@ -7174,12 +7401,35 @@
             const container = document.getElementById('admin-active-content');
             container.innerHTML = '';
 
-            // Render Access Control Panel at the top
+            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed');
+
+            // 1-Row Live All-Modes Summary Strip right at the top (zero wasted space!)
+            let gCash = 0, gQr = 0, gOther = 0, gChqCr = 0, gTot = 0;
+            activeEntries.forEach(e => {
+                if (e.isVoid) return;
+                const ca = e.cash || 0;
+                const qr = (e.qr || 0) + (e.online || 0);
+                const ot = (e.pos || 0) + (e.ips || 0) + (e.esewa || 0);
+                const cc = (e.cheque || 0) + (e.credit || 0);
+                gCash += ca; gQr += qr; gOther += ot; gChqCr += cc; gTot += (ca + qr + ot + cc);
+            });
+            const summaryStrip = document.createElement('div');
+            summaryStrip.className = 'all-modes-strip';
+            summaryStrip.innerHTML = `
+                <div class="ams-cell" onclick="openIsolatedLedger('cash', 'admin')" style="cursor:pointer;" title="Tap for Cash-only list"><span class="ams-lbl">Cash</span><span class="ams-val" style="color:var(--ui-pos);">${gCash.toLocaleString()}</span></div>
+                <div class="ams-cell" onclick="openIsolatedLedger('qr', 'admin')" style="cursor:pointer;" title="Tap for QR-only list"><span class="ams-lbl">QR</span><span class="ams-val" style="color:var(--ui-info);">${gQr.toLocaleString()}</span></div>
+                <div class="ams-cell"><span class="ams-lbl">Other</span><span class="ams-val">${gOther.toLocaleString()}</span></div>
+                <div class="ams-cell"><span class="ams-lbl">Chq/Cr</span><span class="ams-val" style="color:var(--ui-neg);">${gChqCr.toLocaleString()}</span></div>
+                <div class="ams-cell"><span class="ams-lbl">Total</span><span class="ams-val">${gTot.toLocaleString()}</span></div>
+            `;
+            container.appendChild(summaryStrip);
+
+            // Render Collapsible Access Control Panel (default collapsed so counters appear immediately)
             const accessCard = document.createElement('div');
             accessCard.className = 'glass-card';
             accessCard.style.display = 'flex';
             accessCard.style.flexDirection = 'column';
-            accessCard.style.gap = '12px';
+            accessCard.style.gap = '10px';
             accessCard.style.width = '100%';
 
             let statusGridHtml = '';
@@ -7211,7 +7461,7 @@
                 if (counterPermissions[i.toString()] !== false) openCnt++;
             }
             if (counterCollapsedState['_access'] === undefined) {
-                counterCollapsedState['_access'] = (window.innerWidth <= 640);
+                counterCollapsedState['_access'] = true;
             }
             const accessCollapsed = !!counterCollapsedState['_access'];
             accessCard.innerHTML = `
@@ -7227,16 +7477,6 @@
                 </div>
             `;
             container.appendChild(accessCard);
-
-            // Symmetrical division for Active Sessions
-            const sessionTitle = document.createElement('div');
-            sessionTitle.className = 'section-kicker';
-            sessionTitle.style.marginTop = '8px';
-            sessionTitle.style.marginBottom = '0';
-            sessionTitle.innerHTML = '<span>Current Active Counter Sessions</span><span class="kpi-badge">LIVE</span>';
-            container.appendChild(sessionTitle);
-
-            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed');
 
             if (activeEntries.length === 0) {
                 const emptyMsg = document.createElement('div');
@@ -7275,9 +7515,25 @@
                 });
 
                 const activeFilter = counterLedgerFilters[cid] || 'all';
+                // Default all counters collapsed on initial view so Admin sees clean overview first
+                if (counterCollapsedState[cid] === undefined) {
+                    counterCollapsedState[cid] = true;
+                }
                 const isCollapsed = !!counterCollapsedState[cid];
+                const { cols, widths } = getCounterColumns(cid, list);
+                const gridTpl = widths.map(w => w.toFixed(1) + '%').join(' ');
 
-                // Sticky collapsible section wrapper (uniform page scroll, zero inner scroll trap)
+                const colHdrCells = cols.map((col, idx) => {
+                    const resizer = idx < cols.length - 1
+                        ? `<span class="col-resizer" onpointerdown="startColResize(event, '${cid}', ${idx})" title="Drag to resize column"></span>`
+                        : '';
+                    const clickAttr = col.key !== 'act'
+                        ? `onclick="sortActiveSessionTable('${cid}', '${col.key}')" ondblclick="resetCounterColWidths('${cid}')"`
+                        : '';
+                    return `<div class="sticky-col-cell" style="text-align:${col.align}; ${col.color ? 'color:' + col.color + ';' : ''}" ${clickAttr} title="${col.key !== 'act' ? 'Tap to sort · Double-tap to auto-snap widths' : ''}">${col.label}${resizer}</div>`;
+                }).join('');
+
+                // Sticky collapsible section wrapper (counter header + attached frozen column headers!)
                 const sec = document.createElement('section');
                 sec.className = 'sticky-section' + (isCollapsed ? ' collapsed' : '');
                 sec.id = `active-sec-${cid}`;
@@ -7287,47 +7543,42 @@
                 const titleText = cid === '0' ? 'Counter 0 · Collections' : `Counter ${cid} Active`;
                 headerWrapper.innerHTML = `
                     <div class="sec-bar-top">
-                        <div class="sec-bar-toggle" onclick="toggleCounterSection('${cid}')" title="Tap to collapse or expand">
+                        <div class="sec-bar-toggle" onclick="toggleCounterSection('${cid}')" title="Tap to expand or collapse">
                             <span class="material-icons sec-bar-chevron">expand_more</span>
                             <div style="min-width:0;">
                                 <div class="counter-group-title" style="margin:0; font-size:13.5px;">${titleText}</div>
                                 <div style="font-size:11px; color:var(--ui-muted); font-variant-numeric:tabular-nums;">${nonVoid.length} bills · <strong style="color:var(--ui-text);">NPR ${cTotal.toLocaleString()}</strong></div>
                             </div>
                         </div>
-                        <button class="glass-btn" onclick="adminEnterWorkspace('${cid}')" style="padding:6px 10px !important; font-size:11.5px !important;">
-                            <span class="material-icons" style="font-size:14px;">open_in_new</span> Enter
+                        <button class="glass-btn" onclick="adminEnterWorkspace('${cid}')" style="padding:5px 9px !important; font-size:11px !important;" title="Open counter workspace">
+                            <span class="material-icons" style="font-size:13px;">open_in_new</span> Enter
                         </button>
                     </div>
                     <div class="sec-bar-filters" id="sec-filters-${cid}">
                         <button class="sec-filter-chip ${activeFilter === 'all' ? 'active' : ''}" data-mode="all" onclick="setCounterLedgerFilter('${cid}', 'all')">All (${list.length})</button>
                         <button class="sec-filter-chip ${activeFilter === 'cash' ? 'active' : ''}" data-mode="cash" onclick="setCounterLedgerFilter('${cid}', 'cash')" style="color:var(--ui-pos);">Cash ${nCash} · ${cCash.toLocaleString()}</button>
                         <button class="sec-filter-chip ${activeFilter === 'qr' ? 'active' : ''}" data-mode="qr" onclick="setCounterLedgerFilter('${cid}', 'qr')" style="color:var(--ui-info);">QR ${nQr} · ${cQr.toLocaleString()}</button>
-                        <button class="sec-filter-chip ${activeFilter === 'other' ? 'active' : ''}" data-mode="other" onclick="setCounterLedgerFilter('${cid}', 'other')">Other ${nOther}</button>
-                        <button class="sec-filter-chip ${activeFilter === 'flagged' ? 'active' : ''}" data-mode="flagged" onclick="setCounterLedgerFilter('${cid}', 'flagged')" style="color:var(--ui-neg);">⚠ Flagged (${nFlagged})</button>
+                        ${nOther > 0 ? `<button class="sec-filter-chip ${activeFilter === 'other' ? 'active' : ''}" data-mode="other" onclick="setCounterLedgerFilter('${cid}', 'other')">Other ${nOther}</button>` : ''}
+                        ${nFlagged > 0 ? `<button class="sec-filter-chip ${activeFilter === 'flagged' ? 'active' : ''}" data-mode="flagged" onclick="setCounterLedgerFilter('${cid}', 'flagged')" style="color:var(--ui-neg);">⚠ Flagged (${nFlagged})</button>` : ''}
                         <button class="sec-filter-chip ${activeFilter === 'unchecked' ? 'active' : ''}" data-mode="unchecked" onclick="setCounterLedgerFilter('${cid}', 'unchecked')">Unchecked (${nUnchecked})</button>
+                    </div>
+                    <div class="sticky-col-hdr" id="sticky-col-hdr-${cid}" style="grid-template-columns:${gridTpl};">
+                        ${colHdrCells}
                     </div>
                 `;
                 sec.appendChild(headerWrapper);
 
-                // Clean frosted 6-lane vertical table shell (uniform page scroll, sticky left #/Time on narrow phones)
+                // Clean frosted table shell synchronized with sticky-col-hdr widths via colgroup
                 const tableWrap = document.createElement('div');
                 tableWrap.className = 'table-shell';
-                tableWrap.style.marginBottom = '8px';
+                tableWrap.style.marginBottom = '6px';
 
+                const colgroupHtml = widths.map(w => `<col style="width:${w.toFixed(1)}%;">`).join('');
                 const table = document.createElement('table');
                 table.className = 'ledger-v6';
+                table.style.tableLayout = 'fixed';
                 table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th class="col-sticky" style="text-align:left; width:19%; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')"># Time</th>
-                            <th style="text-align:right; width:13%; color:var(--ui-pos); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">Cash</th>
-                            <th style="text-align:right; width:14%; color:var(--ui-info); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">QR</th>
-                            <th style="text-align:right; width:15%; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'other')">Other</th>
-                            <th style="text-align:right; width:15%; color:var(--ui-neg); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'chqcr')">Chq/Cr</th>
-                            <th style="text-align:right; width:14%; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Total</th>
-                            <th style="text-align:right; width:10%;"></th>
-                        </tr>
-                    </thead>
+                    <colgroup id="colgroup-active-${cid}">${colgroupHtml}</colgroup>
                     <tbody class="active-sess-tbody-${cid}"></tbody>
                     <tfoot>
                         <tr id="tfoot-acc-active-${cid}"></tr>
@@ -7337,7 +7588,6 @@
                 sec.appendChild(tableWrap);
                 container.appendChild(sec);
 
-                // Initial render: newest first
                 if (!activeSessionTableSortStates[cid]) {
                     activeSessionTableSortStates[cid] = { column: 'time', desc: true };
                 }
@@ -10021,7 +10271,7 @@
                     saveFastLane();
                     return;
                 }
-                const captureOrder = ['inp-cash', 'inp-qr', 'inp-ips', 'inp-pos', 'inp-esewa', 'inp-online', 'inp-cheque', 'inp-credit', 'inp-remarks'];
+                const captureOrder = ['inp-cash', 'inp-qr', 'inp-online', 'inp-ips', 'inp-pos', 'inp-esewa', 'inp-cheque', 'inp-credit', 'inp-customer-name', 'inp-customer-phone', 'inp-remarks'];
                 const idx = captureOrder.indexOf(id);
                 if (idx >= 0 && idx < captureOrder.length - 1) {
                     e.preventDefault();
