@@ -1638,13 +1638,168 @@
             align-items: center;
             justify-content: space-between;
             gap: 6px;
-            padding: 8px 12px;
+            padding: 7px 10px;
             background: var(--ui-sheet-card);
             border-bottom: 1px solid var(--ui-sheet-border);
             flex-wrap: wrap;
         }
         .recheck-bar.show {
             display: flex;
+        }
+
+        /* Marketplace 2-Column Big-Thumbnail Split Grid (Cash Left | QR Right) */
+        .mkt-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            align-items: start;
+        }
+        .mkt-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+        .mkt-col-hdr {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            background: var(--ui-sheet-card);
+            border: 1px solid var(--ui-sheet-border);
+            font-variant-numeric: tabular-nums;
+        }
+        .mkt-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--ui-sheet-card);
+            border: 1px solid var(--ui-sheet-border);
+            cursor: pointer;
+            transition: transform 0.12s ease;
+        }
+        .mkt-card:active { transform: scale(0.98); }
+        .mkt-card.is-flagged { border-color: rgba(239, 68, 68, 0.6) !important; }
+        .mkt-card.is-verified { border-color: rgba(16, 185, 129, 0.4); }
+        .mkt-thumb {
+            width: 100%;
+            height: 112px;
+            position: relative;
+            background: var(--ui-sheet-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .mkt-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            -webkit-touch-callout: none;
+            user-select: none;
+            pointer-events: none;
+        }
+        .mkt-card-meta {
+            padding: 7px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        /* Big-Image + 3-Column Compact Entry Verification Page (#capture-sheet) */
+        #capture-sheet .preview-area {
+            height: 48vh !important;
+            height: 48dvh !important;
+            padding: calc(10px + env(safe-area-inset-top)) 10px 10px 10px !important;
+        }
+        #capture-sheet .details-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        #capture-sheet .form-header-small {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 6px !important;
+            padding: 7px 10px !important;
+            flex-wrap: nowrap !important;
+        }
+        #capture-sheet .form-container {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 6px !important;
+            padding: 8px 10px 18px !important;
+        }
+        #capture-sheet .input-label {
+            font-size: 10px !important;
+            margin-bottom: 2px !important;
+        }
+        #capture-sheet .input-field {
+            padding: 7px 8px !important;
+            font-size: 13px !important;
+            border-radius: 8px !important;
+        }
+        #capture-sheet .preview-thumb-wrap img {
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+
+        /* Subtle viewer watermark overlay on invoice preview */
+        .img-privacy-wm {
+            position: absolute;
+            bottom: 6px;
+            right: 8px;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.55);
+            background: rgba(0, 0, 0, 0.35);
+            padding: 2px 6px;
+            border-radius: 5px;
+            pointer-events: none;
+            z-index: 8;
+        }
+
+        /* Android-style Long-Press Tooltip Pill */
+        #android-longpress-tip {
+            position: fixed;
+            bottom: 84px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.92);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 400;
+            background: rgba(15, 23, 42, 0.94);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 8px 14px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+            transition: opacity 0.16s ease, transform 0.16s ease;
+            max-width: 86vw;
+            text-align: center;
+        }
+        #android-longpress-tip.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* Verifier Mode: allow Recheck bar, block all other edits */
+        body.verifier-mode #recheck-bar,
+        body.verifier-mode #recheck-bar button {
+            pointer-events: auto !important;
+            opacity: 1 !important;
         }
 
         /* Inline Accordion Edit Tray */
@@ -2653,9 +2808,9 @@
             <span class="material-icons">photo_library</span>
         </button>
         <button id="btn-admin-exit" class="btn-gallery-import" onclick="adminExitWorkspace()"
-            title="Back to Admin Panel"
-            style="left: 16px; right: auto; background: #ef4444; border-color: rgba(255,255,255,0.4); display: none;">
-            <span class="material-icons">admin_panel_settings</span>
+            title="Return to Admin Portal"
+            style="left: 14px; right: auto; width: auto; padding: 0 12px; gap: 4px; border-radius: 10px; background: #ef4444; border-color: rgba(255,255,255,0.4); display: none; z-index: 45; font-size: 12px; font-weight: 700;">
+            <span class="material-icons" style="font-size: 16px;">arrow_back</span> Admin
         </button>
         <input type="file" id="gallery-input" accept="image/*" multiple style="display: none;"
             onchange="handleGalleryImport(event)">
@@ -2683,29 +2838,32 @@
         <div class="bottom-sheet sheet-list" id="sheet-list">
             <div class="sheet-header" onclick="toggleListSheet()">
                 <div class="sheet-handle"></div>
-                <div>
-                    <div style="font-size: 11px; color: var(--ui-muted); font-weight: 700; text-transform: uppercase;"
-                        id="session-header-title">Session Active</div>
-                    <div style="font-size: 14px; font-weight: 700;"><span id="list-entry-count">0</span> Captures</div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button id="btn-sheet-admin-back" class="glass-btn-danger" onclick="event.stopPropagation(); adminExitWorkspace()" style="display:none; padding:5px 9px !important; font-size:11px !important;" title="Return to Admin Portal">
+                        ← Admin
+                    </button>
+                    <div>
+                        <div style="font-size: 10.5px; color: var(--ui-muted); font-weight: 700; text-transform: uppercase;"
+                            id="session-header-title">Session Active</div>
+                        <div style="font-size: 13.5px; font-weight: 700;"><span id="list-entry-count">0</span> Captures</div>
+                    </div>
                 </div>
-                <div style="display:flex; align-items:center; gap:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
                     <div style="text-align: right;">
                         <div style="font-size: 10px; color: var(--ui-muted); font-weight: 700; text-transform: uppercase;">Total In</div>
-                        <div style="font-size: 15px; font-weight: 800; color: var(--ui-pos);" id="list-total-header">0</div>
+                        <div style="font-size: 14.5px; font-weight: 800; color: var(--ui-pos);" id="list-total-header">0</div>
                     </div>
-                    <button class="glass-btn" onclick="event.stopPropagation(); toggleListSheet()" style="padding:5px 7px !important;" title="Close list">
+                    <button class="glass-btn" onclick="event.stopPropagation(); toggleListSheet()" style="padding:5px 7px !important;" title="Close captures panel">
                         <span class="material-icons" style="font-size:16px;">close</span>
                     </button>
                 </div>
             </div>
 
             <div class="counter-ledger-strip" id="counter-sheet-tabs" style="gap:5px; overflow-x:auto; flex-wrap:nowrap;">
-                <button class="sec-filter-chip active" data-cmode="all" onclick="setCounterSheetFilter('all')">All</button>
-                <button class="sec-filter-chip" data-cmode="cash" onclick="setCounterSheetFilter('cash')" style="color:var(--ui-pos);">Cash</button>
-                <button class="sec-filter-chip" data-cmode="qr" onclick="setCounterSheetFilter('qr')" style="color:var(--ui-info);">QR</button>
-                <button class="sec-filter-chip" data-cmode="other" onclick="setCounterSheetFilter('other')">Other</button>
+                <button class="sec-filter-chip active" data-cmode="split" onclick="setCounterSheetFilter('split')">Cash | QR</button>
+                <button class="sec-filter-chip" data-cmode="other" onclick="setCounterSheetFilter('other')">Other Modes</button>
                 <button class="sec-filter-chip" data-cmode="flagged" onclick="setCounterSheetFilter('flagged')" style="color:var(--ui-neg);">⚠ Flagged</button>
-                <button class="sec-filter-chip" onclick="openIsolatedLedger('all', 'counter')" style="margin-left:auto;">📊 Table</button>
+                <button class="sec-filter-chip" onclick="openIsolatedLedger('all', 'counter')" style="margin-left:auto;" title="Open full tabular ledger">📊 Table</button>
             </div>
 
             <div class="list-container" id="entries-list"></div>
@@ -2723,10 +2881,11 @@
 
         <div class="bottom-sheet capture-sheet" id="capture-sheet">
             <div class="preview-area">
+                <div class="img-privacy-wm" id="img-privacy-wm"></div>
                 <div class="preview-scroll" id="preview-scroll">
-                    <div class="add-more-btn" onclick="captureMore()">
-                        <span class="material-icons" style="font-size: 28px; margin-bottom: 4px;">add_a_photo</span>
-                        <span style="font-size: 11px; font-weight: 600;">ADD PAGE</span>
+                    <div class="add-more-btn" onclick="captureMore()" title="Capture another page of this bill">
+                        <span class="material-icons" style="font-size: 26px; margin-bottom: 4px;">add_a_photo</span>
+                        <span style="font-size: 10.5px; font-weight: 600;">ADD PAGE</span>
                     </div>
                 </div>
             </div>
@@ -2735,34 +2894,27 @@
                 <!-- Rechecking / Verification Audit Bar (step through 200 invoices + verify/flag discrepancies) -->
                 <div class="recheck-bar" id="recheck-bar">
                     <div style="display:flex; align-items:center; gap:5px;">
-                        <button class="glass-btn" onclick="stepRecheckEntry(-1)" style="padding:4px 8px !important; font-size:11px !important;" title="Previous invoice">← Prev</button>
-                        <button class="glass-btn" onclick="stepRecheckEntry(1)" style="padding:4px 8px !important; font-size:11px !important;" title="Next invoice">Next →</button>
+                        <button class="glass-btn" onclick="stepRecheckEntry(-1)" style="padding:4px 8px !important; font-size:11px !important;" title="Open previous invoice">← Prev</button>
+                        <button class="glass-btn" onclick="stepRecheckEntry(1)" style="padding:4px 8px !important; font-size:11px !important;" title="Open next invoice">Next →</button>
                         <span id="recheck-status-pill" class="mode-pill" style="display:none;"></span>
                     </div>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <button class="glass-btn" onclick="markEntryRecheck('verified')" style="padding:5px 10px !important; font-size:11.5px !important; color:var(--ui-pos) !important; border-color:rgba(16,185,129,0.4) !important;">✓ Verify</button>
-                        <button class="glass-btn-danger" onclick="markEntryRecheck('flagged')" style="padding:5px 10px !important; font-size:11.5px !important;">⚠ Flag Error</button>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <button class="glass-btn" onclick="markEntryRecheck('verified')" style="padding:5px 9px !important; font-size:11px !important; color:var(--ui-pos) !important; border-color:rgba(16,185,129,0.4) !important;" title="Mark invoice calculation verified &amp; go to next">✓ Verify</button>
+                        <button class="glass-btn-danger" onclick="markEntryRecheck('flagged')" style="padding:5px 9px !important; font-size:11px !important;" title="Flag calculation error with note for Admin">⚠ Flag</button>
                     </div>
                 </div>
                 <div class="form-header-small">
-                    <!-- Left: Back button -->
-                    <button class="btn-cancel-capture" onclick="cancelCapture()">Back</button>
-
-                    <!-- Hidden span to prevent JS errors when updating form-title -->
+                    <button class="btn-cancel-capture" onclick="cancelCapture()" title="Close &amp; go back">← Back</button>
                     <span id="form-title" style="display: none;"></span>
-
-                    <!-- Center: Large SAVE button -->
-                    <button class="btn-next" onclick="saveAndNext()"
-                        style="padding: 10px 24px; font-size: 15px; border-radius: 99px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"><span
-                            class="material-icons" style="font-size: 18px;">save</span> SAVE</button>
-
-                    <!-- Right: Cancel Entry and Delete buttons -->
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="btn-void" id="btn-admin-delete" onclick="adminDeleteEntry()"
-                            style="background:#fee2e2; color:#ef4444; display: none; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; align-items: center; gap: 4px;"><span
-                                class="material-icons" style="font-size:14px;">delete</span> Delete</button>
-                        <button class="btn-void" id="btn-void-toggle" onclick="voidAndNext()"><span
-                                class="material-icons" style="font-size:12px;">block</span> Cancel Entry</button>
+                    <button class="btn-next" onclick="saveAndNext()" title="Save payment amounts &amp; continue"
+                        style="padding: 8px 18px; font-size: 13.5px; font-weight: 700;"><span
+                            class="material-icons" style="font-size: 16px;">save</span> Save</button>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <button class="btn-void" id="btn-admin-delete" onclick="adminDeleteEntry()" title="Permanently delete entry (Admin only)"
+                            style="background:#fee2e2; color:#ef4444; display: none; border: none; padding: 7px 9px; border-radius: 8px; font-weight: 700; font-size: 11.5px; cursor: pointer; align-items: center; gap: 3px;"><span
+                                class="material-icons" style="font-size:14px;">delete</span></button>
+                        <button class="btn-void" id="btn-void-toggle" onclick="voidAndNext()" title="Mark this bill as void / canceled" style="padding: 7px 10px; font-size: 11.5px;"><span
+                                class="material-icons" style="font-size:13px;">block</span> Void</button>
                     </div>
                 </div>
 
@@ -2771,21 +2923,20 @@
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-cash"></div>
                     <div class="input-group"><label class="input-label c-qr">QR</label><input type="number" step="any"
                             inputmode="decimal" class="input-field calc-input" id="inp-qr"></div>
+                    <div class="input-group"><label class="input-label c-online">Online</label><input type="number"
+                            step="any" inputmode="decimal" class="input-field calc-input" id="inp-online"></div>
                     <div class="input-group"><label class="input-label c-ips">IPS EBL</label><input type="number"
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-ips"></div>
                     <div class="input-group"><label class="input-label c-pos">POS</label><input type="number" step="any"
                             inputmode="decimal" class="input-field calc-input" id="inp-pos"></div>
                     <div class="input-group"><label class="input-label c-esewa">eSewa</label><input type="number"
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-esewa"></div>
-                    <div class="input-group"><label class="input-label c-online">Online</label><input type="number"
-                            step="any" inputmode="decimal" class="input-field calc-input" id="inp-online"></div>
                     <div class="input-group"><label class="input-label c-cheque">Cheque</label><input type="number"
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-cheque"></div>
                     <div class="input-group"><label class="input-label c-credit">Credit</label><input type="number"
                             step="any" inputmode="decimal" class="input-field calc-input" id="inp-credit"></div>
-
-                    <div class="input-group" style="grid-column: span 2;">
-                        <label class="input-label" style="color: var(--text-muted);">Remarks (Optional)</label>
+                    <div class="input-group">
+                        <label class="input-label" style="color: var(--ui-muted);">Remarks</label>
                         <input type="text" class="input-field" id="inp-remarks"
                             placeholder="Customer name, Rasid number, etc.">
                     </div>
@@ -2845,6 +2996,9 @@
                     </div>
                     <div class="admin-tab" onclick="switchAdminTab('cheques')">
                         <span class="material-icons" style="font-size:16px;">account_balance</span> Cheques Master
+                    </div>
+                    <div class="admin-tab" onclick="switchAdminTab('credits')">
+                        <span class="material-icons" style="font-size:16px;">credit_score</span> Credits Master
                     </div>
                     <div class="admin-tab" id="tab-admin-devices" onclick="switchAdminTab('devices')">
                         <span class="material-icons" style="font-size:16px;">devices</span> Devices &amp; Access
@@ -3592,6 +3746,58 @@
             </div>
         </div>
 
+        <!-- Credits Master Tab Content (Party Details, Bill Image, Main-Book Verification & Settlement) -->
+        <div class="admin-content" id="admin-credits-content"
+            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
+
+            <div class="bento-kpi-grid">
+                <div class="kpi-tile" style="padding:12px 14px !important;">
+                    <div class="kpi-label"><span>Total Credit</span><span class="kpi-badge" id="cr-kpi-all-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:19px;" id="cr-kpi-all-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:12px 14px !important;">
+                    <div class="kpi-label"><span>Pending</span><span class="kpi-badge" style="color:var(--ui-warn);" id="cr-kpi-pend-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:19px; color:var(--ui-warn);" id="cr-kpi-pend-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:12px 14px !important;">
+                    <div class="kpi-label"><span>In Main Books</span><span class="kpi-badge" style="color:var(--ui-info);" id="cr-kpi-book-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:19px; color:var(--ui-info);" id="cr-kpi-book-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:12px 14px !important;">
+                    <div class="kpi-label"><span>Paid / Settled</span><span class="kpi-badge" style="color:var(--ui-pos);" id="cr-kpi-paid-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:19px; color:var(--ui-pos);" id="cr-kpi-paid-amt">NPR 0</div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; padding:12px 14px !important;">
+                <select id="cr-filter-status" onchange="renderAdminCredits()" style="padding:8px 10px; font-size:12.5px; min-width:165px;">
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending / Open</option>
+                    <option value="matched_books">✓ Good with Main Books</option>
+                    <option value="paid_cash">Paid — Cash</option>
+                    <option value="paid_qr">Paid — QR</option>
+                    <option value="paid_bank">Paid — Bank / EBL</option>
+                    <option value="partial">Partial Paid</option>
+                    <option value="disputed">Disputed</option>
+                </select>
+                <input type="text" id="cr-search" oninput="renderAdminCredits()" placeholder="Search party, phone, address, bill..." style="padding:8px 10px; font-size:12.5px; flex:1; min-width:160px;">
+            </div>
+
+            <div class="table-shell">
+                <table class="eod-table" style="width:100%; font-size:12px;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; width:36%;">Party / Bill</th>
+                            <th style="text-align:right; width:18%;">Amount</th>
+                            <th style="text-align:left; width:34%;">Status</th>
+                            <th style="text-align:right; width:12%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cr-master-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Devices & Access Management Tab Content (Admin Full Only) -->
         <div class="admin-content" id="admin-devices-content"
             style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
@@ -3605,34 +3811,41 @@
                 <div id="dev-pending-list" style="display:flex; flex-direction:column; gap:8px;"></div>
             </div>
 
-            <!-- Temporary View-Only Guest Calc Codes -->
+            <!-- Temporary Guest & Verifier Calc Codes -->
             <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
                 <div class="section-kicker" style="margin:0;">
-                    <span>Temporary View-Only Calc Codes</span>
-                    <span class="kpi-badge">READ-ONLY</span>
+                    <span>Temporary Guest &amp; Verifier Calc Codes</span>
+                    <span class="kpi-badge">EXPIRING</span>
                 </div>
                 <div style="font-size:11.5px; color:var(--ui-muted);">
-                    Define a custom 4–8 digit code. Guest types <strong>&lt;code&gt;..=</strong> on the calculator to open read-only Admin view (auto-expires or revocable anytime).
+                    Define a custom 4–8 digit code. Person types <strong>&lt;code&gt;..=</strong> on the calculator. <strong>Verifier</strong> can only verify/flag invoices; <strong>View-Only</strong> cannot change anything.
                 </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(125px, 1fr)); gap:8px; align-items:end;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px; align-items:end;">
                     <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Custom Code (4–8 digits)</label>
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Code (4–8 digits)</label>
                         <input type="text" id="temp-code-inp" class="input-field" placeholder="e.g. 7744" inputmode="numeric" maxlength="8" style="padding:8px 10px; font-size:13px; font-weight:700;">
                     </div>
                     <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Guest / Label</label>
-                        <input type="text" id="temp-label-inp" class="input-field" placeholder="e.g. Auditor / Partner" style="padding:8px 10px; font-size:13px;">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Person / Label</label>
+                        <input type="text" id="temp-label-inp" class="input-field" placeholder="e.g. Checker Hari" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Role</label>
+                        <select id="temp-role-sel" style="padding:8px 10px; font-size:12.5px; border-radius:9px; width:100%;">
+                            <option value="VERIFIER">Verifier (Recheck Only)</option>
+                            <option value="ADMIN_VIEW">View-Only Guest</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Expires</label>
                         <select id="temp-dur-sel" style="padding:8px 10px; font-size:12.5px; border-radius:9px; width:100%;">
                             <option value="2">2 Hours</option>
-                            <option value="eod">Today Only (Midnight)</option>
-                            <option value="24" selected>24 Hours (1 Day)</option>
+                            <option value="eod">Today Only</option>
+                            <option value="24" selected>24 Hours</option>
                             <option value="168">7 Days</option>
                         </select>
                     </div>
-                    <button class="glass-btn-primary" onclick="submitCreateTempCode()" style="padding:9px 12px !important; font-size:12px !important;">
+                    <button class="glass-btn-primary" onclick="submitCreateTempCode()" style="padding:9px 12px !important; font-size:12px !important;" title="Create expiring calc code pass">
                         <span class="material-icons" style="font-size:15px;">add</span> Create Pass
                     </button>
                 </div>
@@ -3645,12 +3858,24 @@
                     <div class="section-kicker" style="margin:0;">
                         <span>Registered Devices &amp; Active Leases</span>
                     </div>
-                    <button class="glass-btn" onclick="renderAdminDevices()" style="padding:5px 10px !important; font-size:11.5px !important;">
+                    <button class="glass-btn" onclick="renderAdminDevices()" style="padding:5px 10px !important; font-size:11.5px !important;" title="Reload devices &amp; security logs">
                         <span class="material-icons" style="font-size:14px;">refresh</span> Refresh
                     </button>
                 </div>
                 <div id="dev-leases-strip" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
                 <div id="dev-all-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+            <!-- Security & Privacy Audit Log (Red alerts for screenshot / download / suspicious events) -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:10px;">
+                <div class="section-kicker" style="margin:0;">
+                    <span>🛡 Security &amp; Privacy Audit Log</span>
+                    <span class="kpi-badge" id="sec-alert-cnt" style="color:var(--ui-neg);">0 ALERTS</span>
+                </div>
+                <div style="font-size:11px; color:var(--ui-muted);">
+                    Logs logins (with optional location), session takeovers, and red-flagged screenshot / download / print attempts.
+                </div>
+                <div id="dev-security-logs" style="display:flex; flex-direction:column; gap:6px; max-height:320px; overflow-y:auto;"></div>
             </div>
         </div>
     </div>
@@ -3770,11 +3995,71 @@
         </div>
     </div>
 
+    <!-- Credit Master Details Modal -->
+    <div id="credit-edit-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeCreditModal()">
+        <div class="ledger-modal-card" style="max-width:500px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border);">
+                <div>
+                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="cr-modal-sub">Credit Master</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="cr-modal-title">Edit Credit Details</div>
+                </div>
+                <button class="glass-btn" onclick="closeCreditModal()" style="padding:6px 10px !important;" title="Close">
+                    <span class="material-icons" style="font-size:16px;">close</span>
+                </button>
+            </div>
+            <div style="padding:14px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Customer / Party Name</label>
+                        <input type="text" id="cr-inp-party" class="input-field" placeholder="e.g. Himalaya Garments" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Phone Number</label>
+                        <input type="tel" id="cr-inp-phone" class="input-field" placeholder="98XXXXXXXX" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Address / Shop Location</label>
+                    <input type="text" id="cr-inp-address" class="input-field" placeholder="e.g. New Road, Kathmandu" style="padding:8px 10px; font-size:13px;">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Main Book Ref / Bill #</label>
+                        <input type="text" id="cr-inp-ref" class="input-field" placeholder="e.g. Ledger #104" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Status</label>
+                        <select id="cr-inp-status" style="padding:8px 10px; font-size:12.5px; width:100%; border-radius:9px;">
+                            <option value="pending">Pending / Open</option>
+                            <option value="matched_books">✓ Good with Main Books</option>
+                            <option value="paid_cash">Paid — Cash (+Today Cash)</option>
+                            <option value="paid_qr">Paid — QR (+Today QR)</option>
+                            <option value="paid_bank">Paid — Bank / EBL (+Today EBL)</option>
+                            <option value="partial">Partial Paid</option>
+                            <option value="disputed">Disputed / Issue</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Notes / Remarks</label>
+                    <input type="text" id="cr-inp-note" class="input-field" placeholder="e.g. Promised payment next Friday" style="padding:8px 10px; font-size:13px;">
+                </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; padding:12px 18px; border-top:1px solid var(--ui-border); background:var(--ui-card-inner);">
+                <button class="glass-btn" onclick="closeCreditModal()">Cancel</button>
+                <button class="glass-btn-primary" onclick="saveCreditDetails()">Save Credit</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Undo Toast -->
     <div id="admin-undo-toast">
         <span id="admin-undo-msg">Change saved</span>
         <button class="glass-btn-primary" onclick="performAdminUndo()" style="padding:5px 11px !important; font-size:11.5px !important;">Undo</button>
     </div>
+
+    <!-- Android-style Long-Press Tooltip Pill -->
+    <div id="android-longpress-tip"></div>
 
     <!-- Collection Entry Edit Modal (Counter 0) -->
     <div id="coll-edit-modal"
@@ -3950,7 +4235,9 @@
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxu_xJtq3VWTCtwu9erZONgU4evkPLpSYWnmMgo-1mHA_Bl63gvZYKvAwiNTJjEIlXufA/exec";
 
         let isViewOnly = false;
+        let isVerifier = false;
         let activeTempCode = null;
+        let activeActorLabel = '';
 
         async function callGas(action, payload = {}) {
             const bodyObj = {
@@ -5171,6 +5458,7 @@
                             try {
                                 const forced = await callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent, forceTakeover: true });
                                 if (forced && forced.success) {
+                                    reportSecurityEvent('ADMIN_TAKEOVER', 'ALERT', `Admin ${targetId} took over active session`);
                                     showToast(`Took over Admin ${targetId} session.`);
                                     return;
                                 }
@@ -5414,8 +5702,10 @@
 
         function lockApp() {
             isViewOnly = false;
+            isVerifier = false;
             activeTempCode = null;
-            document.body.classList.remove('view-only-mode');
+            activeActorLabel = '';
+            document.body.classList.remove('view-only-mode', 'verifier-mode');
             const voBanner = document.getElementById('view-only-banner');
             if (voBanner) voBanner.style.display = 'none';
             if (stream) {
@@ -5645,6 +5935,11 @@
             renderPreviewScroll();
             calculateFormTotals();
             updateRecheckBar(existingId ? targetEntry : null);
+            const wmEl = document.getElementById('img-privacy-wm');
+            if (wmEl) {
+                const who = activeActorLabel || (isAdmin ? `Admin ${activeAdminId || ''}` : `Counter ${activeCounterId || ''}`);
+                wmEl.innerText = `${who.trim()} · ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            }
             document.getElementById('form-title').innerText = isVoided ? 'VOIDED' : (isReadOnly ? 'Archived Capture' : 'Capture Details');
 
             // Apply read-only logic to input elements
@@ -5918,7 +6213,7 @@
             await saveAndNext();
         }
 
-        let counterSheetFilter = 'all';
+        let counterSheetFilter = 'split';
 
         function setCounterSheetFilter(mode) {
             counterSheetFilter = mode;
@@ -5970,13 +6265,23 @@
             }
 
             const prevRecheck = entry.recheck ? JSON.parse(JSON.stringify(entry.recheck)) : null;
-            const by = isAdmin ? `Admin ${activeAdminId || ''}`.trim() : `Counter ${activeCounterId}`;
+            const by = activeActorLabel || (isAdmin ? `Admin ${activeAdminId || ''}`.trim() : `Counter ${activeCounterId}`);
             const at = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr();
             entry.recheck = { status, note, by, at };
 
             const summary = status === 'verified' ? `Recheck: Verified by ${by}` : `Recheck: Flagged error (${note || 'Discrepancy'})`;
             recordEntryVersion(entry, summary, { recheck: prevRecheck });
-            await persistAndSyncEntry(entry);
+
+            if (isVerifier) {
+                await saveEntryToIDB(entry);
+                try {
+                    await callGas('RECHECK_ENTRY', { entryId: entry.id, recheck: entry.recheck, actor: by });
+                } catch (err) {
+                    showMsg(err.message || 'Failed to sync verification.');
+                }
+            } else {
+                await persistAndSyncEntry(entry);
+            }
 
             updateRecheckBar(entry);
             renderList();
@@ -6019,6 +6324,81 @@
             const chrono = allCounterEntries.slice().sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
             const snMap = {};
             chrono.forEach((e, i) => { snMap[e.id] = i + 1; });
+
+            // Marketplace 2-Column Big-Thumbnail Split View (Cash Left | QR Right) for standard counters
+            if (!isCollection && counterSheetFilter === 'split') {
+                allCounterEntries.forEach(e => {
+                    grandTotalIn += e.totalIn || 0;
+                    grandTotalCredit += e.totalCredit || 0;
+                });
+
+                const cashItems = allCounterEntries.filter(e => !e.isVoid && (e.cash || 0) > 0).slice().reverse();
+                const qrItems = allCounterEntries.filter(e => !e.isVoid && ((e.qr || 0) + (e.online || 0)) > 0).slice().reverse();
+                const sumCash = cashItems.reduce((s, e) => s + (e.cash || 0), 0);
+                const sumQr = qrItems.reduce((s, e) => s + (e.qr || 0) + (e.online || 0), 0);
+
+                const buildMktCard = (entry, mode) => {
+                    const hasPhoto = Array.isArray(entry.images) && entry.images.length > 0;
+                    const isFast = !!entry.isFastLane || !hasPhoto;
+                    const isSplit = (entry.cash || 0) > 0 && ((entry.qr || 0) + (entry.online || 0)) > 0;
+                    const rcStatus = entry.recheck && entry.recheck.status;
+                    const amt = mode === 'cash' ? (entry.cash || 0) : ((entry.qr || 0) + (entry.online || 0));
+                    const shortTime = (entry.timestamp || '').split(' ')[0] || '—';
+
+                    const thumb = hasPhoto
+                        ? `<div class="mkt-thumb"><img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`
+                        : `<div class="mkt-thumb" style="background:rgba(245,158,11,0.12);"><span class="material-icons" style="font-size:30px; color:var(--ui-warn);">bolt</span><span style="font-size:10px; font-weight:800; color:var(--ui-warn);">FAST-LANE</span></div>`;
+
+                    const badges = [];
+                    if (isFast) badges.push('<span class="mode-pill mp-fast">⚡</span>');
+                    if (isSplit) badges.push('<span class="mode-pill mp-pos">SPLIT</span>');
+                    if (mode === 'qr' && (entry.online || 0) > 0) badges.push('<span class="mode-pill mp-online">ONL</span>');
+                    if (rcStatus === 'verified') badges.push('<span class="mode-pill mp-ok">✓</span>');
+                    if (rcStatus === 'flagged') badges.push('<span class="mode-pill mp-flag">⚠</span>');
+
+                    const card = document.createElement('div');
+                    card.className = 'mkt-card' + (rcStatus === 'flagged' ? ' is-flagged' : (rcStatus === 'verified' ? ' is-verified' : ''));
+                    card.onclick = () => { toggleListSheet(); openCaptureSheet(entry.id); };
+                    card.innerHTML = `
+                        ${thumb}
+                        <div class="mkt-card-meta">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:3px;">
+                                <span style="font-size:10.5px; font-weight:800; color:var(--ui-muted);">#${snMap[entry.id]} · ${escapeHtml(shortTime)}</span>
+                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}"></span>
+                            </div>
+                            <div style="font-size:15px; font-weight:800; color:${mode === 'cash' ? 'var(--ui-pos)' : 'var(--ui-info)'}; font-variant-numeric:tabular-nums;">NPR ${amt.toLocaleString()}</div>
+                            ${badges.length ? `<div style="display:flex; flex-wrap:wrap; gap:3px;">${badges.join('')}</div>` : ''}
+                            ${entry.remarks ? `<div style="font-size:10px; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(entry.remarks)}</div>` : ''}
+                        </div>
+                    `;
+                    return card;
+                };
+
+                const splitWrap = document.createElement('div');
+                splitWrap.className = 'mkt-split';
+
+                const leftCol = document.createElement('div');
+                leftCol.className = 'mkt-col';
+                leftCol.innerHTML = `<div class="mkt-col-hdr" style="color:var(--ui-pos);"><span>CASH (${cashItems.length})</span><span>${sumCash.toLocaleString()}</span></div>`;
+                if (cashItems.length === 0) leftCol.innerHTML += '<div style="text-align:center; padding:24px 8px; font-size:11.5px; color:var(--ui-muted);">No Cash bills</div>';
+                else cashItems.forEach(e => leftCol.appendChild(buildMktCard(e, 'cash')));
+
+                const rightCol = document.createElement('div');
+                rightCol.className = 'mkt-col';
+                rightCol.innerHTML = `<div class="mkt-col-hdr" style="color:var(--ui-info);"><span>QR (${qrItems.length})</span><span>${sumQr.toLocaleString()}</span></div>`;
+                if (qrItems.length === 0) rightCol.innerHTML += '<div style="text-align:center; padding:24px 8px; font-size:11.5px; color:var(--ui-muted);">No QR bills</div>';
+                else qrItems.forEach(e => rightCol.appendChild(buildMktCard(e, 'qr')));
+
+                splitWrap.appendChild(leftCol);
+                splitWrap.appendChild(rightCol);
+                container.appendChild(splitWrap);
+
+                document.getElementById('list-entry-count').innerText = allCounterEntries.length;
+                document.getElementById('main-count').innerText = allCounterEntries.length;
+                document.getElementById('list-total-header').innerText = grandTotalIn.toLocaleString();
+                document.getElementById('list-total-credit').innerText = grandTotalCredit.toLocaleString();
+                return;
+            }
 
             const filteredEntries = allCounterEntries.filter(e => {
                 if (isCollection || counterSheetFilter === 'all') return true;
@@ -6312,6 +6692,7 @@
             reports: 'Daily Report',
             analytics: 'Analytics & History',
             cheques: 'Cheques Master',
+            credits: 'Credits Master',
             devices: 'Devices & Access'
         };
 
@@ -6352,6 +6733,8 @@
             if (anaEl) anaEl.style.display = 'none';
             const chqEl = document.getElementById('admin-cheques-content');
             if (chqEl) chqEl.style.display = 'none';
+            const crEl = document.getElementById('admin-credits-content');
+            if (crEl) crEl.style.display = 'none';
             const devEl = document.getElementById('admin-devices-content');
             if (devEl) devEl.style.display = 'none';
 
@@ -6421,12 +6804,17 @@
                 const chqEl = document.getElementById('admin-cheques-content');
                 if (chqEl) chqEl.style.display = 'flex';
                 renderAdminCheques();
+            } else if (tab === 'credits') {
+                document.querySelectorAll('.admin-tab')[6].classList.add('active');
+                const crEl = document.getElementById('admin-credits-content');
+                if (crEl) crEl.style.display = 'flex';
+                renderAdminCredits();
             } else if (tab === 'devices') {
                 if (isViewOnly) {
                     switchAdminTab('active');
                     return;
                 }
-                document.querySelectorAll('.admin-tab')[6].classList.add('active');
+                document.querySelectorAll('.admin-tab')[7].classList.add('active');
                 const devEl = document.getElementById('admin-devices-content');
                 if (devEl) devEl.style.display = 'flex';
                 renderAdminDevices();
@@ -6914,11 +7302,13 @@
 
             document.getElementById('session-header-title').innerText = `ADMIN: Counter ${counterId} View`;
 
-            // Unhide and reset the opacity of the admin exit shield
+            // Unhide and reset the opacity of the admin exit shield + sheet back button
             const exitBtn = document.getElementById('btn-admin-exit');
             exitBtn.style.display = 'inline-flex';
             exitBtn.style.opacity = '1';
             exitBtn.style.pointerEvents = 'auto';
+            const sheetAdminBack = document.getElementById('btn-sheet-admin-back');
+            if (sheetAdminBack) sheetAdminBack.style.display = 'inline-flex';
 
             // Hide fast-lane direct entry hover bar in admin counter view
             document.getElementById('fast-lane-bar').style.display = 'none';
@@ -6946,9 +7336,11 @@
             document.documentElement.style.setProperty('--primary', '#ef4444');
             document.documentElement.style.setProperty('--primary-text', '#ffffff');
 
-            // Hide the admin exit shield
+            // Hide the admin exit shield + sheet back button
             const exitBtn = document.getElementById('btn-admin-exit');
             exitBtn.style.display = 'none';
+            const sheetAdminBack = document.getElementById('btn-sheet-admin-back');
+            if (sheetAdminBack) sheetAdminBack.style.display = 'none';
             exitBtn.style.opacity = '0';
 
             renderAdminPortal();
@@ -9320,17 +9712,22 @@
                 }
                 isAdmin = true;
                 isViewOnly = true;
+                isVerifier = (res.role === 'VERIFIER');
                 activeTempCode = code;
+                activeActorLabel = (isVerifier ? 'Verifier: ' : 'Guest: ') + (res.label || 'Temp');
                 document.body.classList.add('view-only-mode');
+                if (isVerifier) document.body.classList.add('verifier-mode');
                 const expStr = res.expiresAt ? new Date(res.expiresAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
                 const banner = document.getElementById('view-only-banner');
                 if (banner) {
-                    banner.innerText = `👁 VIEW-ONLY ACCESS · ${res.label || 'Guest'}${expStr ? ' · Expires ' + expStr : ''}`;
+                    const roleTag = isVerifier ? '✓ VERIFIER SESSION (Recheck Only)' : '👁 VIEW-ONLY ACCESS';
+                    banner.innerText = `${roleTag} · ${res.label || 'Guest'}${expStr ? ' · Expires ' + expStr : ''}`;
                     banner.style.display = 'block';
                 }
                 document.getElementById('view-calc').classList.remove('active');
                 document.getElementById('view-admin').classList.add('active');
                 switchAdminTab('active');
+                reportSecurityEvent(isVerifier ? 'VERIFIER_LOGIN' : 'GUEST_LOGIN', 'INFO', `Code ${code} (${res.label || 'Guest'})`);
                 if (typeof forceSync === 'function') forceSync();
             } catch (err) {
                 blinkCalcDisplay();
@@ -9388,9 +9785,10 @@
                                 : `<span class="status-chip locked"><span class="status-dot"></span>${!c.active ? 'REVOKED' : 'EXPIRED'}</span>`;
                             return `<div class="glass-subcard" style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding:9px 12px !important;">
                                 <div>
-                                    <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                                         <span style="font-weight:800; font-size:13.5px; letter-spacing:0.04em; color:var(--ui-info);">${esc(c.code)}..=</span>
                                         <span style="font-weight:700; font-size:12px;">${esc(c.label)}</span>
+                                        <span class="kpi-badge">${c.role === 'VERIFIER' ? 'VERIFIER' : 'VIEW-ONLY'}</span>
                                         ${badge}
                                     </div>
                                     <div style="font-size:10.5px; color:var(--ui-muted); margin-top:2px;">Expires: ${esc(expLabel)}</div>
@@ -9442,6 +9840,33 @@
             } catch (err) {
                 allList.innerHTML = `<div style="padding:16px; text-align:center; color:var(--ui-neg); font-size:12px;">${err.message || 'Failed to load devices. Redeploy backend api.gs + handler_eod.gs first.'}</div>`;
             }
+
+            // 5. Security & Privacy Audit Log
+            const secBox = document.getElementById('dev-security-logs');
+            const secCnt = document.getElementById('sec-alert-cnt');
+            if (secBox) {
+                try {
+                    const logs = await callGas('GET_SECURITY_LOGS', { limit: 60 });
+                    const list = Array.isArray(logs) ? logs : [];
+                    const alerts = list.filter(l => l.severity === 'ALERT').length;
+                    if (secCnt) secCnt.innerText = `${alerts} ALERT${alerts === 1 ? '' : 'S'}`;
+                    const escS = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+                    secBox.innerHTML = list.length === 0
+                        ? '<div style="font-size:11.5px; color:var(--ui-muted); padding:8px 0;">No security events logged yet.</div>'
+                        : list.map(l => {
+                            const isAlert = l.severity === 'ALERT';
+                            return `<div class="glass-subcard" style="padding:8px 10px !important; border-color:${isAlert ? 'rgba(239,68,68,0.55)' : 'var(--ui-border)'} !important; background:${isAlert ? 'var(--ui-neg-soft)' : 'var(--ui-card-inner)'} !important;">
+                                <div style="display:flex; justify-content:space-between; gap:6px; font-size:11.5px; font-weight:700; color:${isAlert ? 'var(--ui-neg)' : 'var(--ui-text)'};">
+                                    <span>${isAlert ? '🚨 ' : '• '}${escS(l.event)} ${l.actor ? '— ' + escS(l.actor) : ''}</span>
+                                    <span style="font-size:10px; color:var(--ui-muted); white-space:nowrap;">${escS(l.timestamp)}</span>
+                                </div>
+                                <div style="font-size:10.5px; color:var(--ui-muted); margin-top:2px;">${escS([l.details, l.location ? '📍 ' + l.location : '', l.deviceId ? 'ID:' + l.deviceId.slice(0, 12) : ''].filter(Boolean).join(' · '))}</div>
+                            </div>`;
+                        }).join('');
+                } catch (e) {
+                    secBox.innerHTML = '<div style="font-size:11px; color:var(--ui-muted);">Security log available after redeploying api.gs + handler_eod.gs.</div>';
+                }
+            }
         }
 
         async function approveOrUpdateDevice(targetDeviceId, status) {
@@ -9480,16 +9905,17 @@
         async function submitCreateTempCode() {
             const code = (document.getElementById('temp-code-inp')?.value || '').replace(/\D/g, '');
             const label = (document.getElementById('temp-label-inp')?.value || '').trim() || 'Guest View';
+            const role = document.getElementById('temp-role-sel')?.value || 'VERIFIER';
             const dur = document.getElementById('temp-dur-sel')?.value || '24';
             if (code.length < 4 || code.length > 8) {
                 alert('Enter a 4 to 8 digit code (e.g. 7744).');
                 return;
             }
             try {
-                await callGas('CREATE_TEMP_CODE', { code, label, durationHours: dur });
+                await callGas('CREATE_TEMP_CODE', { code, label, durationHours: dur, role });
                 document.getElementById('temp-code-inp').value = '';
                 document.getElementById('temp-label-inp').value = '';
-                showToast(`Guest pass created! Share: ${code}..=`);
+                showToast(`${role === 'VERIFIER' ? 'Verifier' : 'View-Only'} pass created! Share: ${code}..=`);
                 renderAdminDevices();
             } catch (err) {
                 alert(err.message || 'Failed to create temp code.');
@@ -9549,6 +9975,316 @@
                 closeAdminMenu();
             }
         });
+
+        // ============================================================
+        // ADMIN CREDITS MASTER (Image, Party Info, Main Books & Paid Sync)
+        // ============================================================
+        const CREDIT_STATUS_LABELS = {
+            pending: 'Pending / Open',
+            matched_books: '✓ Good w/ Books',
+            paid_cash: 'Paid → Cash',
+            paid_qr: 'Paid → QR',
+            paid_bank: 'Paid → Bank/EBL',
+            partial: 'Partial Paid',
+            disputed: 'Disputed'
+        };
+        let editingCreditEntryId = null;
+
+        async function syncLinkedCreditSettlement(creditEntry, status) {
+            if (!creditEntry.creditInfo) creditEntry.creditInfo = {};
+            const info = creditEntry.creditInfo;
+            const amt = Number(creditEntry.credit || 0);
+            const party = info.partyName || creditEntry.customerName || (creditEntry.remarks || 'Credit Party');
+
+            const isCash = (status === 'paid_cash');
+            const isQr = (status === 'paid_qr');
+            const isBank = (status === 'paid_bank');
+            const posts = (isCash || isQr || isBank) && amt > 0;
+
+            let linked = info.linkedSettlementId
+                ? entries.find(x => String(x.id) === String(info.linkedSettlementId))
+                : null;
+
+            if (posts) {
+                const now = new Date();
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const today = getLocalTodayStr(now);
+                const modeLbl = isCash ? 'Cash' : (isQr ? 'QR' : 'EBL');
+
+                if (!linked) {
+                    linked = {
+                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        counterId: '0',
+                        date: today,
+                        timestamp: `${hh}:${min} ${dd}/${mm}/${yy}`,
+                        time: `${hh}:${min}`,
+                        images: [],
+                        pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0,
+                        coll_cheq_cash: 0, coll_cheq_qr: 0,
+                        sessionStatus: 'active',
+                        history: []
+                    };
+                    entries.push(linked);
+                    info.linkedSettlementId = linked.id;
+                } else if (linked.isVoid) {
+                    linked.date = today;
+                }
+
+                linked.isVoid = false;
+                linked.cash = isCash ? amt : 0;
+                linked.qr = isQr ? amt : 0;
+                linked.ips = isBank ? amt : 0;
+                linked.coll_rasid_cash = isCash ? amt : 0;
+                linked.coll_rasid_qr = isQr ? amt : 0;
+                linked.coll_cheq_ebl = isBank ? amt : 0;
+                linked.totalIn = amt;
+                linked.totalCredit = 0;
+                linked.customerName = party;
+                linked.remarks = `${party} (Credit Paid → ${modeLbl})`;
+                recordEntryVersion(linked, `Auto-posted from Credit #${creditEntry.id} (${modeLbl})`, null);
+                await persistAndSyncEntry(linked);
+            } else if (linked && !linked.isVoid) {
+                linked.isVoid = true;
+                linked.totalIn = 0;
+                recordEntryVersion(linked, `Auto-voided: Credit #${creditEntry.id} changed to ${CREDIT_STATUS_LABELS[status] || status}`, null);
+                await persistAndSyncEntry(linked);
+            }
+        }
+
+        function renderAdminCredits() {
+            const tbody = document.getElementById('cr-master-tbody');
+            if (!tbody) return;
+
+            const statusFilter = document.getElementById('cr-filter-status')?.value || 'all';
+            const searchQ = (document.getElementById('cr-search')?.value || '').trim().toLowerCase();
+
+            const allCredits = entries
+                .filter(e => !e.isVoid && Number(e.credit || 0) > 0)
+                .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+
+            const st = { all: { c: 0, a: 0 }, pend: { c: 0, a: 0 }, book: { c: 0, a: 0 }, paid: { c: 0, a: 0 } };
+            allCredits.forEach(e => {
+                const amt = Number(e.credit || 0);
+                const s = (e.creditInfo && e.creditInfo.status) || 'pending';
+                st.all.c++; st.all.a += amt;
+                if (s === 'matched_books') { st.book.c++; st.book.a += amt; }
+                else if (s === 'paid_cash' || s === 'paid_qr' || s === 'paid_bank') { st.paid.c++; st.paid.a += amt; }
+                else { st.pend.c++; st.pend.a += amt; }
+            });
+
+            const setT = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+            setT('cr-kpi-all-cnt', String(st.all.c)); setT('cr-kpi-all-amt', `NPR ${st.all.a.toLocaleString()}`);
+            setT('cr-kpi-pend-cnt', String(st.pend.c)); setT('cr-kpi-pend-amt', `NPR ${st.pend.a.toLocaleString()}`);
+            setT('cr-kpi-book-cnt', String(st.book.c)); setT('cr-kpi-book-amt', `NPR ${st.book.a.toLocaleString()}`);
+            setT('cr-kpi-paid-cnt', String(st.paid.c)); setT('cr-kpi-paid-amt', `NPR ${st.paid.a.toLocaleString()}`);
+
+            const filtered = allCredits.filter(e => {
+                const info = e.creditInfo || {};
+                const s = info.status || 'pending';
+                if (statusFilter !== 'all' && s !== statusFilter) return false;
+                if (searchQ) {
+                    const hay = [info.partyName, info.phone, info.address, info.bookRef, info.note, e.customerName, e.remarks, e.date].filter(Boolean).join(' ').toLowerCase();
+                    if (!hay.includes(searchQ)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:32px; color:var(--ui-muted);">No credit entries match this filter.</td></tr>';
+                return;
+            }
+
+            const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const keys = Object.keys(CREDIT_STATUS_LABELS);
+
+            tbody.innerHTML = filtered.map(e => {
+                const info = e.creditInfo || {};
+                const s = info.status || 'pending';
+                const party = info.partyName || e.customerName || e.remarks || 'Unnamed Credit';
+                const meta = [`C${e.counterId}`, e.date, info.phone, info.address, info.bookRef ? `Book:${info.bookRef}` : ''].filter(Boolean).join(' · ');
+                const hasImg = Array.isArray(e.images) && e.images.length > 0;
+                const thumb = hasImg
+                    ? `<img src="${e.images[0]}" onclick="openCaptureSheet('${e.id}')" style="width:36px; height:42px; object-fit:cover; border-radius:6px; border:1px solid var(--ui-border); cursor:pointer; flex-shrink:0;" title="View bill image">`
+                    : `<div onclick="openCaptureSheet('${e.id}')" style="width:36px; height:42px; border-radius:6px; background:var(--ui-pill-bg); border:1px solid var(--ui-border); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; font-size:14px;" title="Open entry">📄</div>`;
+                const opts = keys.map(k => `<option value="${k}" ${s === k ? 'selected' : ''}>${CREDIT_STATUS_LABELS[k]}</option>`).join('');
+                const hasLog = Array.isArray(e.history) && e.history.length > 0;
+
+                return `<tr>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:7px;">
+                            ${thumb}
+                            <div style="min-width:0;">
+                                <div style="font-weight:700; color:var(--ui-text);">${esc(party)}</div>
+                                <div style="font-size:10px; color:var(--ui-muted); margin-top:2px;">${esc(meta)}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align:right; font-weight:800; color:var(--ui-neg); font-variant-numeric:tabular-nums; white-space:nowrap;">${Number(e.credit || 0).toLocaleString()}</td>
+                    <td>
+                        <select class="chq-inline-sel" style="width:100%; max-width:100%;" onchange="inlineUpdateCreditStatus('${e.id}', this.value)">${opts}</select>
+                        ${info.note ? `<div style="font-size:10px; color:var(--ui-muted); margin-top:2px;">${esc(info.note)}</div>` : ''}
+                    </td>
+                    <td style="text-align:right; white-space:nowrap;">
+                        <button class="row-info-btn ${hasLog ? 'has-log' : ''}" onclick="openEntryHistoryModal('${e.id}')" title="Credit change log &amp; undo">
+                            <span class="material-icons" style="font-size:13px;">info</span>
+                        </button>
+                        <button class="row-info-btn" onclick="openCreditModal('${e.id}')" title="Edit customer name, phone, address &amp; book ref">
+                            <span class="material-icons" style="font-size:13px;">edit</span>
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function inlineUpdateCreditStatus(entryId, newStatus) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            const prevInfo = entry.creditInfo ? JSON.parse(JSON.stringify(entry.creditInfo)) : {};
+            const oldStatus = prevInfo.status || 'pending';
+            if (oldStatus === newStatus) return;
+
+            entry.creditInfo = Object.assign({}, prevInfo, { status: newStatus, statusDate: getLocalTodayStr() });
+            await syncLinkedCreditSettlement(entry, newStatus);
+            const party = prevInfo.partyName || entry.customerName || 'Credit';
+            const summary = `Credit ${party}: ${CREDIT_STATUS_LABELS[oldStatus] || oldStatus} → ${CREDIT_STATUS_LABELS[newStatus] || newStatus}`;
+            recordEntryVersion(entry, summary, { creditInfo: prevInfo });
+            await persistAndSyncEntry(entry);
+            renderAdminCredits();
+            pushAdminUndo(summary, async () => {
+                const prevLinked = entry.creditInfo && entry.creditInfo.linkedSettlementId;
+                entry.creditInfo = JSON.parse(JSON.stringify(prevInfo));
+                if (prevLinked && !entry.creditInfo.linkedSettlementId) entry.creditInfo.linkedSettlementId = prevLinked;
+                await syncLinkedCreditSettlement(entry, entry.creditInfo.status || 'pending');
+                await persistAndSyncEntry(entry);
+                renderAdminCredits();
+            });
+        }
+
+        function openCreditModal(entryId) {
+            editingCreditEntryId = entryId;
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            const info = entry.creditInfo || {};
+            document.getElementById('cr-modal-title').innerText = `Credit · NPR ${Number(entry.credit || 0).toLocaleString()}`;
+            document.getElementById('cr-modal-sub').innerText = `Counter ${entry.counterId} · ${entry.date || ''}`;
+            document.getElementById('cr-inp-party').value = info.partyName || entry.customerName || '';
+            document.getElementById('cr-inp-phone').value = info.phone || '';
+            document.getElementById('cr-inp-address').value = info.address || '';
+            document.getElementById('cr-inp-ref').value = info.bookRef || '';
+            document.getElementById('cr-inp-status').value = info.status || 'pending';
+            document.getElementById('cr-inp-note').value = info.note || '';
+            document.getElementById('credit-edit-modal').classList.add('open');
+        }
+
+        function closeCreditModal() {
+            editingCreditEntryId = null;
+            const m = document.getElementById('credit-edit-modal');
+            if (m) m.classList.remove('open');
+        }
+
+        async function saveCreditDetails() {
+            const entry = entries.find(e => String(e.id) === String(editingCreditEntryId));
+            if (!entry) return;
+            const prevInfo = entry.creditInfo ? JSON.parse(JSON.stringify(entry.creditInfo)) : {};
+            const status = document.getElementById('cr-inp-status').value || 'pending';
+            entry.creditInfo = Object.assign({}, prevInfo, {
+                partyName: (document.getElementById('cr-inp-party').value || '').trim(),
+                phone: (document.getElementById('cr-inp-phone').value || '').trim(),
+                address: (document.getElementById('cr-inp-address').value || '').trim(),
+                bookRef: (document.getElementById('cr-inp-ref').value || '').trim(),
+                status,
+                note: (document.getElementById('cr-inp-note').value || '').trim(),
+                statusDate: getLocalTodayStr()
+            });
+            if (entry.creditInfo.partyName && !entry.customerName) entry.customerName = entry.creditInfo.partyName;
+            await syncLinkedCreditSettlement(entry, status);
+            recordEntryVersion(entry, `Updated credit (${entry.creditInfo.partyName || 'Party'} · ${CREDIT_STATUS_LABELS[status]})`, { creditInfo: prevInfo });
+            await persistAndSyncEntry(entry);
+            closeCreditModal();
+            renderAdminCredits();
+        }
+
+        // ============================================================
+        // SECURITY & PRIVACY AUDIT LOGGER + ANDROID LONG-PRESS TOOLTIPS
+        // ============================================================
+        let cachedLocationStr = '';
+        function reportSecurityEvent(eventType, severity, details) {
+            const actor = activeActorLabel || (isAdmin ? `Admin ${activeAdminId || ''}` : (activeCounterId ? `Counter ${activeCounterId}` : 'Guest')).trim();
+            const send = (loc) => {
+                callGas('LOG_SECURITY_EVENT', {
+                    eventType,
+                    severity: severity || 'INFO',
+                    actor,
+                    location: loc || cachedLocationStr || '',
+                    details: details || ''
+                }).catch(() => {});
+            };
+            if (!cachedLocationStr && typeof navigator !== 'undefined' && navigator.geolocation && eventType.indexOf('LOGIN') !== -1) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => { cachedLocationStr = `${pos.coords.latitude.toFixed(4)},${pos.coords.longitude.toFixed(4)}`; send(cachedLocationStr); },
+                    () => send(''),
+                    { timeout: 3000, maximumAge: 300000 }
+                );
+            } else {
+                send(cachedLocationStr);
+            }
+        }
+
+        if (typeof document !== 'undefined' && document.addEventListener) {
+            // Detect PrintScreen, Ctrl+S (save), Ctrl+P (print), and right-click on bill images
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'PrintScreen') {
+                    reportSecurityEvent('SCREENSHOT_KEY', 'ALERT', 'PrintScreen pressed while app open');
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 's' || e.key.toLowerCase() === 'p')) {
+                    const isBillOpen = document.getElementById('capture-sheet')?.classList.contains('expanded');
+                    if (isBillOpen || isAdmin) {
+                        e.preventDefault();
+                        reportSecurityEvent(e.key.toLowerCase() === 'p' ? 'PRINT_ATTEMPT' : 'SAVE_ATTEMPT', 'ALERT', `Blocked Ctrl+${e.key.toUpperCase()} on sensitive screen`);
+                        showToast('⚠ Saving/printing media is logged for security.');
+                    }
+                }
+            });
+            document.addEventListener('contextmenu', (e) => {
+                if (e.target && e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    reportSecurityEvent('IMAGE_SAVE_ATTEMPT', 'ALERT', 'Right-click / long-press save blocked on bill image');
+                    showToast('⚠ Media download blocked & logged.');
+                }
+            });
+
+            // Android-style Long-Press Tooltip (450ms hold on any button with title)
+            let lpTimer = null;
+            let lpHideTimer = null;
+            const showLongPressTip = (txt) => {
+                const el = document.getElementById('android-longpress-tip');
+                if (!el || !txt) return;
+                el.innerText = txt;
+                el.classList.add('show');
+                clearTimeout(lpHideTimer);
+                lpHideTimer = setTimeout(() => el.classList.remove('show'), 2200);
+            };
+            const startLP = (e) => {
+                const btn = e.target && e.target.closest && e.target.closest('button[title]');
+                if (!btn) return;
+                const tip = btn.getAttribute('title');
+                if (!tip) return;
+                clearTimeout(lpTimer);
+                lpTimer = setTimeout(() => showLongPressTip(tip), 450);
+            };
+            const cancelLP = () => clearTimeout(lpTimer);
+            document.addEventListener('touchstart', startLP, { passive: true });
+            document.addEventListener('touchend', cancelLP, { passive: true });
+            document.addEventListener('touchmove', cancelLP, { passive: true });
+            document.addEventListener('mousedown', startLP);
+            document.addEventListener('mouseup', cancelLP);
+        }
 
         // ── Inactivity Auto-Lock ─────────────────────────────────────────────
         let inactivityTimer = null;
