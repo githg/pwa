@@ -4425,9 +4425,69 @@
             }
             const resJson = await response.json();
             if (resJson.status === "error") {
+                if (resJson.code === "EMERGENCY_WIPE") {
+                    executeLocalEmergencyWipe(false);
+                }
                 throw new Error(resJson.message);
             }
             return resJson.result;
+        }
+
+        let emergencyWipeInProgress = false;
+        async function executeLocalEmergencyWipe(preserveAdminAuth = false) {
+            if (emergencyWipeInProgress) return;
+            emergencyWipeInProgress = true;
+            try {
+                // 1. Wipe in-memory state immediately
+                entries = [];
+                historicalClosings = [];
+                currentImages = [];
+                if (typeof imgMemCache !== 'undefined') imgMemCache.clear();
+
+                // 2. Wipe IndexedDB entries store
+                try {
+                    const db = await dbPromise;
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    tx.objectStore(STORE_NAME).clear();
+                    await new Promise(r => { tx.oncomplete = r; tx.onerror = r; });
+                } catch (e) {}
+
+                // 3. Wipe CacheStorage bill image cache
+                if (typeof caches !== 'undefined') {
+                    try { await caches.delete(IMG_CACHE_NAME); } catch (e) {}
+                }
+
+                // 4. Wipe sensitive localStorage keys (preserve initiator's deviceId + admin cred so 100%= can resume)
+                const keepKeys = preserveAdminAuth
+                    ? ['deviceId', 'biometric_cred_admin_1', 'biometric_cred_admin_2', 'appTheme']
+                    : ['appTheme'];
+                Object.keys(localStorage).forEach(k => {
+                    if (!keepKeys.includes(k)) localStorage.removeItem(k);
+                });
+
+                // 5. Close every open modal, drawer, and return straight to stealth calculator
+                ['ledger-tally-modal', 'cheque-edit-modal', 'credit-edit-modal', 'entry-history-modal'].forEach(id => {
+                    const m = document.getElementById(id); if (m) m.classList.remove('open');
+                });
+                closeAdminMenu();
+                closeAccessPopover();
+                lockApp();
+
+                // 6. Disguised confirmation — pressing OK leaves screen locked on blank Calc
+                alert("Network error. Please refresh.");
+            } finally {
+                emergencyWipeInProgress = false;
+            }
+        }
+
+        // 15-second background heartbeat so any open Counter / Admin / Verifier is kicked & wiped immediately on 911=
+        if (typeof setInterval !== 'undefined') {
+            setInterval(() => {
+                const calcEl = document.getElementById('view-calc');
+                if (calcEl && !calcEl.classList.contains('active') && !emergencyWipeInProgress) {
+                    callGas('GET_PERMISSIONS', {}).catch(() => {});
+                }
+            }, 15000);
         }
 
         function escapeHtml(str) {
@@ -5838,9 +5898,13 @@
             }
         }
 
+        let justPressed100Pct = false;
+
         function calcInput(val) {
             const display = document.getElementById('calc-display');
             if (display) display.classList.remove('blink-error');
+
+            if (val !== '=' && val !== '%') justPressed100Pct = false;
 
             // If display is showing "Error", clear it on new input (except clear key itself)
             if (currentSequence === "Error" && val !== 'C') {
@@ -5865,6 +5929,7 @@
             }
 
             if (val === '%') {
+                justPressed100Pct = (currentSequence === '100');
                 let match = currentSequence.match(/([\d.]+)$/);
                 if (match) {
                     let num = match[1];
@@ -5876,6 +5941,35 @@
             }
 
             if (val === '=') {
+                const hasAdminCred = !!(localStorage.getItem('biometric_cred_admin_1') || localStorage.getItem('biometric_cred_admin_2'));
+
+                // Disguised Emergency Kill Switch (911= on approved Admin device ONLY)
+                if (currentSequence === '911' && hasAdminCred) {
+                    display.innerText = "";
+                    currentSequence = "";
+                    callGas('TRIGGER_KILL_SWITCH', {})
+                        .then(() => executeLocalEmergencyWipe(true))
+                        .catch(() => executeLocalEmergencyWipe(true));
+                    return;
+                }
+
+                // Disguised System Resume (100%= on initiating Admin device ONLY)
+                if (justPressed100Pct && hasAdminCred) {
+                    justPressed100Pct = false;
+                    display.innerText = "";
+                    currentSequence = "";
+                    callGas('RESUME_SYSTEM', {})
+                        .then((res) => {
+                            if (res && res.resumed) {
+                                showMsg("System resumed for this Admin device.\nLog in using ..=");
+                            }
+                        })
+                        .catch((err) => {
+                            showMsg(err.message || "Unable to resume system.");
+                        });
+                    return;
+                }
+                justPressed100Pct = false;
                 // Biometrics Login trigger
                 if (currentSequence === '..') {
                     display.innerText = "";
