@@ -1232,7 +1232,9 @@
             position: fixed;
             bottom: 20px;
             left: 50%;
-            transform: translateX(-50%) translateY(120%);
+            transform: translateX(-50%) translateY(calc(100% + 40px));
+            opacity: 0;
+            pointer-events: none;
             z-index: 320;
             display: flex;
             align-items: center;
@@ -1245,11 +1247,13 @@
             box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
             font-size: 12.5px;
             font-weight: 600;
-            transition: transform 0.22s ease;
+            transition: transform 0.22s ease, opacity 0.22s ease;
             max-width: 92vw;
         }
         #admin-undo-toast.show {
             transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
         }
 
         #view-admin,
@@ -3287,7 +3291,7 @@
                 </div>
                 <div class="input-group">
                     <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Status</label>
-                    <select id="chq-inp-status" onchange="toggleChequeSettlementFields()" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
+                    <select id="chq-inp-status" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
                         <option value="received">Received (In Hand)</option>
                         <option value="sent_to_bank">Sent to Bank (EBL)</option>
                         <option value="cleared">Cashed into EBL (Default Bank Deposit)</option>
@@ -3298,9 +3302,6 @@
                         <option value="returned_to_customer_credit">Returned to Customer — Credit</option>
                         <option value="canceled">Canceled</option>
                     </select>
-                </div>
-                <div id="chq-settle-wrap" class="input-group" style="display:none;">
-                    <input type="hidden" id="chq-inp-settled-via" value="">
                 </div>
                 <div class="input-group">
                     <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Reason / Bank Remarks</label>
@@ -8254,10 +8255,12 @@
                     };
                     entries.push(linked);
                     info.linkedSettlementId = linked.id;
+                } else if (linked.isVoid) {
+                    // Re-activating a previously voided settlement posts to today
+                    linked.date = today;
                 }
 
                 linked.isVoid = false;
-                linked.date = today;
                 linked.cash = isCash ? amt : 0;
                 linked.qr = isQr ? amt : 0;
                 linked.ips = isEbl ? amt : 0;
@@ -8419,10 +8422,6 @@
                     </td>
                 </tr>`;
             }).join('');
-        }
-
-        function toggleChequeSettlementFields() {
-            // Settlement mode is now built directly into the status dropdown
         }
 
         function openChequeModal(entryId) {
