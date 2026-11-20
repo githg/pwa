@@ -1350,6 +1350,33 @@
             display: flex;
         }
 
+        /* Persistent Counter Access Control Popover (top-right next to Lock) */
+        .access-popover-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .access-popover-drawer {
+            display: none;
+            position: fixed;
+            top: 52px;
+            right: 10px;
+            width: min(350px, calc(100vw - 20px));
+            max-height: calc(100vh - 76px);
+            overflow-y: auto;
+            padding: 12px;
+            border-radius: 14px;
+            background: var(--ui-sheet-card);
+            border: 1px solid var(--ui-border-strong);
+            box-shadow: var(--ui-specular), 0 24px 56px rgba(0, 0, 0, 0.65);
+            flex-direction: column;
+            gap: 8px;
+            z-index: 95;
+        }
+        .access-popover-drawer.open {
+            display: flex;
+        }
+
         #view-admin .admin-tab {
             padding: 10px 12px !important;
             border-radius: 9px !important;
@@ -3141,10 +3168,23 @@
                     </div>
                 </div>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
+            <div style="display:flex; gap:6px; align-items:center;">
                 <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
                     <span class="material-icons" style="font-size:15px;">undo</span> <span id="admin-undo-cnt">Undo</span>
                 </button>
+                <div class="access-popover-wrap">
+                    <button class="glass-btn" id="btn-access-popover" onclick="toggleAccessPopover(event)" title="Counter Login Access Control (stays open until closed)" style="padding:7px 10px !important;">
+                        <span class="material-icons" style="font-size:15px; color:var(--ui-pos);">key</span>
+                        <span id="access-open-ratio" style="font-weight:800; font-variant-numeric:tabular-nums;">6/6</span>
+                    </button>
+                    <div class="access-popover-drawer" id="access-popover-drawer">
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:6px; border-bottom:1px solid var(--ui-border);">
+                            <span style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--ui-text);">Counter Access Control</span>
+                            <button class="glass-btn" onclick="closeAccessPopover()" style="padding:4px 8px !important; font-size:11px !important;" title="Close Access Panel">✕</button>
+                        </div>
+                        <div id="access-popover-list" style="display:flex; flex-direction:column; gap:7px;"></div>
+                    </div>
+                </div>
                 <button class="glass-btn" onclick="lockApp()" title="Lock App"><span class="material-icons"
                         style="font-size:15px;">lock</span> <span class="hide-xs">Lock</span></button>
             </div>
@@ -5419,20 +5459,108 @@
             return null;
         }
 
+        // Persistent Client-Side Image Cache + In-Flight Deduplication (handles 1,000+ images smoothly)
+        const imgMemCache = new Map();
+        const imgInFlight = new Map();
+        const IMG_CACHE_NAME = 'bill-img-cache-v1';
+
+        async function fetchCachedDriveImage(fileId) {
+            if (!fileId) return null;
+            if (imgMemCache.has(fileId)) return imgMemCache.get(fileId);
+            if (imgInFlight.has(fileId)) return imgInFlight.get(fileId);
+
+            const p = (async () => {
+                // 1. Check persistent CacheStorage (survives page reloads!)
+                if (typeof caches !== 'undefined') {
+                    try {
+                        const cache = await caches.open(IMG_CACHE_NAME);
+                        const hit = await cache.match('/_img/' + fileId);
+                        if (hit) {
+                            const b64 = await hit.text();
+                            if (b64) {
+                                imgMemCache.set(fileId, b64);
+                                return b64;
+                            }
+                        }
+                    } catch (e) { }
+                }
+                // 2. Fetch once from GAS and store in memory + CacheStorage
+                const base64 = await callGas('GET_FILE_BASE64', { fileId });
+                if (base64) {
+                    imgMemCache.set(fileId, base64);
+                    if (imgMemCache.size > 150) {
+                        const firstKey = imgMemCache.keys().next().value;
+                        imgMemCache.delete(firstKey);
+                    }
+                    if (typeof caches !== 'undefined') {
+                        caches.open(IMG_CACHE_NAME)
+                            .then(c => c.put('/_img/' + fileId, new Response(base64)))
+                            .catch(() => {});
+                    }
+                }
+                return base64 || null;
+            })().finally(() => imgInFlight.delete(fileId));
+
+            imgInFlight.set(fileId, p);
+            return p;
+        }
+
         async function loadImgFallback(imgEl, url) {
+            if (imgEl.dataset.fallbackTried) return;
+            imgEl.dataset.fallbackTried = '1';
             const fileId = getFileIdFromUrl(url);
             if (!fileId) return;
             imgEl.style.opacity = '0.5';
             try {
-                const base64 = await callGas('GET_FILE_BASE64', { fileId });
-                if (base64) {
-                    imgEl.src = base64;
-                }
+                const base64 = await fetchCachedDriveImage(fileId);
+                if (base64) imgEl.src = base64;
             } catch (err) {
                 console.warn('Image base64 fallback fetch failed:', err);
             } finally {
                 imgEl.style.opacity = '1';
             }
+        }
+
+        // Prefetch next 2 invoices' images in background during 200-bill verification
+        function prefetchAdjacentBillImages(currentEntry) {
+            if (!currentEntry) return;
+            const list = entries
+                .filter(e => String(e.counterId) === String(currentEntry.counterId) && e.sessionStatus === currentEntry.sessionStatus)
+                .sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+            const idx = list.findIndex(e => String(e.id) === String(currentEntry.id));
+            [idx + 1, idx + 2].forEach(nIdx => {
+                const nxt = list[nIdx];
+                if (!nxt || !Array.isArray(nxt.images)) return;
+                nxt.images.forEach(u => {
+                    if (typeof u === 'string' && u.startsWith('http')) {
+                        const fid = getFileIdFromUrl(u);
+                        if (fid) fetchCachedDriveImage(fid).catch(() => {});
+                    }
+                });
+            });
+        }
+
+        // Compress any camera frame or gallery import to max 1100px JPEG (~65-95KB vs 4MB raw!)
+        function compressImageDataUrl(dataUrl, maxDim = 1100, quality = 0.68) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    let w = img.naturalWidth || img.width;
+                    let h = img.naturalHeight || img.height;
+                    if (w > maxDim || h > maxDim) {
+                        const scale = maxDim / Math.max(w, h);
+                        w = Math.round(w * scale);
+                        h = Math.round(h * scale);
+                    }
+                    const c = document.createElement('canvas');
+                    c.width = w;
+                    c.height = h;
+                    c.getContext('2d').drawImage(img, 0, 0, w, h);
+                    resolve(c.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = () => resolve(dataUrl);
+                img.src = dataUrl;
+            });
         }
 
         function registerBiometricsCurrent(event) {
@@ -5897,8 +6025,9 @@
 
             for (let i = 0; i < files.length; i++) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    currentImages.push(e.target.result);
+                reader.onload = async function (e) {
+                    const compressed = await compressImageDataUrl(e.target.result, 1100, 0.68);
+                    currentImages.push(compressed);
                     loadedCount++;
                     if (loadedCount === targetCount) {
                         openCaptureSheet();
@@ -5967,12 +6096,20 @@
 
             if (isSimulated) {
                 const simCanvas = document.getElementById('simulated-feed');
-                return simCanvas.toDataURL('image/jpeg', 0.7);
+                return simCanvas.toDataURL('image/jpeg', 0.68);
             } else {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                return canvas.toDataURL('image/jpeg', 0.7);
+                const maxDim = 1100;
+                let w = video.videoWidth || 1080;
+                let h = video.videoHeight || 1440;
+                if (w > maxDim || h > maxDim) {
+                    const scale = maxDim / Math.max(w, h);
+                    w = Math.round(w * scale);
+                    h = Math.round(h * scale);
+                }
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(video, 0, 0, w, h);
+                return canvas.toDataURL('image/jpeg', 0.68);
             }
         }
 
@@ -6101,6 +6238,7 @@
             renderPreviewScroll();
             calculateFormTotals();
             updateRecheckBar(existingId ? targetEntry : null);
+            if (targetEntry) prefetchAdjacentBillImages(targetEntry);
             const previewArea = document.querySelector('#capture-sheet .preview-area');
             if (previewArea) {
                 const isTextOnlyFast = !!(targetEntry && currentImages.length === 0 && targetEntry.isFastLane);
@@ -6547,7 +6685,7 @@
 
                     // Photo bills get big 112px readable thumbnail; Fast-Lane gets compact text-only card (zero wasted box)
                     const thumb = hasPhoto
-                        ? `<div class="mkt-thumb"><img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`
+                        ? `<div class="mkt-thumb"><img src="${entry.images[0]}" loading="lazy" decoding="async" onerror="loadImgFallback(this, '${entry.images[0]}')">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`
                         : '';
 
                     // Cross-mode badges so split bills clearly show partner mode in each column
@@ -7397,9 +7535,55 @@
             }
         }
 
+        function toggleAccessPopover(e) {
+            if (e) e.stopPropagation();
+            const d = document.getElementById('access-popover-drawer');
+            if (d) d.classList.toggle('open');
+        }
+
+        function closeAccessPopover() {
+            const d = document.getElementById('access-popover-drawer');
+            if (d) d.classList.remove('open');
+        }
+
+        function renderAccessPopover() {
+            let statusGridHtml = '';
+            let openCnt = 0;
+            for (let i = 0; i <= 5; i++) {
+                const counterIdStr = i.toString();
+                const enabled = (counterPermissions[counterIdStr] !== false);
+                if (enabled) openCnt++;
+                const chipClass = enabled ? 'open' : 'locked';
+                const label = enabled ? 'OPEN' : 'LOCKED';
+                const actionLabel = enabled ? 'Lock' : 'Unlock';
+                const counterName = i === 0 ? 'C0 · Collections' : `Counter ${i}`;
+
+                statusGridHtml += `
+                    <div class="counter-card-compact">
+                        <div style="display:flex; align-items:center; gap:7px;">
+                            <span style="font-weight:700; font-size:12.5px; color:var(--ui-text);">${counterName}</span>
+                            <span class="status-chip ${chipClass}"><span class="status-dot"></span>${label}</span>
+                        </div>
+                        <div style="display:flex; gap:5px; align-items:center;">
+                            <button class="glass-btn" onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="padding:5px 8px !important; font-size:11px !important;">${actionLabel}</button>
+                            <button class="glass-btn-primary" onclick="closeAccessPopover(); adminEnterWorkspace('${counterIdStr}')" style="padding:5px 8px !important; font-size:11px !important;">Enter</button>
+                            <button class="glass-btn-danger" onclick="forceResetCounterSession('${counterIdStr}')" style="padding:5px 7px !important; font-size:11px !important;" title="Reset Session Lease">↺</button>
+                        </div>
+                    </div>
+                `;
+            }
+            const listEl = document.getElementById('access-popover-list');
+            if (listEl) listEl.innerHTML = statusGridHtml;
+            const ratioEl = document.getElementById('access-open-ratio');
+            if (ratioEl) ratioEl.innerText = `${openCnt}/6`;
+        }
+
         function renderAdminActive() {
             const container = document.getElementById('admin-active-content');
             container.innerHTML = '';
+
+            // Always keep persistent top-right Access Control popover & 5/6 badge up to date
+            renderAccessPopover();
 
             const activeEntries = entries.filter(e => e.sessionStatus !== 'closed');
 
@@ -7423,60 +7607,6 @@
                 <div class="ams-cell"><span class="ams-lbl">Total</span><span class="ams-val">${gTot.toLocaleString()}</span></div>
             `;
             container.appendChild(summaryStrip);
-
-            // Render Collapsible Access Control Panel (default collapsed so counters appear immediately)
-            const accessCard = document.createElement('div');
-            accessCard.className = 'glass-card';
-            accessCard.style.display = 'flex';
-            accessCard.style.flexDirection = 'column';
-            accessCard.style.gap = '10px';
-            accessCard.style.width = '100%';
-
-            let statusGridHtml = '';
-            for (let i = 0; i <= 5; i++) {
-                const counterIdStr = i.toString();
-                const enabled = (counterPermissions[counterIdStr] !== false);
-                const chipClass = enabled ? 'open' : 'locked';
-                const label = enabled ? 'OPEN' : 'LOCKED';
-                const actionLabel = enabled ? 'Lock' : 'Unlock';
-                const counterName = i === 0 ? 'Counter 0 · Collections' : `Counter ${i}`;
-
-                statusGridHtml += `
-                    <div class="counter-card-compact">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span style="font-weight:700; font-size:12.5px; color:var(--ui-text);">${counterName}</span>
-                            <span class="status-chip ${chipClass}"><span class="status-dot"></span>${label}</span>
-                        </div>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <button class="glass-btn" onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="padding:5px 9px !important; font-size:11px !important;">${actionLabel}</button>
-                            <button class="glass-btn-primary" onclick="adminEnterWorkspace('${counterIdStr}')" style="padding:5px 9px !important; font-size:11px !important;">Enter</button>
-                            <button class="glass-btn-danger" onclick="forceResetCounterSession('${counterIdStr}')" style="padding:5px 8px !important; font-size:11px !important;" title="Reset Session Lease">↺</button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            let openCnt = 0;
-            for (let i = 0; i <= 5; i++) {
-                if (counterPermissions[i.toString()] !== false) openCnt++;
-            }
-            if (counterCollapsedState['_access'] === undefined) {
-                counterCollapsedState['_access'] = true;
-            }
-            const accessCollapsed = !!counterCollapsedState['_access'];
-            accessCard.innerHTML = `
-                <div class="section-kicker" style="margin-bottom:0; cursor:pointer; user-select:none;" onclick="counterCollapsedState['_access']=!counterCollapsedState['_access']; renderAdminActive();">
-                    <span style="display:inline-flex; align-items:center; gap:5px;">
-                        <span class="material-icons" style="font-size:17px; transition:transform 0.16s; transform:rotate(${accessCollapsed ? '-90deg' : '0deg'});">expand_more</span>
-                        Counter Login Access Control
-                    </span>
-                    <span class="kpi-badge">${openCnt} OPEN · ${6 - openCnt} LOCKED</span>
-                </div>
-                <div class="counter-grid" style="display:${accessCollapsed ? 'none' : 'grid'};">
-                    ${statusGridHtml}
-                </div>
-            `;
-            container.appendChild(accessCard);
 
             if (activeEntries.length === 0) {
                 const emptyMsg = document.createElement('div');
@@ -8899,14 +9029,18 @@
 
                 const unsynced = allEntries.filter(e => e.synced !== true);
                 if (unsynced.length > 0) {
-                    await callGas('SYNC_ENTRIES', { data: unsynced });
-                    const writeTx = db.transaction(STORE_NAME, 'readwrite');
-                    const writeStore = writeTx.objectStore(STORE_NAME);
-                    for (const entry of unsynced) {
-                        entry.synced = true;
-                        writeStore.put(entry);
+                    const CHUNK = 5;
+                    for (let i = 0; i < unsynced.length; i += CHUNK) {
+                        const batch = unsynced.slice(i, i + CHUNK);
+                        await callGas('SYNC_ENTRIES', { data: batch });
+                        const writeTx = db.transaction(STORE_NAME, 'readwrite');
+                        const writeStore = writeTx.objectStore(STORE_NAME);
+                        for (const entry of batch) {
+                            entry.synced = true;
+                            writeStore.put(entry);
+                        }
+                        await new Promise(resolve => writeTx.oncomplete = resolve);
                     }
-                    await new Promise(resolve => writeTx.oncomplete = resolve);
                 }
 
                 // Force pull EOD Closings
