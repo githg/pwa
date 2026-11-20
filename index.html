@@ -1263,6 +1263,24 @@
             pointer-events: auto;
         }
 
+        /* View-Only Guest Mode Enforcement (UI layer; backend api.gs also blocks all writes) */
+        body.view-only-mode .row-info-btn[title*="Edit"],
+        body.view-only-mode .row-info-btn[title*="Close edit"],
+        body.view-only-mode .chq-inline-sel,
+        body.view-only-mode #tab-admin-devices,
+        body.view-only-mode #btn-admin-undo,
+        body.view-only-mode #btn-submit-eod,
+        body.view-only-mode #opening-cash-display,
+        body.view-only-mode .eod-input,
+        body.view-only-mode .counter-card button,
+        body.view-only-mode #admin-cheques-content .glass-btn-primary {
+            pointer-events: none !important;
+            opacity: 0.45 !important;
+        }
+        body.view-only-mode #tab-admin-devices {
+            display: none !important;
+        }
+
         #view-admin,
         #collection-workspace {
             background: var(--ui-canvas) !important;
@@ -2702,6 +2720,9 @@
                     <div class="admin-tab" onclick="switchAdminTab('cheques')">
                         <span class="material-icons" style="font-size:16px;">account_balance</span> Cheques Master
                     </div>
+                    <div class="admin-tab" id="tab-admin-devices" onclick="switchAdminTab('devices')">
+                        <span class="material-icons" style="font-size:16px;">devices</span> Devices &amp; Access
+                    </div>
                     <div style="height:1px; background:var(--ui-border); margin:4px 6px;"></div>
                     <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('cash', 'admin');">
                         <span class="material-icons" style="font-size:16px; color:var(--ui-pos);">payments</span> Cash-Only List
@@ -2720,6 +2741,9 @@
                 <button class="glass-btn" onclick="lockApp()" title="Lock App"><span class="material-icons"
                         style="font-size:15px;">lock</span> <span class="hide-xs">Lock</span></button>
             </div>
+        </div>
+        <div id="view-only-banner" style="display:none; width:100%; max-width:1280px; margin:0 auto 10px; padding:8px 14px; border-radius:10px; background:rgba(245, 158, 11, 0.16); border:1px solid rgba(245, 158, 11, 0.4); color:var(--ui-warn); font-size:12px; font-weight:700; text-align:center; box-sizing:border-box;">
+            👁 VIEW-ONLY GUEST SESSION
         </div>
         <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 14px; width: 100%;">
             <!-- Quick Counter Selection Bar for Admins -->
@@ -3441,6 +3465,68 @@
                 </table>
             </div>
         </div>
+
+        <!-- Devices & Access Management Tab Content (Admin Full Only) -->
+        <div class="admin-content" id="admin-devices-content"
+            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
+
+            <!-- Pending Device Approvals -->
+            <div class="glass-card" id="dev-pending-card" style="display:none; flex-direction:column; gap:10px; border-color:rgba(245, 158, 11, 0.45) !important;">
+                <div class="section-kicker" style="margin:0;">
+                    <span style="color:var(--ui-warn);">⏳ Pending Human Approval</span>
+                    <span class="kpi-badge" id="dev-pending-cnt" style="color:var(--ui-warn);">0</span>
+                </div>
+                <div id="dev-pending-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+
+            <!-- Temporary View-Only Guest Calc Codes -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
+                <div class="section-kicker" style="margin:0;">
+                    <span>Temporary View-Only Calc Codes</span>
+                    <span class="kpi-badge">READ-ONLY</span>
+                </div>
+                <div style="font-size:11.5px; color:var(--ui-muted);">
+                    Define a custom 4–8 digit code. Guest types <strong>&lt;code&gt;..=</strong> on the calculator to open read-only Admin view (auto-expires or revocable anytime).
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(125px, 1fr)); gap:8px; align-items:end;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Custom Code (4–8 digits)</label>
+                        <input type="text" id="temp-code-inp" class="input-field" placeholder="e.g. 7744" inputmode="numeric" maxlength="8" style="padding:8px 10px; font-size:13px; font-weight:700;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Guest / Label</label>
+                        <input type="text" id="temp-label-inp" class="input-field" placeholder="e.g. Auditor / Partner" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Expires</label>
+                        <select id="temp-dur-sel" style="padding:8px 10px; font-size:12.5px; border-radius:9px; width:100%;">
+                            <option value="2">2 Hours</option>
+                            <option value="eod">Today Only (Midnight)</option>
+                            <option value="24" selected>24 Hours (1 Day)</option>
+                            <option value="168">7 Days</option>
+                        </select>
+                    </div>
+                    <button class="glass-btn-primary" onclick="submitCreateTempCode()" style="padding:9px 12px !important; font-size:12px !important;">
+                        <span class="material-icons" style="font-size:15px;">add</span> Create Pass
+                    </button>
+                </div>
+                <div id="dev-temp-codes-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+            </div>
+
+            <!-- Active Session Leases & Registered Devices -->
+            <div class="glass-card" style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <div class="section-kicker" style="margin:0;">
+                        <span>Registered Devices &amp; Active Leases</span>
+                    </div>
+                    <button class="glass-btn" onclick="renderAdminDevices()" style="padding:5px 10px !important; font-size:11.5px !important;">
+                        <span class="material-icons" style="font-size:14px;">refresh</span> Refresh
+                    </button>
+                </div>
+                <div id="dev-leases-strip" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+                <div id="dev-all-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Isolated Cash / QR & Individual Counter Ledger Reconciliation Modal -->
@@ -3737,12 +3823,18 @@
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxu_xJtq3VWTCtwu9erZONgU4evkPLpSYWnmMgo-1mHA_Bl63gvZYKvAwiNTJjEIlXufA/exec";
 
+        let isViewOnly = false;
+        let activeTempCode = null;
+
         async function callGas(action, payload = {}) {
             const bodyObj = {
                 action: action,
                 deviceId: getDeviceId(),
                 payload: payload
             };
+            if (activeTempCode) {
+                bodyObj.tempCode = activeTempCode;
+            }
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' },
@@ -4945,7 +5037,26 @@
                 window.history.pushState({ view: 'admin' }, '');
 
                 const devId = getDeviceId();
-                callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent }).then((claimRes) => {
+                callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent }).then(async (claimRes) => {
+                    if (claimRes && claimRes.canTakeover) {
+                        const ok = confirm((claimRes.message || "Admin session is active on another device. Take over?") + "\n\nTap OK to take over this session now.");
+                        if (ok) {
+                            try {
+                                const forced = await callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent, forceTakeover: true });
+                                if (forced && forced.success) {
+                                    showToast(`Took over Admin ${targetId} session.`);
+                                    return;
+                                }
+                                throw new Error((forced && forced.message) || "Takeover failed.");
+                            } catch (e) {
+                                document.getElementById('opening-cash-modal').classList.remove('active');
+                                lockApp();
+                                blinkCalcDisplay();
+                                showMsg(e.message || "Takeover failed.");
+                                return;
+                            }
+                        }
+                    }
                     if (!claimRes || !claimRes.success) {
                         const errorMsg = (claimRes && claimRes.message) || "Access Denied.";
                         document.getElementById('opening-cash-modal').classList.remove('active');
@@ -5125,6 +5236,16 @@
                     return;
                 }
 
+                // Temp View-Only Guest Calc Code (4-8 digits followed by ..=)
+                let tempMatch = currentSequence.match(/^(\d{4,8})\.\.$/);
+                if (tempMatch) {
+                    const guestCode = tempMatch[1];
+                    display.innerText = "";
+                    currentSequence = "";
+                    loginWithTempCode(guestCode);
+                    return;
+                }
+
                 if (currentSequence) {
                     let result = safeEval(currentSequence);
                     currentSequence = result.toString();
@@ -5165,6 +5286,11 @@
         let stream = null;
 
         function lockApp() {
+            isViewOnly = false;
+            activeTempCode = null;
+            document.body.classList.remove('view-only-mode');
+            const voBanner = document.getElementById('view-only-banner');
+            if (voBanner) voBanner.style.display = 'none';
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 stream = null;
@@ -5914,7 +6040,8 @@
             eod: 'EOD Closing',
             reports: 'Daily Report',
             analytics: 'Analytics & History',
-            cheques: 'Cheques Master'
+            cheques: 'Cheques Master',
+            devices: 'Devices & Access'
         };
 
         function toggleAdminMenu(e) {
@@ -5952,6 +6079,8 @@
             if (anaEl) anaEl.style.display = 'none';
             const chqEl = document.getElementById('admin-cheques-content');
             if (chqEl) chqEl.style.display = 'none';
+            const devEl = document.getElementById('admin-devices-content');
+            if (devEl) devEl.style.display = 'none';
 
             if (tab === 'active') {
                 document.querySelectorAll('.admin-tab')[0].classList.add('active');
@@ -6019,6 +6148,15 @@
                 const chqEl = document.getElementById('admin-cheques-content');
                 if (chqEl) chqEl.style.display = 'flex';
                 renderAdminCheques();
+            } else if (tab === 'devices') {
+                if (isViewOnly) {
+                    switchAdminTab('active');
+                    return;
+                }
+                document.querySelectorAll('.admin-tab')[6].classList.add('active');
+                const devEl = document.getElementById('admin-devices-content');
+                if (devEl) devEl.style.display = 'flex';
+                renderAdminDevices();
             }
         }
 
@@ -8871,6 +9009,207 @@
                 pushAdminUndo(summary, async () => {
                     await applyEntryRestore(targetEntry.id, { chequeInfo: prevInfo }, 'Undid cheque edit');
                 });
+            }
+        }
+
+        // ============================================================
+        // DEVICES, HUMAN APPROVAL & TEMP VIEW-ONLY CALC CODES
+        // ============================================================
+        async function loginWithTempCode(code) {
+            try {
+                showToast('Verifying guest pass...');
+                const res = await callGas('LOGIN_TEMP_CODE', { code });
+                if (!res || !res.allowed) {
+                    blinkCalcDisplay();
+                    showMsg((res && res.message) || 'Invalid or expired temp view code.');
+                    return;
+                }
+                isAdmin = true;
+                isViewOnly = true;
+                activeTempCode = code;
+                document.body.classList.add('view-only-mode');
+                const expStr = res.expiresAt ? new Date(res.expiresAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                const banner = document.getElementById('view-only-banner');
+                if (banner) {
+                    banner.innerText = `👁 VIEW-ONLY ACCESS · ${res.label || 'Guest'}${expStr ? ' · Expires ' + expStr : ''}`;
+                    banner.style.display = 'block';
+                }
+                document.getElementById('view-calc').classList.remove('active');
+                document.getElementById('view-admin').classList.add('active');
+                switchAdminTab('active');
+                if (typeof forceSync === 'function') forceSync();
+            } catch (err) {
+                blinkCalcDisplay();
+                showMsg(err.message || 'Temp view login failed.');
+            }
+        }
+
+        async function renderAdminDevices() {
+            const pendCard = document.getElementById('dev-pending-card');
+            const pendList = document.getElementById('dev-pending-list');
+            const pendCnt = document.getElementById('dev-pending-cnt');
+            const codesList = document.getElementById('dev-temp-codes-list');
+            const leasesStrip = document.getElementById('dev-leases-strip');
+            const allList = document.getElementById('dev-all-list');
+            if (!allList) return;
+
+            allList.innerHTML = '<div style="padding:16px; text-align:center; color:var(--ui-muted); font-size:12px;">Loading devices &amp; sessions...</div>';
+            try {
+                const data = await callGas('GET_DEVICES', {});
+                const devices = (data && data.devices) || [];
+                const activeLeases = (data && data.activeLeases) || {};
+                const tempCodes = (data && data.tempCodes) || [];
+                const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+                // 1. Pending Approvals
+                const pending = devices.filter(d => d.status === 'Pending');
+                if (pendCard && pendList) {
+                    pendCard.style.display = pending.length ? 'flex' : 'none';
+                    if (pendCnt) pendCnt.innerText = String(pending.length);
+                    pendList.innerHTML = pending.map(d => `
+                        <div class="glass-subcard" style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 12px !important;">
+                            <div style="min-width:0;">
+                                <div style="font-size:13px; font-weight:700; color:var(--ui-text);">${esc(d.name || d.deviceId)}</div>
+                                <div style="font-size:10.5px; color:var(--ui-muted);">Requested: <strong>${esc(d.userLabel)}</strong> · ${esc(d.deviceId.slice(0, 16))}…</div>
+                            </div>
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <button class="glass-btn-primary" onclick="approveOrUpdateDevice('${esc(d.deviceId)}', 'Allowed')" style="padding:5px 10px !important; font-size:11px !important;">✓ Approve</button>
+                                <button class="glass-btn-danger" onclick="approveOrUpdateDevice('${esc(d.deviceId)}', 'Revoked')" style="padding:5px 10px !important; font-size:11px !important;">✕ Deny</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // 2. Temp View-Only Calc Codes
+                if (codesList) {
+                    const now = Date.now();
+                    codesList.innerHTML = tempCodes.length === 0
+                        ? '<div style="font-size:11.5px; color:var(--ui-muted); padding:6px 0;">No temporary guest passes created yet.</div>'
+                        : tempCodes.map(c => {
+                            const expired = now > Number(c.expiresAt || 0);
+                            const live = c.active && !expired;
+                            const expLabel = c.expiresAt ? new Date(c.expiresAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                            const badge = live
+                                ? `<span class="status-chip open"><span class="status-dot"></span>LIVE</span>`
+                                : `<span class="status-chip locked"><span class="status-dot"></span>${!c.active ? 'REVOKED' : 'EXPIRED'}</span>`;
+                            return `<div class="glass-subcard" style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding:9px 12px !important;">
+                                <div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="font-weight:800; font-size:13.5px; letter-spacing:0.04em; color:var(--ui-info);">${esc(c.code)}..=</span>
+                                        <span style="font-weight:700; font-size:12px;">${esc(c.label)}</span>
+                                        ${badge}
+                                    </div>
+                                    <div style="font-size:10.5px; color:var(--ui-muted); margin-top:2px;">Expires: ${esc(expLabel)}</div>
+                                </div>
+                                ${live ? `<button class="glass-btn-danger" onclick="handleRevokeTempCode('${esc(c.code)}')" style="padding:5px 10px !important; font-size:11px !important;">Revoke</button>` : ''}
+                            </div>`;
+                        }).join('');
+                }
+
+                // 3. Active Session Leases strip (quick 1-tap kick for any stuck Admin or Counter)
+                if (leasesStrip) {
+                    const keys = Object.keys(activeLeases);
+                    leasesStrip.innerHTML = keys.length === 0
+                        ? '<span style="font-size:11px; color:var(--ui-muted);">No active session leases right now.</span>'
+                        : keys.map(k => {
+                            const l = activeLeases[k];
+                            return `<button class="glass-btn" onclick="kickActiveLease('${l.type}', '${l.targetId}')" style="padding:5px 9px !important; font-size:11px !important;" title="Kick active session lease">
+                                <span style="color:var(--ui-pos);">●</span> ${l.type.toUpperCase()} ${l.targetId} <span style="color:var(--ui-neg); margin-left:4px;">✕ Kick</span>
+                            </button>`;
+                        }).join('');
+                }
+
+                // 4. All Registered Devices
+                const myDevId = getDeviceId();
+                allList.innerHTML = devices.length === 0
+                    ? '<div style="padding:16px; text-align:center; color:var(--ui-muted); font-size:12px;">No devices registered yet.</div>'
+                    : devices.map(d => {
+                        const isMe = d.deviceId === myDevId;
+                        const isAllowed = d.status === 'Allowed';
+                        const chip = isAllowed
+                            ? '<span class="status-chip open"><span class="status-dot"></span>ALLOWED</span>'
+                            : `<span class="status-chip locked"><span class="status-dot"></span>${esc(d.status.toUpperCase())}</span>`;
+                        return `<div class="glass-subcard" style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 12px !important;">
+                            <div style="min-width:0;">
+                                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                    <span style="font-weight:700; font-size:13px;">${esc(d.name || 'Unnamed Device')}</span>
+                                    ${isMe ? '<span class="kpi-badge">THIS DEVICE</span>' : ''}
+                                    ${chip}
+                                </div>
+                                <div style="font-size:10.5px; color:var(--ui-muted); margin-top:2px;">Role: <strong>${esc(d.userLabel)}</strong> · ID: ${esc(d.deviceId.slice(0, 14))}…</div>
+                            </div>
+                            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                <button class="glass-btn" onclick="renameDevicePrompt('${esc(d.deviceId)}', '${esc(d.name)}')" style="padding:5px 9px !important; font-size:11px !important;">Rename</button>
+                                ${!isAllowed ? `<button class="glass-btn-primary" onclick="approveOrUpdateDevice('${esc(d.deviceId)}', 'Allowed')" style="padding:5px 9px !important; font-size:11px !important;">Allow</button>` : ''}
+                                ${isAllowed && !isMe ? `<button class="glass-btn-danger" onclick="approveOrUpdateDevice('${esc(d.deviceId)}', 'Revoked')" style="padding:5px 9px !important; font-size:11px !important;">Revoke</button>` : ''}
+                            </div>
+                        </div>`;
+                    }).join('');
+            } catch (err) {
+                allList.innerHTML = `<div style="padding:16px; text-align:center; color:var(--ui-neg); font-size:12px;">${err.message || 'Failed to load devices. Redeploy backend api.gs + handler_eod.gs first.'}</div>`;
+            }
+        }
+
+        async function approveOrUpdateDevice(targetDeviceId, status) {
+            try {
+                await callGas('UPDATE_DEVICE', { targetDeviceId, status });
+                showToast(`Device updated → ${status}`);
+                renderAdminDevices();
+            } catch (err) {
+                alert(err.message || 'Failed to update device.');
+            }
+        }
+
+        async function renameDevicePrompt(targetDeviceId, currentName) {
+            const next = prompt('Device Nickname (e.g. Dai iPhone, Shop PC):', currentName || '');
+            if (next === null) return;
+            try {
+                await callGas('UPDATE_DEVICE', { targetDeviceId, name: next.trim() });
+                showToast('Device renamed.');
+                renderAdminDevices();
+            } catch (err) {
+                alert(err.message || 'Failed to rename device.');
+            }
+        }
+
+        async function kickActiveLease(type, targetId) {
+            if (!confirm(`Kick active ${type.toUpperCase()} ${targetId} session lease?`)) return;
+            try {
+                await callGas('RELEASE_SESSION', { targetId, type, deviceId: '' });
+                showToast(`Kicked ${type.toUpperCase()} ${targetId} session.`);
+                renderAdminDevices();
+            } catch (err) {
+                alert(err.message || 'Failed to kick session.');
+            }
+        }
+
+        async function submitCreateTempCode() {
+            const code = (document.getElementById('temp-code-inp')?.value || '').replace(/\D/g, '');
+            const label = (document.getElementById('temp-label-inp')?.value || '').trim() || 'Guest View';
+            const dur = document.getElementById('temp-dur-sel')?.value || '24';
+            if (code.length < 4 || code.length > 8) {
+                alert('Enter a 4 to 8 digit code (e.g. 7744).');
+                return;
+            }
+            try {
+                await callGas('CREATE_TEMP_CODE', { code, label, durationHours: dur });
+                document.getElementById('temp-code-inp').value = '';
+                document.getElementById('temp-label-inp').value = '';
+                showToast(`Guest pass created! Share: ${code}..=`);
+                renderAdminDevices();
+            } catch (err) {
+                alert(err.message || 'Failed to create temp code.');
+            }
+        }
+
+        async function handleRevokeTempCode(code) {
+            if (!confirm(`Revoke guest pass ${code}..=?`)) return;
+            try {
+                await callGas('REVOKE_TEMP_CODE', { code });
+                showToast(`Revoked ${code}..=`);
+                renderAdminDevices();
+            } catch (err) {
+                alert(err.message || 'Failed to revoke code.');
             }
         }
 
