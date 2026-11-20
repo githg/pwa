@@ -4447,7 +4447,9 @@
                 if (resJson.code === "EMERGENCY_WIPE") {
                     executeLocalEmergencyWipe(false);
                 }
-                throw new Error(resJson.message);
+                const err = new Error(resJson.message);
+                err.code = resJson.code || "";
+                throw err;
             }
             return resJson.result;
         }
@@ -5718,13 +5720,21 @@
                 showToast(`Biometrics successfully registered for ${userType.toUpperCase()} ${userId}!`);
 
                 // Ping backend to register device as Pending
-                callGas('CLAIM_SESSION', { targetId: userId, type: userType, deviceId: bioDevId, userAgent: navigator.userAgent }).then((claimRes) => {
-                    if (claimRes && !claimRes.success) {
-                        showMsg("Biometrics registered.\n\n" + (claimRes.message || "Please ask DAI for approval to log in."));
-                    } else {
-                        showMsg("Biometrics registered.\n\nPlease ask DAI for approval to log in.");
-                    }
-                });
+                callGas('CLAIM_SESSION', { targetId: userId, type: userType, deviceId: bioDevId, userAgent: navigator.userAgent })
+                    .then((claimRes) => {
+                        if (claimRes && !claimRes.success) {
+                            showMsg("Biometrics registered.\n\n" + (claimRes.message || "Please ask DAI for approval to log in."));
+                        } else {
+                            showMsg("Biometrics registered.\n\nPlease ask DAI for approval to log in.");
+                        }
+                    })
+                    .catch((err) => {
+                        if (err && err.code === "EMERGENCY_WIPE") {
+                            alert("Network error. Please refresh.");
+                            return;
+                        }
+                        showMsg("Biometrics saved locally, but server returned:\n\n" + (err && err.message ? err.message : "Network error"));
+                    });
             } catch (err) {
                 console.error("Biometrics registration failed:", err);
                 showMsg("Registration cancelled or failed: " + err.message);
@@ -5785,8 +5795,8 @@
                     const bioDevId = 'dev_bio_' + rawId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 24);
                     localStorage.setItem('deviceId', bioDevId);
 
-                    showToast(`Scanned: Welcome ${matched.type.toUpperCase()} ${matched.targetId}!`);
-                    executeBiometricLogin(matched.targetId, matched.type);
+                    showToast(`Verifying ${matched.type.toUpperCase()} ${matched.targetId}...`);
+                    await executeBiometricLogin(matched.targetId, matched.type);
                 } else {
                     showMsg("Scanned biometrics did not match any registered user on this device.");
                 }
@@ -5796,13 +5806,57 @@
             }
         }
 
-        function executeBiometricLogin(targetId, type) {
+        async function executeBiometricLogin(targetId, type) {
+            const devId = getDeviceId();
             if (type === 'admin') {
+                let claimRes;
+                try {
+                    claimRes = await callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent });
+                } catch (err) {
+                    lockApp();
+                    blinkCalcDisplay();
+                    if (err && err.code === "EMERGENCY_WIPE") {
+                        alert("Network error. Please refresh.");
+                    } else {
+                        showMsg((err && err.message) || "Unable to reach server. Please try again.");
+                    }
+                    return;
+                }
+
+                if (claimRes && claimRes.canTakeover) {
+                    const ok = confirm((claimRes.message || "Admin session is active on another device. Take over?") + "\n\nTap OK to take over this session now.");
+                    if (!ok) {
+                        lockApp();
+                        return;
+                    }
+                    try {
+                        claimRes = await callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent, forceTakeover: true });
+                        if (claimRes && claimRes.success) {
+                            reportSecurityEvent('ADMIN_TAKEOVER', 'ALERT', `Admin ${targetId} took over active session`);
+                            showToast(`Took over Admin ${targetId} session.`);
+                        }
+                    } catch (e) {
+                        lockApp();
+                        blinkCalcDisplay();
+                        showMsg((e && e.message) || "Takeover failed.");
+                        return;
+                    }
+                }
+
+                if (!claimRes || !claimRes.success) {
+                    const errorMsg = (claimRes && claimRes.message) || "Access Denied.";
+                    lockApp();
+                    blinkCalcDisplay();
+                    showMsg(errorMsg);
+                    return;
+                }
+
                 isAdmin = true;
                 activeAdminId = targetId;
                 document.documentElement.style.setProperty('--primary', '#ef4444');
                 document.documentElement.style.setProperty('--primary-text', '#ffffff');
                 document.getElementById('admin-title').innerText = `Admin Portal (Admin ${targetId})`;
+                showToast(`Welcome ADMIN ${targetId}!`);
 
                 const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
                 const openingCash = localStorage.getItem(todayKey);
@@ -5813,42 +5867,53 @@
                     renderAdminPortal();
                     document.getElementById('view-calc').classList.remove('active');
                     document.getElementById('view-admin').classList.add('active');
+                    syncWithServer();
                 }
 
                 window.history.pushState({ view: 'admin' }, '');
-
-                const devId = getDeviceId();
-                callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent }).then(async (claimRes) => {
-                    if (claimRes && claimRes.canTakeover) {
-                        const ok = confirm((claimRes.message || "Admin session is active on another device. Take over?") + "\n\nTap OK to take over this session now.");
-                        if (ok) {
-                            try {
-                                const forced = await callGas('CLAIM_SESSION', { targetId, type: 'admin', deviceId: devId, userAgent: navigator.userAgent, forceTakeover: true });
-                                if (forced && forced.success) {
-                                    reportSecurityEvent('ADMIN_TAKEOVER', 'ALERT', `Admin ${targetId} took over active session`);
-                                    showToast(`Took over Admin ${targetId} session.`);
-                                    return;
-                                }
-                                throw new Error((forced && forced.message) || "Takeover failed.");
-                            } catch (e) {
-                                document.getElementById('opening-cash-modal').classList.remove('active');
-                                lockApp();
-                                blinkCalcDisplay();
-                                showMsg(e.message || "Takeover failed.");
-                                return;
-                            }
-                        }
-                    }
-                    if (!claimRes || !claimRes.success) {
-                        const errorMsg = (claimRes && claimRes.message) || "Access Denied.";
-                        document.getElementById('opening-cash-modal').classList.remove('active');
-                        lockApp();
-                        blinkCalcDisplay();
-                        showMsg(errorMsg);
-                    }
-                });
             } else {
                 const counterId = targetId;
+                try {
+                    await fetchCounterPermissions();
+                } catch (err) {
+                    lockApp();
+                    blinkCalcDisplay();
+                    if (err && err.code === "EMERGENCY_WIPE") {
+                        alert("Network error. Please refresh.");
+                    } else {
+                        showMsg((err && err.message) || "Unable to verify counter access.");
+                    }
+                    return;
+                }
+
+                if (counterPermissions && counterPermissions[counterId] === false) {
+                    lockApp();
+                    blinkCalcDisplay();
+                    showMsg(`🔒 Counter ${counterId} Access is locked by Admin.`);
+                    return;
+                }
+
+                let claimRes;
+                try {
+                    claimRes = await callGas('CLAIM_SESSION', { targetId: counterId, type: 'counter', deviceId: devId, userAgent: navigator.userAgent });
+                } catch (err) {
+                    lockApp();
+                    blinkCalcDisplay();
+                    if (err && err.code === "EMERGENCY_WIPE") {
+                        alert("Network error. Please refresh.");
+                    } else {
+                        showMsg((err && err.message) || "Access Denied.");
+                    }
+                    return;
+                }
+
+                if (!claimRes || !claimRes.success) {
+                    lockApp();
+                    blinkCalcDisplay();
+                    showMsg((claimRes && claimRes.message) || "Access Denied.");
+                    return;
+                }
+
                 activeCounterId = counterId;
                 localStorage.setItem('activeSessionCounter', counterId);
 
@@ -5866,32 +5931,15 @@
 
                 const sessionLabel = counterId === '0' ? 'Collections (Counter 0)' : `Session Active (Counter ${counterId})`;
                 document.getElementById('session-header-title').innerText = sessionLabel;
+                showToast(`Welcome COUNTER ${counterId}!`);
                 renderList();
 
                 document.getElementById('view-calc').classList.remove('active');
                 document.getElementById('view-main').classList.add('active');
                 setupWorkspaceUI();
+                syncWithServer();
 
                 window.history.pushState({ view: 'main' }, '');
-
-                fetchCounterPermissions().then(() => {
-                    if (counterPermissions && counterPermissions[counterId] === false) {
-                        lockApp();
-                        blinkCalcDisplay();
-                        showMsg(`🔒 Counter ${counterId} Access is locked by Admin.`);
-                        return;
-                    }
-
-                    const devId = getDeviceId();
-                    callGas('CLAIM_SESSION', { targetId: counterId, type: 'counter', deviceId: devId, userAgent: navigator.userAgent }).then((claimRes) => {
-                        if (!claimRes || !claimRes.success) {
-                            lockApp();
-                            blinkCalcDisplay();
-                            const errorMsg = (claimRes && claimRes.message) || `Access Denied.`;
-                            showMsg(errorMsg);
-                        }
-                    });
-                });
             }
         }
 
@@ -8230,6 +8278,7 @@
                 document.getElementById('view-calc').classList.remove('active');
                 document.getElementById('view-admin').classList.add('active');
                 document.getElementById('calc-display').innerText = "";
+                syncWithServer();
             } catch (err) {
                 console.error("Error in submitOpeningCash:", err);
                 alert("Error submitting opening cash: " + err.message + "\nStack: " + err.stack);
