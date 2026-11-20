@@ -2869,6 +2869,154 @@
             animation: blink-red 0.35s ease-in-out;
             color: #ef4444 !important;
         }
+
+        /* ── Loyverse-Style Cash Register KOT & Tender POS ─────────────────── */
+        .cash-pos-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 12px;
+            width: 100%;
+            align-items: start;
+        }
+        @media (max-width: 820px) {
+            .cash-pos-grid { grid-template-columns: 1fr; }
+        }
+        .kot-list-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 68vh;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+        .kot-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 11px 12px;
+            border-radius: 12px;
+            background: var(--ui-card);
+            border: 1.5px solid var(--ui-border);
+            border-left-width: 5px;
+            cursor: pointer;
+            transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+        }
+        .kot-card:active { transform: scale(0.99); }
+        .kot-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.11);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.22);
+        }
+        .kot-card.c1 { border-left-color: #f8fafc; }
+        .kot-card.c2 { border-left-color: #eab308; }
+        .kot-card.c3 { border-left-color: #4ade80; }
+        .kot-card.c4 { border-left-color: #06b6d4; }
+        .kot-card.c5 { border-left-color: #14b8a6; }
+        .kot-card.c0 { border-left-color: #a855f7; }
+        .kot-thumb {
+            width: 44px;
+            height: 52px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--ui-border);
+            flex-shrink: 0;
+            background: var(--ui-pill-bg);
+        }
+        .pos-register-card {
+            position: sticky;
+            top: 66px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 14px !important;
+        }
+        .pos-quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .pos-quick-chip {
+            padding: 9px 4px;
+            border-radius: 9px;
+            border: 1px solid var(--ui-border);
+            background: var(--ui-card-inner);
+            color: var(--ui-text);
+            font-size: 12px;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            cursor: pointer;
+            text-align: center;
+        }
+        .pos-quick-chip.exact {
+            background: rgba(16, 185, 129, 0.16);
+            border-color: rgba(16, 185, 129, 0.45);
+            color: var(--ui-pos);
+        }
+        .pos-numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+        }
+        .pos-num-btn {
+            height: 50px;
+            border-radius: 11px;
+            border: 1px solid var(--ui-border);
+            background: var(--ui-card-inner);
+            color: var(--ui-text);
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .pos-num-btn:active { background: rgba(255,255,255,0.16); transform: scale(0.97); }
+        .pos-charge-btn {
+            width: 100%;
+            padding: 15px 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.32);
+        }
+        .pos-charge-btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+        .pos-charge-btn.refund { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3); }
+        .manual-dock-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+        }
+        @media (max-width: 520px) {
+            .manual-dock-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .manual-ctr-tile {
+            padding: 10px 4px;
+            border-radius: 10px;
+            border: 1px solid var(--ui-border);
+            background: var(--ui-card-inner);
+            color: var(--ui-text);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+        }
+        .manual-ctr-tile.refund-tile {
+            background: rgba(239, 68, 68, 0.14);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: var(--ui-neg);
+        }
     </style>
 </head>
 
@@ -3153,6 +3301,9 @@
                     <div class="admin-tab active" onclick="switchAdminTab('active')">
                         <span class="material-icons" style="font-size:16px;">sensors</span> Active Sessions
                     </div>
+                    <div class="admin-tab" id="tab-admin-cashier" onclick="switchAdminTab('cashier')">
+                        <span class="material-icons" style="font-size:16px; color:var(--ui-pos);">point_of_sale</span> Cash Register KOT <span id="cashier-menu-badge" class="kpi-badge" style="margin-left:auto; display:none;">0</span>
+                    </div>
                     <div class="admin-tab" onclick="switchAdminTab('archived')">
                         <span class="material-icons" style="font-size:16px;">inventory_2</span> Archived Logs
                     </div>
@@ -3228,6 +3379,139 @@
                 </div>
             </div>
             <!-- Active counter groups will load here -->
+        </div>
+        <!-- Loyverse-Style Cash Register & Live KOT Queue -->
+        <div class="admin-content" id="admin-cashier-content"
+            style="display: none; flex-direction: column; gap: 10px; width: 100%;">
+            <div class="glass-card" style="padding:10px 12px !important; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <button class="sec-filter-chip active" id="kot-tab-pending" onclick="setCashierSubTab('pending')">Pending KOT (<span id="kot-cnt-pending">0</span>)</button>
+                    <button class="sec-filter-chip" id="kot-tab-collected" onclick="setCashierSubTab('collected')">Collected (<span id="kot-cnt-collected">0</span> · Rs <span id="kot-sum-collected">0</span>)</button>
+                    <button class="sec-filter-chip" id="kot-tab-setup" onclick="setCashierSubTab('setup')">⚙ Printer &amp; Realtime</button>
+                </div>
+                <div style="display:flex; gap:8px; align-items:center; font-size:11px; font-weight:700;">
+                    <span id="kot-live-status" class="kpi-badge" style="color:var(--ui-muted);">Sheets Sync</span>
+                    <button class="glass-btn" onclick="triggerNativeDrawerKickOnly()" title="Pop cash drawer manually without charging" style="padding:5px 10px !important; font-size:11px !important;">
+                        <span class="material-icons" style="font-size:14px;">inbox</span> Open Drawer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Printer & Firebase Realtime Config Panel (toggled via ⚙ Printer & Realtime) -->
+            <div class="glass-card" id="kot-setup-panel" style="display:none; flex-direction:column; gap:10px; padding:14px !important;">
+                <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--ui-text);">Xprinter Wi-Fi &amp; Realtime KOT Setup</div>
+                <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:8px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Xprinter Wi-Fi IP Address</label>
+                        <input type="text" id="inp-xprinter-ip" class="input-field" placeholder="192.168.1.100" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">TCP Port</label>
+                        <input type="number" id="inp-xprinter-port" class="input-field" value="9100" style="padding:8px 10px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">On Charge</label>
+                        <select id="inp-xprinter-mode" style="padding:8px 10px; font-size:12px; border-radius:9px; width:100%;">
+                            <option value="kick_only">Drawer Kick Only (0 paper)</option>
+                            <option value="kick_token">Kick + Mini Cash Token</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Firebase Realtime DB URL (for ~150ms instant KOT push across devices)</label>
+                    <input type="url" id="inp-kot-firebase-url" class="input-field" placeholder="https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app" style="padding:8px 10px; font-size:12.5px;">
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="glass-btn-primary" onclick="saveCashRegisterConfig()">Save Settings</button>
+                    <button class="glass-btn" onclick="testXprinterConnection()">Test Xprinter &amp; Kick Drawer</button>
+                </div>
+            </div>
+
+            <!-- Main Loyverse Split-Screen Register -->
+            <div class="cash-pos-grid" id="kot-main-grid">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <!-- Loyverse Quick Manual Counter / Orphan Refund Dock -->
+                    <div class="glass-card" style="padding:10px !important;">
+                        <div style="font-size:10px; font-weight:800; color:var(--ui-muted); text-transform:uppercase; margin-bottom:6px;">Quick Manual Cash-In / Orphan Refund (Loyverse Mode)</div>
+                        <div class="manual-dock-grid">
+                            <button class="manual-ctr-tile" onclick="startManualCashRegister('1', false)">C1</button>
+                            <button class="manual-ctr-tile" onclick="startManualCashRegister('2', false)">C2</button>
+                            <button class="manual-ctr-tile" onclick="startManualCashRegister('3', false)">C3</button>
+                            <button class="manual-ctr-tile" onclick="startManualCashRegister('4', false)">C4</button>
+                            <button class="manual-ctr-tile" onclick="startManualCashRegister('5', false)">C5</button>
+                            <button class="manual-ctr-tile refund-tile" onclick="startManualCashRegister('1', true)">− Refund</button>
+                        </div>
+                    </div>
+
+                    <!-- Live Pending / Collected KOT Queue -->
+                    <div class="kot-list-wrap" id="kot-queue-list"></div>
+                </div>
+
+                <!-- Right Column: Loyverse Tender & Charge Pad -->
+                <div class="glass-card pos-register-card" id="pos-tender-panel">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                        <div>
+                            <div id="pos-sel-title" style="font-size:14px; font-weight:800; color:var(--ui-text);">Select a KOT or Counter</div>
+                            <div id="pos-sel-sub" style="font-size:11px; color:var(--ui-muted);">Tap any pending cash bill on the left</div>
+                        </div>
+                        <button class="glass-btn-danger" id="pos-btn-flag" onclick="flagSelectedKotMismatch()" style="display:none; padding:5px 9px !important; font-size:11px !important;" title="Flag cash mismatch for Admin">⚠ Mismatch</button>
+                    </div>
+
+                    <!-- Manual mode counter selector + note (only visible for manual cash-in / orphan refund) -->
+                    <div id="pos-manual-fields" style="display:none; gap:6px; flex-wrap:wrap;">
+                        <select id="pos-manual-ctr" style="padding:7px 9px; font-size:12px; border-radius:8px; font-weight:700;">
+                            <option value="1">Counter 1</option>
+                            <option value="2">Counter 2</option>
+                            <option value="3">Counter 3</option>
+                            <option value="4">Counter 4</option>
+                            <option value="5">Counter 5</option>
+                            <option value="0">Counter 0 (Coll)</option>
+                        </select>
+                        <input type="text" id="pos-manual-note" class="input-field" placeholder="Refund / manual note (optional)" style="flex:1; padding:7px 9px; font-size:12px;">
+                    </div>
+
+                    <!-- Due vs Tendered vs Change Display -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div class="glass-subcard" style="padding:10px !important;">
+                            <div style="font-size:10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;" id="pos-due-label">BILL DUE</div>
+                            <div id="pos-due-val" style="font-size:22px; font-weight:900; color:var(--ui-text); font-variant-numeric:tabular-nums;">Rs 0</div>
+                        </div>
+                        <div class="glass-subcard" style="padding:10px !important; border-color:rgba(16,185,129,0.4);">
+                            <div style="font-size:10px; font-weight:700; color:var(--ui-pos); text-transform:uppercase;" id="pos-tender-label">CASH RECEIVED</div>
+                            <div id="pos-tender-val" style="font-size:22px; font-weight:900; color:var(--ui-pos); font-variant-numeric:tabular-nums;">Rs 0</div>
+                        </div>
+                    </div>
+
+                    <div id="pos-change-banner" style="padding:10px 12px; border-radius:10px; background:rgba(16,185,129,0.14); border:1px solid rgba(16,185,129,0.35); display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--ui-pos);" id="pos-change-label">CHANGE TO RETURN</span>
+                        <span style="font-size:22px; font-weight:900; color:var(--ui-pos); font-variant-numeric:tabular-nums;" id="pos-change-val">Rs 0</span>
+                    </div>
+
+                    <!-- Smart Quick-Cash Chips -->
+                    <div class="pos-quick-grid" id="pos-quick-chips"></div>
+
+                    <!-- Tactile Numpad -->
+                    <div class="pos-numpad">
+                        <button class="pos-num-btn" onclick="posPadInput('7')">7</button>
+                        <button class="pos-num-btn" onclick="posPadInput('8')">8</button>
+                        <button class="pos-num-btn" onclick="posPadInput('9')">9</button>
+                        <button class="pos-num-btn" onclick="posPadInput('4')">4</button>
+                        <button class="pos-num-btn" onclick="posPadInput('5')">5</button>
+                        <button class="pos-num-btn" onclick="posPadInput('6')">6</button>
+                        <button class="pos-num-btn" onclick="posPadInput('1')">1</button>
+                        <button class="pos-num-btn" onclick="posPadInput('2')">2</button>
+                        <button class="pos-num-btn" onclick="posPadInput('3')">3</button>
+                        <button class="pos-num-btn" onclick="posPadInput('C')" style="color:var(--ui-neg); font-size:15px;">CLR</button>
+                        <button class="pos-num-btn" onclick="posPadInput('0')">0</button>
+                        <button class="pos-num-btn" onclick="posPadInput('00')" style="font-size:16px;">00</button>
+                    </div>
+
+                    <button class="pos-charge-btn" id="pos-btn-charge" onclick="chargeSelectedKot()" disabled>
+                        <span class="material-icons" style="font-size:20px;">payments</span>
+                        <span id="pos-charge-label">CHARGE · OPEN DRAWER</span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="admin-content" id="admin-archived-content"
             style="display: none; flex-direction: column; gap: 12px; width: 100%;">
@@ -4747,6 +5031,11 @@
                 tx.onerror = reject;
             });
 
+            // Background push to Firebase Realtime KOT (instant < 150ms to Cash Counter) if cash entry
+            if (Number(entry.cash || 0) !== 0 && typeof pushKotToRealtime === 'function') {
+                pushKotToRealtime(entry);
+            }
+
             // Background push to central server for multi-device synchronization
             callGas('SYNC_ENTRIES', { data: entry })
                 .then(async () => {
@@ -5942,6 +6231,7 @@
                     renderAdminPortal();
                     document.getElementById('view-calc').classList.remove('active');
                     document.getElementById('view-admin').classList.add('active');
+                    if (new URLSearchParams(window.location.search).get('mode') === 'cashier') switchAdminTab('cashier');
                     syncWithServer();
                 }
 
@@ -7330,6 +7620,7 @@
         let activeAdminTab = 'active';
         const ADMIN_TAB_LABELS = {
             active: 'Active Sessions',
+            cashier: 'Cash Register KOT',
             archived: 'Archived Logs',
             eod: 'EOD Closing',
             reports: 'Daily Report',
@@ -7369,6 +7660,8 @@
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
 
             document.getElementById('admin-active-content').style.display = 'none';
+            const cashRegEl = document.getElementById('admin-cashier-content');
+            if (cashRegEl) cashRegEl.style.display = 'none';
             document.getElementById('admin-archived-content').style.display = 'none';
             document.getElementById('admin-eod-content').style.display = 'none';
             document.getElementById('admin-reports-content').style.display = 'none';
@@ -7385,8 +7678,15 @@
                 document.querySelectorAll('.admin-tab')[0].classList.add('active');
                 document.getElementById('admin-active-content').style.display = 'flex';
                 renderAdminActive();
+            } else if (tab === 'cashier') {
+                const tEl = document.getElementById('tab-admin-cashier');
+                if (tEl) tEl.classList.add('active');
+                const crWrap = document.getElementById('admin-cashier-content');
+                if (crWrap) crWrap.style.display = 'flex';
+                startKotRealtimeListener();
+                renderCashRegisterKot();
             } else if (tab === 'archived') {
-                document.querySelectorAll('.admin-tab')[1].classList.add('active');
+                document.querySelectorAll('.admin-tab')[2].classList.add('active');
                 document.getElementById('admin-archived-content').style.display = 'flex';
                 renderAdminArchived();
 
@@ -7407,7 +7707,7 @@
                     executeArchiveSearchQuiet();
                 });
             } else if (tab === 'eod') {
-                document.querySelectorAll('.admin-tab')[2].classList.add('active');
+                document.querySelectorAll('.admin-tab')[3].classList.add('active');
                 document.getElementById('admin-eod-content').style.display = 'flex';
 
                 selectedEodDate = getLocalTodayStr();
@@ -7424,7 +7724,7 @@
                     renderAdminEOD();
                 });
             } else if (tab === 'reports') {
-                document.querySelectorAll('.admin-tab')[3].classList.add('active');
+                document.querySelectorAll('.admin-tab')[4].classList.add('active');
                 document.getElementById('admin-reports-content').style.display = 'flex';
                 const dateInput = document.getElementById('reports-date');
                 if (dateInput && !dateInput.value) {
@@ -7434,7 +7734,7 @@
                     renderAdminReports();
                 });
             } else if (tab === 'analytics') {
-                document.querySelectorAll('.admin-tab')[4].classList.add('active');
+                document.querySelectorAll('.admin-tab')[5].classList.add('active');
                 const anaEl = document.getElementById('admin-analytics-content');
                 if (anaEl) anaEl.style.display = 'flex';
                 if (!document.getElementById('ana-from-date').value) {
@@ -7443,12 +7743,12 @@
                     renderAdminAnalytics();
                 }
             } else if (tab === 'cheques') {
-                document.querySelectorAll('.admin-tab')[5].classList.add('active');
+                document.querySelectorAll('.admin-tab')[6].classList.add('active');
                 const chqEl = document.getElementById('admin-cheques-content');
                 if (chqEl) chqEl.style.display = 'flex';
                 renderAdminCheques();
             } else if (tab === 'credits') {
-                document.querySelectorAll('.admin-tab')[6].classList.add('active');
+                document.querySelectorAll('.admin-tab')[7].classList.add('active');
                 const crEl = document.getElementById('admin-credits-content');
                 if (crEl) crEl.style.display = 'flex';
                 renderAdminCredits();
@@ -7457,7 +7757,7 @@
                     switchAdminTab('active');
                     return;
                 }
-                document.querySelectorAll('.admin-tab')[7].classList.add('active');
+                document.querySelectorAll('.admin-tab')[8].classList.add('active');
                 const devEl = document.getElementById('admin-devices-content');
                 if (devEl) devEl.style.display = 'flex';
                 renderAdminDevices();
@@ -7468,7 +7768,9 @@
             try {
                 renderAdminActive();
                 renderAdminArchived();
-                if (activeAdminTab === 'eod') {
+                if (activeAdminTab === 'cashier') {
+                    renderCashRegisterKot();
+                } else if (activeAdminTab === 'eod') {
                     renderAdminEOD();
                 } else if (activeAdminTab === 'archived') {
                     handleEodDateChange();
@@ -8355,6 +8657,7 @@
                 document.getElementById('view-calc').classList.remove('active');
                 document.getElementById('view-admin').classList.add('active');
                 document.getElementById('calc-display').innerText = "";
+                if (new URLSearchParams(window.location.search).get('mode') === 'cashier') switchAdminTab('cashier');
                 syncWithServer();
             } catch (err) {
                 console.error("Error in submitOpeningCash:", err);
@@ -11504,6 +11807,540 @@
             a.click();
             URL.revokeObjectURL(url);
             showToast(`Exported ${list.length} rows to CSV!`);
+        }
+
+        // ============================================================
+        // LOYVERSE-STYLE CASH REGISTER KOT + FIREBASE SSE + XPRINTER BRIDGE
+        // ============================================================
+        let cashierSubTab = 'pending';
+        let selectedKotId = null;
+        let manualCashMode = null; // null | { counterId, isRefund }
+        let posTenderStr = '';
+        let kotEventSource = null;
+
+        function getCashRegisterConfig() {
+            return {
+                firebaseUrl: (localStorage.getItem('kotFirebaseUrl') || '').trim().replace(/\/+$/, ''),
+                printerIp: (localStorage.getItem('xprinterIp') || '').trim(),
+                printerPort: parseInt(localStorage.getItem('xprinterPort') || '9100', 10) || 9100,
+                printerMode: localStorage.getItem('xprinterMode') || 'kick_only'
+            };
+        }
+
+        function saveCashRegisterConfig() {
+            const fbUrl = (document.getElementById('inp-kot-firebase-url')?.value || '').trim().replace(/\/+$/, '');
+            const ip = (document.getElementById('inp-xprinter-ip')?.value || '').trim();
+            const port = parseInt(document.getElementById('inp-xprinter-port')?.value || '9100', 10) || 9100;
+            const mode = document.getElementById('inp-xprinter-mode')?.value || 'kick_only';
+            localStorage.setItem('kotFirebaseUrl', fbUrl);
+            localStorage.setItem('xprinterIp', ip);
+            localStorage.setItem('xprinterPort', String(port));
+            localStorage.setItem('xprinterMode', mode);
+            showToast('Cash Register & Xprinter settings saved!');
+            startKotRealtimeListener(true);
+            setCashierSubTab('pending');
+        }
+
+        function playKotChime() {
+            try {
+                if (window.AndroidCashBridge && typeof window.AndroidCashBridge.playChime === 'function') {
+                    window.AndroidCashBridge.playChime();
+                    return;
+                }
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ac = new AudioCtx();
+                const osc = ac.createOscillator();
+                const g = ac.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ac.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1320, ac.currentTime + 0.12);
+                g.gain.setValueAtTime(0.18, ac.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.25);
+                osc.connect(g);
+                g.connect(ac.destination);
+                osc.start();
+                osc.stop(ac.currentTime + 0.26);
+            } catch (e) {}
+        }
+
+        function triggerNativeDrawerKickOnly() {
+            const cfg = getCashRegisterConfig();
+            if (window.AndroidCashBridge && typeof window.AndroidCashBridge.openDrawer === 'function') {
+                if (!cfg.printerIp) { showMsg('Set your Xprinter Wi-Fi IP in ⚙ Printer & Realtime first.'); return; }
+                const res = window.AndroidCashBridge.openDrawer(cfg.printerIp, cfg.printerPort);
+                showToast(res === 'OK' ? 'Cash drawer opened!' : ('Drawer error: ' + res));
+            } else {
+                showToast('Drawer kick ready (install Android Cash Register APK on Samsung Tab to kick Wi-Fi Xprinter)');
+            }
+        }
+
+        function testXprinterConnection() {
+            saveCashRegisterConfig();
+            const cfg = getCashRegisterConfig();
+            if (!cfg.printerIp) { showMsg('Enter your Xprinter Wi-Fi IP (e.g. 192.168.1.100).'); return; }
+            if (window.AndroidCashBridge && typeof window.AndroidCashBridge.openDrawer === 'function') {
+                const res = window.AndroidCashBridge.openDrawer(cfg.printerIp, cfg.printerPort);
+                if (res === 'OK') showToast(`Xprinter ${cfg.printerIp}:${cfg.printerPort} OK — Drawer kicked!`);
+                else showMsg(`Could not reach Xprinter at ${cfg.printerIp}:${cfg.printerPort}:\n${res}`);
+            } else {
+                showMsg(`Settings saved (${cfg.printerIp}:${cfg.printerPort}).\nOpen this app inside the Android Cash Register APK on your Samsung Tab to test the Wi-Fi Xprinter.`);
+            }
+        }
+
+        // Fire-and-forget instant KOT push (~150ms) to Firebase Realtime DB
+        function pushKotToRealtime(entry) {
+            const cfg = getCashRegisterConfig();
+            if (!cfg.firebaseUrl || !entry || !entry.id) return;
+            const dKey = entry.date || getLocalTodayStr();
+            const kotPayload = {
+                id: String(entry.id),
+                counterId: String(entry.counterId || '1'),
+                date: dKey,
+                timestamp: entry.timestamp || formatCanonicalTimestamp(),
+                cash: Number(entry.cash || 0),
+                qr: Number(entry.qr || 0),
+                isVoid: !!entry.isVoid,
+                isFastLane: !!entry.isFastLane,
+                remarks: entry.remarks || '',
+                customerName: entry.customerName || '',
+                cashRegister: entry.cashRegister || null,
+                updatedAt: Date.now()
+            };
+            fetch(`${cfg.firebaseUrl}/kot/${dKey}/${encodeURIComponent(String(entry.id))}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(kotPayload)
+            }).catch(() => {});
+        }
+
+        function startKotRealtimeListener(forceRestart = false) {
+            const cfg = getCashRegisterConfig();
+            const badge = document.getElementById('kot-live-status');
+            if (!cfg.firebaseUrl || typeof EventSource === 'undefined') {
+                if (badge) { badge.innerText = 'Sheets Sync (4s)'; badge.style.color = 'var(--ui-muted)'; }
+                return;
+            }
+            if (kotEventSource && !forceRestart) return;
+            if (kotEventSource) { try { kotEventSource.close(); } catch (e) {} kotEventSource = null; }
+
+            const url = `${cfg.firebaseUrl}/kot/${getLocalTodayStr()}.json`;
+            try {
+                kotEventSource = new EventSource(url);
+                if (badge) { badge.innerText = '● LIVE KOT'; badge.style.color = 'var(--ui-pos)'; }
+                const ingest = (rawData) => {
+                    if (!rawData) return;
+                    let changed = false;
+                    let hasBrandNewPending = false;
+                    const items = (rawData.id && rawData.counterId !== undefined) ? [rawData] : Object.values(rawData);
+                    items.forEach(k => {
+                        if (!k || !k.id) return;
+                        const idStr = String(k.id);
+                        const idx = entries.findIndex(e => String(e.id) === idStr);
+                        if (idx === -1) {
+                            entries.push({
+                                id: idStr,
+                                counterId: String(k.counterId || '1'),
+                                date: k.date || getLocalTodayStr(),
+                                timestamp: k.timestamp || formatCanonicalTimestamp(),
+                                cash: Number(k.cash || 0),
+                                qr: Number(k.qr || 0),
+                                ips: 0, pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0,
+                                totalIn: Number(k.cash || 0) + Number(k.qr || 0),
+                                totalCredit: 0,
+                                isVoid: !!k.isVoid,
+                                isFastLane: !!k.isFastLane,
+                                remarks: k.remarks || '',
+                                customerName: k.customerName || '',
+                                images: [],
+                                sessionStatus: 'active',
+                                cashRegister: k.cashRegister || null,
+                                synced: true
+                            });
+                            changed = true;
+                            if (!k.isVoid && Number(k.cash || 0) > 0 && !(k.cashRegister && k.cashRegister.status === 'collected')) {
+                                hasBrandNewPending = true;
+                            }
+                        } else if (k.cashRegister && !entries[idx].cashRegister) {
+                            entries[idx].cashRegister = k.cashRegister;
+                            changed = true;
+                        }
+                    });
+                    if (changed) {
+                        entries.sort(compareEntriesChrono);
+                        if (hasBrandNewPending) playKotChime();
+                        if (activeAdminTab === 'cashier') renderCashRegisterKot();
+                        else updateCashierMenuBadge();
+                    }
+                };
+                kotEventSource.addEventListener('put', (ev) => {
+                    try { const msg = JSON.parse(ev.data); if (msg && msg.data) ingest(msg.data); } catch (e) {}
+                });
+                kotEventSource.addEventListener('patch', (ev) => {
+                    try { const msg = JSON.parse(ev.data); if (msg && msg.data) ingest(msg.data); } catch (e) {}
+                });
+                kotEventSource.onerror = () => {
+                    if (badge) { badge.innerText = 'Reconnecting…'; badge.style.color = 'var(--ui-warn)'; }
+                };
+            } catch (e) {}
+        }
+
+        function setCashierSubTab(sub) {
+            cashierSubTab = sub;
+            ['pending', 'collected', 'setup'].forEach(t => {
+                const btn = document.getElementById('kot-tab-' + t);
+                if (btn) btn.classList.toggle('active', t === sub);
+            });
+            const setupPanel = document.getElementById('kot-setup-panel');
+            const mainGrid = document.getElementById('kot-main-grid');
+            if (setupPanel) setupPanel.style.display = (sub === 'setup') ? 'flex' : 'none';
+            if (mainGrid) mainGrid.style.display = (sub === 'setup') ? 'none' : 'grid';
+            if (sub === 'setup') {
+                const cfg = getCashRegisterConfig();
+                const ipEl = document.getElementById('inp-xprinter-ip'); if (ipEl) ipEl.value = cfg.printerIp;
+                const ptEl = document.getElementById('inp-xprinter-port'); if (ptEl) ptEl.value = cfg.printerPort;
+                const mdEl = document.getElementById('inp-xprinter-mode'); if (mdEl) mdEl.value = cfg.printerMode;
+                const fbEl = document.getElementById('inp-kot-firebase-url'); if (fbEl) fbEl.value = cfg.firebaseUrl;
+            } else {
+                renderCashRegisterKot();
+            }
+        }
+
+        function getCashKotLists() {
+            const activeCash = entries
+                .filter(e => e.sessionStatus !== 'closed' && !e.isVoid && Number(e.cash || 0) !== 0)
+                .sort(compareEntriesChrono);
+            const pending = activeCash.filter(e => Number(e.cash || 0) > 0 && !(e.cashRegister && e.cashRegister.status === 'collected')).reverse();
+            const collected = activeCash.filter(e => Number(e.cash || 0) < 0 || (e.cashRegister && e.cashRegister.status === 'collected')).reverse();
+            return { pending, collected };
+        }
+
+        function updateCashierMenuBadge() {
+            const { pending } = getCashKotLists();
+            const badge = document.getElementById('cashier-menu-badge');
+            if (badge) {
+                badge.innerText = String(pending.length);
+                badge.style.display = pending.length > 0 ? 'inline-flex' : 'none';
+            }
+        }
+
+        function buildQuickTenderOptions(due) {
+            const amt = Math.max(0, Math.round(due));
+            if (amt <= 0) return [];
+            const opts = new Set([amt]);
+            const steps = [100, 500, 1000, 5000];
+            steps.forEach(s => {
+                const rounded = Math.ceil(amt / s) * s;
+                if (rounded > amt) opts.add(rounded);
+            });
+            if (opts.size < 4) opts.add(amt + 500);
+            if (opts.size < 4) opts.add(amt + 1000);
+            return Array.from(opts).sort((a, b) => a - b).slice(0, 4);
+        }
+
+        function renderCashRegisterKot() {
+            const { pending, collected } = getCashKotLists();
+            updateCashierMenuBadge();
+
+            const cntPend = document.getElementById('kot-cnt-pending');
+            const cntColl = document.getElementById('kot-cnt-collected');
+            const sumColl = document.getElementById('kot-sum-collected');
+            if (cntPend) cntPend.innerText = String(pending.length);
+            if (cntColl) cntColl.innerText = String(collected.length);
+            const netCollected = collected.reduce((s, e) => s + Number(e.cash || 0), 0);
+            if (sumColl) sumColl.innerText = netCollected.toLocaleString();
+
+            // Build per-counter S.N map for human-readable refs
+            const snMap = {};
+            const byCtr = {};
+            entries.filter(e => e.sessionStatus !== 'closed').sort(compareEntriesChrono).forEach(e => {
+                const cid = String(e.counterId || '1');
+                byCtr[cid] = (byCtr[cid] || 0) + 1;
+                snMap[String(e.id)] = byCtr[cid];
+            });
+
+            // Auto-select first pending KOT if nothing selected and not in manual mode
+            if (!manualCashMode && cashierSubTab === 'pending') {
+                const stillPending = pending.find(e => String(e.id) === String(selectedKotId));
+                if (!stillPending) {
+                    selectedKotId = pending.length > 0 ? String(pending[0].id) : null;
+                    posTenderStr = '';
+                }
+            }
+
+            const listEl = document.getElementById('kot-queue-list');
+            if (listEl) {
+                const showList = cashierSubTab === 'collected' ? collected : pending;
+                if (showList.length === 0) {
+                    listEl.innerHTML = `<div class="glass-card" style="text-align:center; padding:32px; color:var(--ui-muted); font-size:13px;">${cashierSubTab === 'collected' ? 'No cash collected yet today.' : '✅ All caught up! No pending cash KOTs.'}</div>`;
+                } else {
+                    listEl.innerHTML = showList.map(e => {
+                        const cid = String(e.counterId || '1');
+                        const ref = formatEntryRef(e, snMap[String(e.id)] || 1);
+                        const shortTime = (e.timestamp || '').split(' ')[0] || '—';
+                        const isSel = !manualCashMode && String(e.id) === String(selectedKotId);
+                        const hasPhoto = Array.isArray(e.images) && e.images.length > 0;
+                        const cashVal = Number(e.cash || 0);
+                        const isRefund = cashVal < 0;
+                        const cr = e.cashRegister || {};
+                        const thumbHtml = hasPhoto
+                            ? `<img class="kot-thumb" src="${e.images[0]}" onclick="event.stopPropagation(); openCaptureSheet('${e.id}')" onerror="loadImgFallback(this, '${e.images[0]}')" title="Tap to view bill photo">`
+                            : '';
+                        const checkHtml = cashierSubTab === 'collected'
+                            ? `<input type="checkbox" ${e.manualCheck ? 'checked' : ''} onclick="event.stopPropagation(); toggleManualCheck('${e.id}')" style="width:18px; height:18px; accent-color:#10b981; cursor:pointer;" title="Manual reconciliation tick">`
+                            : '';
+                        const subLine = cashierSubTab === 'collected'
+                            ? (isRefund ? `REFUND · ${escapeHtml(e.remarks || 'Cash Out')}` : `Recv Rs ${(cr.tendered || cashVal).toLocaleString()} · Chg Rs ${(cr.change || 0).toLocaleString()}`)
+                            : `${shortTime}${Number(e.qr || 0) > 0 ? ` · +QR ${Number(e.qr).toLocaleString()}` : ''}${e.remarks ? ' · ' + escapeHtml(e.remarks) : ''}`;
+
+                        return `
+                            <div class="kot-card c${cid} ${isSel ? 'selected' : ''}" onclick="selectKotEntry('${e.id}')">
+                                <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+                                    ${checkHtml}
+                                    ${thumbHtml}
+                                    <div style="min-width:0;">
+                                        <div style="display:flex; align-items:center; gap:6px;">
+                                            <span class="kpi-badge" style="font-weight:800;">C${cid}</span>
+                                            <span style="font-size:12.5px; font-weight:800; color:var(--ui-text);">${escapeHtml(ref)}</span>
+                                        </div>
+                                        <div style="font-size:11px; color:var(--ui-muted); margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${subLine}</div>
+                                    </div>
+                                </div>
+                                <div style="text-align:right; flex-shrink:0;">
+                                    <div style="font-size:18px; font-weight:900; color:${isRefund ? 'var(--ui-neg)' : 'var(--ui-pos)'}; font-variant-numeric:tabular-nums;">${isRefund ? '−' : ''}Rs ${Math.abs(cashVal).toLocaleString()}</div>
+                                    ${cashierSubTab === 'pending' ? `<div style="font-size:10px; font-weight:700; color:var(--ui-warn);">WAITING</div>` : `<div style="font-size:10px; font-weight:700; color:var(--ui-pos);">✓ DONE</div>`}
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+            }
+
+            renderPosTenderPanel(snMap);
+        }
+
+        function selectKotEntry(entryId) {
+            manualCashMode = null;
+            selectedKotId = String(entryId);
+            posTenderStr = '';
+            renderCashRegisterKot();
+        }
+
+        function startManualCashRegister(counterId, isRefund) {
+            selectedKotId = null;
+            manualCashMode = { counterId: String(counterId || '1'), isRefund: !!isRefund };
+            posTenderStr = '';
+            const sel = document.getElementById('pos-manual-ctr');
+            if (sel) sel.value = manualCashMode.counterId;
+            const noteEl = document.getElementById('pos-manual-note');
+            if (noteEl) noteEl.value = '';
+            renderCashRegisterKot();
+        }
+
+        function renderPosTenderPanel(snMap = {}) {
+            const titleEl = document.getElementById('pos-sel-title');
+            const subEl = document.getElementById('pos-sel-sub');
+            const flagBtn = document.getElementById('pos-btn-flag');
+            const manualWrap = document.getElementById('pos-manual-fields');
+            const dueLbl = document.getElementById('pos-due-label');
+            const dueVal = document.getElementById('pos-due-val');
+            const tenderLbl = document.getElementById('pos-tender-label');
+            const tenderVal = document.getElementById('pos-tender-val');
+            const chgBanner = document.getElementById('pos-change-banner');
+            const chgLbl = document.getElementById('pos-change-label');
+            const chgVal = document.getElementById('pos-change-val');
+            const chipsEl = document.getElementById('pos-quick-chips');
+            const chargeBtn = document.getElementById('pos-btn-charge');
+            const chargeLbl = document.getElementById('pos-charge-label');
+
+            const typedNum = parseFloat(posTenderStr) || 0;
+
+            if (manualCashMode) {
+                const isRef = manualCashMode.isRefund;
+                if (titleEl) titleEl.innerText = isRef ? 'Cash Out / Orphan Refund' : `Manual Cash-In (Counter ${manualCashMode.counterId})`;
+                if (subEl) subEl.innerText = isRef ? 'Enter refund amount to pay out from drawer' : 'Loyverse fallback — enters cash directly into register';
+                if (flagBtn) flagBtn.style.display = 'none';
+                if (manualWrap) manualWrap.style.display = 'flex';
+                if (dueLbl) dueLbl.innerText = isRef ? 'REFUND OUT' : 'MANUAL CASH';
+                if (dueVal) dueVal.innerText = `Rs ${typedNum.toLocaleString()}`;
+                if (tenderLbl) tenderLbl.innerText = 'ENTERED';
+                if (tenderVal) tenderVal.innerText = `Rs ${typedNum.toLocaleString()}`;
+                if (chgBanner) chgBanner.style.display = 'none';
+                if (chipsEl) chipsEl.innerHTML = [500, 1000, 2000, 5000].map(v => `<button class="pos-quick-chip" onclick="posQuickSet(${v})">${v.toLocaleString()}</button>`).join('');
+                if (chargeBtn) {
+                    chargeBtn.disabled = typedNum <= 0;
+                    chargeBtn.classList.toggle('refund', isRef);
+                }
+                if (chargeLbl) chargeLbl.innerText = isRef ? `PAY REFUND Rs ${typedNum.toLocaleString()} · OPEN DRAWER` : `RECORD Rs ${typedNum.toLocaleString()} · OPEN DRAWER`;
+                return;
+            }
+
+            if (manualWrap) manualWrap.style.display = 'none';
+            if (chgBanner) chgBanner.style.display = 'flex';
+            if (chargeBtn) chargeBtn.classList.remove('refund');
+
+            const entry = selectedKotId ? entries.find(e => String(e.id) === String(selectedKotId)) : null;
+            if (!entry) {
+                if (titleEl) titleEl.innerText = 'Ready for Next KOT';
+                if (subEl) subEl.innerText = 'Tap a pending bill or C1–C5 above';
+                if (flagBtn) flagBtn.style.display = 'none';
+                if (dueVal) dueVal.innerText = 'Rs 0';
+                if (tenderVal) tenderVal.innerText = 'Rs 0';
+                if (chgVal) chgVal.innerText = 'Rs 0';
+                if (chipsEl) chipsEl.innerHTML = '';
+                if (chargeBtn) chargeBtn.disabled = true;
+                if (chargeLbl) chargeLbl.innerText = 'CHARGE · OPEN DRAWER';
+                return;
+            }
+
+            const due = Math.max(0, Number(entry.cash || 0));
+            const ref = formatEntryRef(entry, snMap[String(entry.id)] || 1);
+            const tendered = posTenderStr === '' ? due : typedNum;
+            const change = tendered - due;
+            const isCollected = !!(entry.cashRegister && entry.cashRegister.status === 'collected');
+
+            if (titleEl) titleEl.innerText = `Counter ${entry.counterId} · ${ref}`;
+            if (subEl) subEl.innerText = `${entry.timestamp || ''}${entry.customerName ? ' · ' + entry.customerName : ''}`;
+            if (flagBtn) flagBtn.style.display = isCollected ? 'none' : 'inline-flex';
+            if (dueLbl) dueLbl.innerText = 'BILL DUE';
+            if (dueVal) dueVal.innerText = `Rs ${due.toLocaleString()}`;
+            if (tenderLbl) tenderLbl.innerText = 'CASH RECEIVED';
+            if (tenderVal) tenderVal.innerText = `Rs ${tendered.toLocaleString()}`;
+
+            if (change >= 0) {
+                if (chgLbl) { chgLbl.innerText = 'CHANGE TO RETURN'; chgLbl.style.color = 'var(--ui-pos)'; }
+                if (chgVal) { chgVal.innerText = `Rs ${change.toLocaleString()}`; chgVal.style.color = 'var(--ui-pos)'; }
+                if (chgBanner) { chgBanner.style.background = 'rgba(16,185,129,0.14)'; chgBanner.style.borderColor = 'rgba(16,185,129,0.35)'; }
+            } else {
+                if (chgLbl) { chgLbl.innerText = 'SHORT BY'; chgLbl.style.color = 'var(--ui-neg)'; }
+                if (chgVal) { chgVal.innerText = `Rs ${Math.abs(change).toLocaleString()}`; chgVal.style.color = 'var(--ui-neg)'; }
+                if (chgBanner) { chgBanner.style.background = 'rgba(239,68,68,0.14)'; chgBanner.style.borderColor = 'rgba(239,68,68,0.4)'; }
+            }
+
+            const quickOpts = buildQuickTenderOptions(due);
+            if (chipsEl) {
+                chipsEl.innerHTML = quickOpts.map((v, i) => `<button class="pos-quick-chip ${i === 0 ? 'exact' : ''}" onclick="posQuickSet(${v})">${i === 0 ? 'Exact' : v.toLocaleString()}</button>`).join('');
+            }
+            if (chargeBtn) chargeBtn.disabled = (isCollected || change < 0);
+            if (chargeLbl) chargeLbl.innerText = isCollected ? 'ALREADY COLLECTED ✓' : `CHARGE Rs ${due.toLocaleString()} · OPEN DRAWER`;
+        }
+
+        function posPadInput(key) {
+            if (key === 'C') { posTenderStr = ''; }
+            else if (key === '00') { posTenderStr = posTenderStr ? (posTenderStr + '00') : ''; }
+            else { posTenderStr = (posTenderStr === '0' ? key : posTenderStr + key).slice(0, 9); }
+            renderPosTenderPanel();
+        }
+
+        function posQuickSet(amount) {
+            posTenderStr = String(amount);
+            renderPosTenderPanel();
+        }
+
+        async function chargeSelectedKot() {
+            const cfg = getCashRegisterConfig();
+            const nowTs = formatCanonicalTimestamp();
+
+            if (manualCashMode) {
+                const amt = parseFloat(posTenderStr) || 0;
+                if (amt <= 0) return;
+                const cid = document.getElementById('pos-manual-ctr')?.value || manualCashMode.counterId || '1';
+                const note = (document.getElementById('pos-manual-note')?.value || '').trim();
+                const isRef = manualCashMode.isRefund;
+                const signedCash = isRef ? -amt : amt;
+
+                const newEntry = {
+                    id: String(Date.now()),
+                    counterId: String(cid),
+                    date: getLocalTodayStr(),
+                    timestamp: nowTs,
+                    images: [],
+                    isFastLane: true,
+                    isVoid: false,
+                    cash: signedCash, qr: 0, ips: 0, pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0,
+                    totalIn: signedCash,
+                    totalCredit: 0,
+                    remarks: isRef ? (`REFUND${note ? ': ' + note : ''}`) : (note || 'Manual Cash Register'),
+                    sessionStatus: 'active',
+                    cashRegister: {
+                        status: 'collected',
+                        tendered: amt,
+                        change: 0,
+                        collectedAt: nowTs,
+                        collectedBy: activeActorLabel || `Admin ${activeAdminId || '1'}`
+                    },
+                    manualCheck: true
+                };
+
+                // 1. Kick Xprinter cash drawer IMMEDIATELY (< 30ms)
+                if (window.AndroidCashBridge && cfg.printerIp) {
+                    if (cfg.printerMode === 'kick_token' && typeof window.AndroidCashBridge.printCashToken === 'function') {
+                        window.AndroidCashBridge.printCashToken(cfg.printerIp, cfg.printerPort, `C${cid}-${isRef ? 'REFUND' : 'MANUAL'}`, `Counter ${cid}`, String(signedCash), String(amt), '0', nowTs);
+                    } else if (typeof window.AndroidCashBridge.openDrawer === 'function') {
+                        window.AndroidCashBridge.openDrawer(cfg.printerIp, cfg.printerPort);
+                    }
+                }
+
+                // 2. Save locally first (offline-first) + background sync
+                entries.push(newEntry);
+                await saveEntryToIDB(newEntry);
+                manualCashMode = null;
+                posTenderStr = '';
+                showToast(isRef ? `Refund Rs ${amt.toLocaleString()} logged & drawer opened!` : `Manual Cash Rs ${amt.toLocaleString()} logged!`);
+                renderCashRegisterKot();
+                return;
+            }
+
+            const entry = selectedKotId ? entries.find(e => String(e.id) === String(selectedKotId)) : null;
+            if (!entry) return;
+            const due = Number(entry.cash || 0);
+            const tendered = posTenderStr === '' ? due : (parseFloat(posTenderStr) || 0);
+            const change = tendered - due;
+            if (change < 0) { showMsg('Cash received is less than bill due.'); return; }
+
+            // 1. Kick Xprinter cash drawer IMMEDIATELY (< 30ms)
+            if (window.AndroidCashBridge && cfg.printerIp) {
+                const ref = formatEntryRef(entry, 1);
+                if (cfg.printerMode === 'kick_token' && typeof window.AndroidCashBridge.printCashToken === 'function') {
+                    window.AndroidCashBridge.printCashToken(cfg.printerIp, cfg.printerPort, ref, `Counter ${entry.counterId}`, String(due), String(tendered), String(change), nowTs);
+                } else if (typeof window.AndroidCashBridge.openDrawer === 'function') {
+                    window.AndroidCashBridge.openDrawer(cfg.printerIp, cfg.printerPort);
+                }
+            }
+
+            // 2. Mark collected & reconcile on the spot (offline-first)
+            entry.cashRegister = {
+                status: 'collected',
+                tendered,
+                change,
+                collectedAt: nowTs,
+                collectedBy: activeActorLabel || `Admin ${activeAdminId || '1'}`
+            };
+            entry.manualCheck = true;
+            await saveEntryToIDB(entry);
+
+            posTenderStr = '';
+            selectedKotId = null;
+            showToast(`✓ Collected Rs ${due.toLocaleString()}${change > 0 ? ` · Return Rs ${change.toLocaleString()}` : ''}`);
+            renderCashRegisterKot();
+        }
+
+        async function flagSelectedKotMismatch() {
+            const entry = selectedKotId ? entries.find(e => String(e.id) === String(selectedKotId)) : null;
+            if (!entry) return;
+            const note = prompt(`Cash mismatch note for Counter ${entry.counterId} (Bill Rs ${Number(entry.cash || 0).toLocaleString()}):`, 'Cash count mismatch');
+            if (note === null) return;
+            entry.recheck = { status: 'flagged', note: note.trim() || 'Cash mismatch', by: 'Cash Register', at: formatCanonicalTimestamp() };
+            await saveEntryToIDB(entry);
+            showToast('⚠ Flagged mismatch for Admin!');
+            renderCashRegisterKot();
+        }
+
+        async function toggleManualCheck(entryId) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            entry.manualCheck = !entry.manualCheck;
+            await saveEntryToIDB(entry);
+            if (activeAdminTab === 'cashier') renderCashRegisterKot();
         }
     </script>
 </body>
