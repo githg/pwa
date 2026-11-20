@@ -1526,14 +1526,125 @@
         }
 
         .ledger-tag {
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
             letter-spacing: 0.03em;
             padding: 1px 4px;
             border-radius: 4px;
             background: var(--ui-pill-bg);
             color: var(--ui-muted);
-            margin-right: 3px;
+            display: inline-block;
+            line-height: 1.2;
+        }
+        .ledger-stack {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-end;
+            line-height: 1.15;
+            gap: 1px;
+        }
+        .ledger-stack + .ledger-stack {
+            margin-top: 3px;
+        }
+
+        /* Compact Counter Access Control Cards (no stretched mega-buttons) */
+        .counter-card-compact {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 11px;
+            border-radius: 11px;
+            background: var(--ui-card-inner);
+            border: 1px solid var(--ui-border);
+            flex-wrap: wrap;
+        }
+
+        /* Revamped Glanceable Counter Invoice Cards */
+        .inv-card {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 13px;
+            background: var(--ui-sheet-card);
+            border: 1px solid var(--ui-sheet-border);
+            cursor: pointer;
+            transition: transform 0.12s ease, border-color 0.15s ease;
+        }
+        .inv-card:active { transform: scale(0.99); }
+        .inv-card.is-flagged { border-color: rgba(239, 68, 68, 0.55) !important; }
+        .inv-card.is-verified { border-color: rgba(16, 185, 129, 0.35); }
+        .inv-thumb {
+            width: 60px;
+            height: 74px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            overflow: hidden;
+            position: relative;
+            background: var(--ui-sheet-bg);
+            border: 1px solid var(--ui-sheet-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .inv-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .inv-body {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .inv-cash-qr-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            background: var(--ui-sheet-bg);
+            font-variant-numeric: tabular-nums;
+        }
+        .mode-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .mp-pos { background: rgba(14, 165, 233, 0.16); color: #0284c7; }
+        .mp-ips { background: rgba(139, 92, 246, 0.16); color: #7c3aed; }
+        .mp-esewa { background: rgba(34, 197, 94, 0.16); color: #16a34a; }
+        .mp-online { background: rgba(6, 182, 212, 0.16); color: #0891b2; }
+        .mp-cheque { background: rgba(245, 158, 11, 0.18); color: #d97706; }
+        .mp-credit { background: rgba(244, 63, 94, 0.16); color: #e11d48; }
+        .mp-fast { background: rgba(245, 158, 11, 0.2); color: #d97706; }
+        .mp-bill { background: rgba(99, 102, 241, 0.15); color: var(--ui-info); }
+        .mp-ok { background: var(--ui-pos-soft); color: var(--ui-pos); }
+        .mp-flag { background: var(--ui-neg-soft); color: var(--ui-neg); }
+
+        /* Recheck Audit Bar inside Capture Sheet */
+        .recheck-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--ui-sheet-card);
+            border-bottom: 1px solid var(--ui-sheet-border);
+            flex-wrap: wrap;
+        }
+        .recheck-bar.show {
+            display: flex;
         }
 
         /* Inline Accordion Edit Tray */
@@ -2573,28 +2684,28 @@
             <div class="sheet-header" onclick="toggleListSheet()">
                 <div class="sheet-handle"></div>
                 <div>
-                    <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;"
+                    <div style="font-size: 11px; color: var(--ui-muted); font-weight: 700; text-transform: uppercase;"
                         id="session-header-title">Session Active</div>
                     <div style="font-size: 14px; font-weight: 700;"><span id="list-entry-count">0</span> Captures</div>
                 </div>
-                <div style="text-align: right;">
-                    <div
-                        style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">
-                        Total In</div>
-                    <div style="font-size: 15px; font-weight: 700; color: var(--c-cash);" id="list-total-header">0</div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="text-align: right;">
+                        <div style="font-size: 10px; color: var(--ui-muted); font-weight: 700; text-transform: uppercase;">Total In</div>
+                        <div style="font-size: 15px; font-weight: 800; color: var(--ui-pos);" id="list-total-header">0</div>
+                    </div>
+                    <button class="glass-btn" onclick="event.stopPropagation(); toggleListSheet()" style="padding:5px 7px !important;" title="Close list">
+                        <span class="material-icons" style="font-size:16px;">close</span>
+                    </button>
                 </div>
             </div>
 
-            <div class="counter-ledger-strip">
-                <button class="glass-btn" onclick="openIsolatedLedger('cash', 'counter')" style="color:var(--ui-pos) !important;">
-                    <span class="material-icons" style="font-size:15px;">payments</span> Cash List
-                </button>
-                <button class="glass-btn" onclick="openIsolatedLedger('qr', 'counter')" style="color:var(--ui-info) !important;">
-                    <span class="material-icons" style="font-size:15px;">qr_code_2</span> QR List
-                </button>
-                <button class="glass-btn" onclick="openIsolatedLedger('all', 'counter')">
-                    <span class="material-icons" style="font-size:15px;">table_chart</span> Full Ledger
-                </button>
+            <div class="counter-ledger-strip" id="counter-sheet-tabs" style="gap:5px; overflow-x:auto; flex-wrap:nowrap;">
+                <button class="sec-filter-chip active" data-cmode="all" onclick="setCounterSheetFilter('all')">All</button>
+                <button class="sec-filter-chip" data-cmode="cash" onclick="setCounterSheetFilter('cash')" style="color:var(--ui-pos);">Cash</button>
+                <button class="sec-filter-chip" data-cmode="qr" onclick="setCounterSheetFilter('qr')" style="color:var(--ui-info);">QR</button>
+                <button class="sec-filter-chip" data-cmode="other" onclick="setCounterSheetFilter('other')">Other</button>
+                <button class="sec-filter-chip" data-cmode="flagged" onclick="setCounterSheetFilter('flagged')" style="color:var(--ui-neg);">⚠ Flagged</button>
+                <button class="sec-filter-chip" onclick="openIsolatedLedger('all', 'counter')" style="margin-left:auto;">📊 Table</button>
             </div>
 
             <div class="list-container" id="entries-list"></div>
@@ -2621,6 +2732,18 @@
             </div>
 
             <div class="details-area">
+                <!-- Rechecking / Verification Audit Bar (step through 200 invoices + verify/flag discrepancies) -->
+                <div class="recheck-bar" id="recheck-bar">
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <button class="glass-btn" onclick="stepRecheckEntry(-1)" style="padding:4px 8px !important; font-size:11px !important;" title="Previous invoice">← Prev</button>
+                        <button class="glass-btn" onclick="stepRecheckEntry(1)" style="padding:4px 8px !important; font-size:11px !important;" title="Next invoice">Next →</button>
+                        <span id="recheck-status-pill" class="mode-pill" style="display:none;"></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <button class="glass-btn" onclick="markEntryRecheck('verified')" style="padding:5px 10px !important; font-size:11.5px !important; color:var(--ui-pos) !important; border-color:rgba(16,185,129,0.4) !important;">✓ Verify</button>
+                        <button class="glass-btn-danger" onclick="markEntryRecheck('flagged')" style="padding:5px 10px !important; font-size:11.5px !important;">⚠ Flag Error</button>
+                    </div>
+                </div>
                 <div class="form-header-small">
                     <!-- Left: Back button -->
                     <button class="btn-cancel-capture" onclick="cancelCapture()">Back</button>
@@ -2694,6 +2817,9 @@
     <div id="view-admin" class="app-view">
         <div class="admin-header">
             <div class="admin-menu-wrap">
+                <button class="glass-btn" id="btn-admin-back" onclick="switchAdminTab('active')" style="display:none; padding:8px 10px !important;" title="Back to Active Sessions">
+                    <span class="material-icons" style="font-size:17px;">arrow_back</span>
+                </button>
                 <button class="glass-btn" id="btn-admin-menu" onclick="toggleAdminMenu(event)" style="padding:8px 13px !important;">
                     <span class="material-icons" style="font-size:18px;">menu</span>
                     <span id="admin-active-tab-label" style="font-weight:700;">Active Sessions</span>
@@ -3944,6 +4070,7 @@
                 date: getLocalTodayStr(),
                 timestamp: ts,
                 images: [],
+                isFastLane: true,
                 isVoid: false,
                 cash: cashVal, qr: qrVal, ips: 0, pos: 0, esewa: 0, online: 0, cheque: 0, credit: 0,
                 remarks: ""
@@ -5517,6 +5644,7 @@
 
             renderPreviewScroll();
             calculateFormTotals();
+            updateRecheckBar(existingId ? targetEntry : null);
             document.getElementById('form-title').innerText = isVoided ? 'VOIDED' : (isReadOnly ? 'Archived Capture' : 'Capture Details');
 
             // Apply read-only logic to input elements
@@ -5790,6 +5918,93 @@
             await saveAndNext();
         }
 
+        let counterSheetFilter = 'all';
+
+        function setCounterSheetFilter(mode) {
+            counterSheetFilter = mode;
+            const bar = document.getElementById('counter-sheet-tabs');
+            if (bar) {
+                bar.querySelectorAll('.sec-filter-chip[data-cmode]').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.cmode === mode);
+                });
+            }
+            renderList();
+        }
+
+        function updateRecheckBar(entry) {
+            const bar = document.getElementById('recheck-bar');
+            const pill = document.getElementById('recheck-status-pill');
+            if (!bar) return;
+            if (!entry) {
+                bar.classList.remove('show');
+                return;
+            }
+            bar.classList.add('show');
+            if (pill) {
+                const rc = entry.recheck;
+                if (rc && rc.status === 'verified') {
+                    pill.className = 'mode-pill mp-ok';
+                    pill.innerText = '✓ Verified';
+                    pill.style.display = 'inline-flex';
+                } else if (rc && rc.status === 'flagged') {
+                    pill.className = 'mode-pill mp-flag';
+                    pill.innerText = '⚠ Flagged' + (rc.note ? ': ' + rc.note.slice(0, 22) : '');
+                    pill.style.display = 'inline-flex';
+                } else {
+                    pill.style.display = 'none';
+                }
+            }
+        }
+
+        async function markEntryRecheck(status) {
+            if (!currentEditingId) return;
+            const entry = entries.find(e => String(e.id) === String(currentEditingId));
+            if (!entry) return;
+
+            let note = '';
+            if (status === 'flagged') {
+                const prevNote = (entry.recheck && entry.recheck.note) || '';
+                const input = prompt('Describe discrepancy / error (e.g. Bill says 4500, entered 4000):', prevNote);
+                if (input === null) return;
+                note = input.trim();
+            }
+
+            const prevRecheck = entry.recheck ? JSON.parse(JSON.stringify(entry.recheck)) : null;
+            const by = isAdmin ? `Admin ${activeAdminId || ''}`.trim() : `Counter ${activeCounterId}`;
+            const at = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr();
+            entry.recheck = { status, note, by, at };
+
+            const summary = status === 'verified' ? `Recheck: Verified by ${by}` : `Recheck: Flagged error (${note || 'Discrepancy'})`;
+            recordEntryVersion(entry, summary, { recheck: prevRecheck });
+            await persistAndSyncEntry(entry);
+
+            updateRecheckBar(entry);
+            renderList();
+            if (isAdmin) renderAdminActive();
+            showToast(status === 'verified' ? '✓ Marked Verified' : '⚠ Flagged for Admin review');
+
+            if (status === 'verified') {
+                // Smoothly advance to next invoice when checking 200 bills
+                stepRecheckEntry(1, true);
+            }
+        }
+
+        function stepRecheckEntry(delta, silentEnd = false) {
+            if (!currentEditingId) return;
+            const curr = entries.find(e => String(e.id) === String(currentEditingId));
+            if (!curr) return;
+            const list = entries
+                .filter(e => String(e.counterId) === String(curr.counterId) && e.sessionStatus === curr.sessionStatus)
+                .sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+            const idx = list.findIndex(e => String(e.id) === String(curr.id));
+            const nextIdx = idx + delta;
+            if (nextIdx < 0 || nextIdx >= list.length) {
+                if (!silentEnd) showToast(delta > 0 ? 'Reached last invoice.' : 'Reached first invoice.');
+                return;
+            }
+            openCaptureSheet(list[nextIdx].id, isReadOnly);
+        }
+
         function renderList() {
             const container = document.getElementById('entries-list');
             container.innerHTML = '';
@@ -5797,88 +6012,144 @@
             let grandTotalIn = 0;
             let grandTotalCredit = 0;
 
-            const filteredEntries = entries.filter(e => e.counterId === activeCounterId && e.sessionStatus !== 'closed');
+            const allCounterEntries = entries.filter(e => String(e.counterId) === String(activeCounterId) && e.sessionStatus !== 'closed');
             const isCollection = (activeCounterId === '0');
+
+            // Permanent chronological S.N map
+            const chrono = allCounterEntries.slice().sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+            const snMap = {};
+            chrono.forEach((e, i) => { snMap[e.id] = i + 1; });
+
+            const filteredEntries = allCounterEntries.filter(e => {
+                if (isCollection || counterSheetFilter === 'all') return true;
+                if (counterSheetFilter === 'cash') return !e.isVoid && (e.cash || 0) > 0;
+                if (counterSheetFilter === 'qr') return !e.isVoid && ((e.qr || 0) + (e.online || 0)) > 0;
+                if (counterSheetFilter === 'other') return !e.isVoid && ((e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.cheque || 0) + (e.credit || 0)) > 0;
+                if (counterSheetFilter === 'flagged') return !!(e.recheck && e.recheck.status === 'flagged');
+                return true;
+            });
 
             // Update bottom bar label dynamically
             const bottomLabel = document.getElementById('bottom-bar-label');
             if (bottomLabel) bottomLabel.textContent = isCollection ? 'TOTAL COLLECTION' : 'CREDIT';
 
             if (filteredEntries.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 40px; color: #9ca3af;">${isCollection ? 'No collection entries yet.' : `No captures yet for Counter ${activeCounterId}.`}</div>`;
+                container.innerHTML = `<div style="text-align:center; padding: 36px; color: var(--ui-muted); font-size:13px;">${isCollection ? 'No collection entries yet.' : (counterSheetFilter === 'all' ? `No captures yet for Counter ${activeCounterId}.` : `No ${counterSheetFilter} entries yet.`)}</div>`;
             }
 
-            filteredEntries.slice().reverse().forEach((entry, idx) => {
+            filteredEntries.slice().reverse().forEach((entry) => {
                 grandTotalIn += entry.totalIn || 0;
                 grandTotalCredit += isCollection ? (entry.totalIn || 0) : (entry.totalCredit || 0);
 
                 const card = document.createElement('div');
-                card.className = 'entry-card';
+                const rcStatus = entry.recheck && entry.recheck.status;
+                card.className = 'inv-card' + (rcStatus === 'flagged' ? ' is-flagged' : (rcStatus === 'verified' ? ' is-verified' : ''));
                 if (entry.isVoid) card.style.opacity = '0.5';
 
                 if (isCollection) {
-                    // Counter 0: collection card — tap to edit
                     card.onclick = () => { toggleListSheet(); openCollectionEdit(entry.id); };
 
                     const parts = [];
-                    if (entry.coll_rasid_cash) parts.push(`💵 Rasid Cash: ${entry.coll_rasid_cash.toLocaleString()}`);
-                    if (entry.coll_rasid_qr) parts.push(`📱 Rasid QR: ${entry.coll_rasid_qr.toLocaleString()}`);
-                    if (entry.coll_cheq_cash) parts.push(`📄 Cheq Cash: ${entry.coll_cheq_cash.toLocaleString()}`);
-                    if (entry.coll_cheq_ebl) parts.push(`🏦 EBL: ${entry.coll_cheq_ebl.toLocaleString()}`);
-                    if (entry.coll_cheq_qr) parts.push(`📱 Cheq QR: ${entry.coll_cheq_qr.toLocaleString()}`);
-                    // Fallback for old entries without sub-fields
-                    if (!entry.coll_rasid_cash && !entry.coll_rasid_qr && !entry.coll_cheq_cash) {
-                        if (entry.cash) parts.push(`💵 Cash: ${entry.cash.toLocaleString()}`);
-                        if (entry.qr) parts.push(`📱 QR: ${entry.qr.toLocaleString()}`);
-                        if (entry.ips) parts.push(`🏦 EBL: ${entry.ips.toLocaleString()}`);
+                    if (entry.coll_rasid_cash) parts.push(`<span class="mode-pill mp-ok">Cash ${entry.coll_rasid_cash.toLocaleString()}</span>`);
+                    if (entry.coll_rasid_qr) parts.push(`<span class="mode-pill mp-bill">QR ${entry.coll_rasid_qr.toLocaleString()}</span>`);
+                    if (entry.coll_cheq_cash) parts.push(`<span class="mode-pill mp-cheque">Chq→Cash ${entry.coll_cheq_cash.toLocaleString()}</span>`);
+                    if (entry.coll_cheq_ebl) parts.push(`<span class="mode-pill mp-ips">EBL ${entry.coll_cheq_ebl.toLocaleString()}</span>`);
+                    if (entry.coll_cheq_qr) parts.push(`<span class="mode-pill mp-online">Chq→QR ${entry.coll_cheq_qr.toLocaleString()}</span>`);
+                    if (!parts.length) {
+                        if (entry.cash) parts.push(`<span class="mode-pill mp-ok">Cash ${entry.cash.toLocaleString()}</span>`);
+                        if (entry.qr) parts.push(`<span class="mode-pill mp-bill">QR ${entry.qr.toLocaleString()}</span>`);
+                        if (entry.ips) parts.push(`<span class="mode-pill mp-ips">EBL ${entry.ips.toLocaleString()}</span>`);
                     }
 
                     card.innerHTML = `
-                        <div class="entry-thumb" style="display:flex; justify-content:center; align-items:center; color:#10b981; background:#064e3b; border:1px solid #10b981; border-radius:8px;">
-                            <span class="material-icons" style="font-size:28px;">payments</span>
+                        <div class="inv-thumb" style="background:var(--ui-pos-soft); border-color:rgba(16,185,129,0.35);">
+                            <span class="material-icons" style="font-size:26px; color:var(--ui-pos);">payments</span>
+                            <span style="font-size:9px; font-weight:800; color:var(--ui-pos);">COLL</span>
                         </div>
-                        <div class="entry-details">
-                            <div style="display:flex; justify-content: space-between; align-items: center;">
-                                <div style="font-size: 14px; font-weight: 700; color:#fff;">${escapeHtml(entry.remarks || 'Unknown')}</div>
-                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced to Cloud' : 'Pending Sync'}"></span>
+                        <div class="inv-body">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                                <div style="font-size:13.5px; font-weight:700; color:var(--ui-text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">#${snMap[entry.id]} · ${escapeHtml(entry.remarks || 'Unknown')}</div>
+                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}"></span>
                             </div>
-                            <div style="font-size: 12px; color: #10b981; font-weight: 600; margin-top:2px;">Total: NPR ${(entry.totalIn || 0).toLocaleString()}</div>
-                            <div style="font-size: 11px; color: #9ca3af; margin-top:3px;">${parts.join(' &nbsp;|&nbsp; ')}</div>
-                            ${entry.isVoid ? '<div style="font-size:11px; color:#ef4444; font-weight:700;">VOIDED</div>' : ''}
+                            <div style="font-size:14px; font-weight:800; color:var(--ui-pos); font-variant-numeric:tabular-nums;">NPR ${(entry.totalIn || 0).toLocaleString()}</div>
+                            <div style="display:flex; flex-wrap:wrap; gap:4px;">${parts.join('')}</div>
+                            ${entry.isVoid ? '<div style="font-size:10.5px; color:var(--ui-neg); font-weight:700;">VOIDED</div>' : ''}
                         </div>
                     `;
                 } else {
-                    // Standard cashier card
-                    const isPending = !entry.isVoid && entry.cash === 0 && entry.qr === 0 && entry.ips === 0 && entry.pos === 0 && entry.esewa === 0 && entry.online === 0 && entry.cheque === 0 && entry.credit === 0;
-                    if (isPending) card.style.border = '1px solid var(--c-pos)';
+                    const isPending = !entry.isVoid && !entry.cash && !entry.qr && !entry.ips && !entry.pos && !entry.esewa && !entry.online && !entry.cheque && !entry.credit;
+                    const hasPhoto = Array.isArray(entry.images) && entry.images.length > 0;
+                    const isFast = !!entry.isFastLane || !hasPhoto;
+                    if (isPending) card.style.borderColor = 'var(--ui-warn)';
 
                     card.onclick = () => { toggleListSheet(); openCaptureSheet(entry.id); };
 
-                    let thumbHtml = `<div class="entry-thumb" style="display:flex; justify-content:center; align-items:center; color:#9ca3af; background:#374151; border:1px solid var(--border); border-radius:8px;"><span class="material-icons" style="font-size:28px;">receipt</span></div>`;
-                    if (entry.images && entry.images.length > 0) {
-                        thumbHtml = `<div class="entry-thumb"><img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`;
-                    }
-
-                    let detailsHtml = '';
-                    if (entry.isVoid) {
-                        detailsHtml = `<div class="entry-totals" style="color: var(--c-credit);">VOIDED</div>`;
-                    } else if (isPending) {
-                        detailsHtml = `<div class="entry-totals" style="color: var(--c-pos);">PENDING - TAP TO FILL</div>`;
+                    let thumbHtml;
+                    if (hasPhoto) {
+                        thumbHtml = `<div class="inv-thumb"><img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`;
                     } else {
-                        detailsHtml = `<div class="entry-totals"><span class="c-cash">IN: ${entry.totalIn.toLocaleString()}</span></div>`;
+                        thumbHtml = `<div class="inv-thumb" style="background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.35);"><span class="material-icons" style="font-size:24px; color:var(--ui-warn);">bolt</span><span style="font-size:9px; font-weight:800; color:var(--ui-warn);">FAST</span></div>`;
                     }
 
-                    const remarksHtml = entry.remarks ? `<div style="font-size: 11px; font-style: italic; color: var(--text-muted); margin-top: 2px;">Note: ${escapeHtml(entry.remarks)}</div>` : '';
+                    const typeBadge = isFast
+                        ? '<span class="mode-pill mp-fast">⚡ FAST</span>'
+                        : '<span class="mode-pill mp-bill">📷 BILL</span>';
+
+                    const rcBadge = rcStatus === 'verified'
+                        ? '<span class="mode-pill mp-ok">✓</span>'
+                        : (rcStatus === 'flagged' ? '<span class="mode-pill mp-flag">⚠</span>' : '');
+
+                    const shortTime = (entry.timestamp || '').split(' ')[0] || '—';
+                    const cashAmt = entry.cash || 0;
+                    const qrAmt = (entry.qr || 0) + (entry.online || 0);
+
+                    const otherPills = [];
+                    if (entry.online) otherPills.push(`<span class="mode-pill mp-online">ONL ${entry.online.toLocaleString()}</span>`);
+                    if (entry.pos) otherPills.push(`<span class="mode-pill mp-pos">POS ${entry.pos.toLocaleString()}</span>`);
+                    if (entry.ips) otherPills.push(`<span class="mode-pill mp-ips">IPS ${entry.ips.toLocaleString()}</span>`);
+                    if (entry.esewa) otherPills.push(`<span class="mode-pill mp-esewa">eSewa ${entry.esewa.toLocaleString()}</span>`);
+                    if (entry.cheque) otherPills.push(`<span class="mode-pill mp-cheque">CHQ ${entry.cheque.toLocaleString()}</span>`);
+                    if (entry.credit) otherPills.push(`<span class="mode-pill mp-credit">CR ${entry.credit.toLocaleString()}</span>`);
+
+                    let mainGridHtml = '';
+                    if (entry.isVoid) {
+                        mainGridHtml = `<div style="font-size:12px; font-weight:800; color:var(--ui-neg);">VOIDED</div>`;
+                    } else if (isPending) {
+                        mainGridHtml = `<div style="font-size:12px; font-weight:800; color:var(--ui-warn);">PENDING — TAP TO ENTER AMOUNT</div>`;
+                    } else {
+                        mainGridHtml = `
+                            <div class="inv-cash-qr-row">
+                                <div>
+                                    <div style="font-size:9px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Cash</div>
+                                    <div style="font-size:14px; font-weight:800; color:${cashAmt ? 'var(--ui-pos)' : 'var(--ui-muted)'};">${cashAmt ? cashAmt.toLocaleString() : '·'}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:9px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">QR</div>
+                                    <div style="font-size:14px; font-weight:800; color:${qrAmt ? 'var(--ui-info)' : 'var(--ui-muted)'};">${qrAmt ? qrAmt.toLocaleString() : '·'}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    const flagNoteHtml = (rcStatus === 'flagged' && entry.recheck.note)
+                        ? `<div style="font-size:10.5px; color:var(--ui-neg); font-weight:700;">⚠ ${escapeHtml(entry.recheck.note)}</div>` : '';
+                    const remarksHtml = entry.remarks
+                        ? `<div style="font-size:10.5px; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(entry.remarks)}</div>` : '';
 
                     card.innerHTML = `
                         ${thumbHtml}
-                        <div class="entry-details">
-                            <div style="display:flex; justify-content: space-between; align-items: center;">
-                                <div style="font-size: 14px; font-weight: 700;">${entry.timestamp || 'No time'}</div>
-                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced to Cloud' : 'Pending Sync'}"></span>
+                        <div class="inv-body">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                                <div style="display:flex; align-items:center; gap:5px; min-width:0;">
+                                    <span style="font-size:11px; font-weight:800; color:var(--ui-muted);">#${snMap[entry.id]}</span>
+                                    <span style="font-size:13px; font-weight:800; color:var(--ui-text);">${escapeHtml(shortTime)}</span>
+                                    ${typeBadge}${rcBadge}
+                                </div>
+                                <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}" title="${entry.synced ? 'Synced' : 'Pending Sync'}"></span>
                             </div>
-                            ${detailsHtml}
-                            ${remarksHtml}
+                            ${mainGridHtml}
+                            ${otherPills.length ? `<div style="display:flex; flex-wrap:wrap; gap:4px;">${otherPills.join('')}</div>` : ''}
+                            ${flagNoteHtml}${remarksHtml}
                         </div>
                     `;
                 }
@@ -6069,6 +6340,8 @@
             activeAdminTab = tab;
             const tabLbl = document.getElementById('admin-active-tab-label');
             if (tabLbl) tabLbl.innerText = ADMIN_TAB_LABELS[tab] || 'Admin';
+            const backBtn = document.getElementById('btn-admin-back');
+            if (backBtn) backBtn.style.display = (tab === 'active') ? 'none' : 'inline-flex';
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
 
             document.getElementById('admin-active-content').style.display = 'none';
@@ -6290,6 +6563,8 @@
                 if (modeFilter === 'cash') return !e.isVoid && (e.cash || 0) > 0;
                 if (modeFilter === 'qr') return !e.isVoid && ((e.qr || 0) + (e.online || 0)) > 0;
                 if (modeFilter === 'other') return !e.isVoid && ((e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.cheque || 0) + (e.credit || 0)) > 0;
+                if (modeFilter === 'flagged') return !!(e.recheck && e.recheck.status === 'flagged');
+                if (modeFilter === 'unchecked') return !e.isVoid && !(e.recheck && e.recheck.status === 'verified');
                 return true;
             });
 
@@ -6339,39 +6614,47 @@
                 }
 
                 const shortTime = (e.timestamp || '').split(' ')[0] || e.time || '—';
-                const noteText = e.customerName || e.remarks || '';
+                const rcStatus = e.recheck && e.recheck.status;
+                const hasPhoto = Array.isArray(e.images) && e.images.length > 0;
+                const fastMark = (e.isFastLane || !hasPhoto) ? '<span style="color:var(--ui-warn); font-size:10px;" title="Fast-Lane entry">⚡</span>' : '';
+                const rcMark = rcStatus === 'verified'
+                    ? '<span style="color:var(--ui-pos); font-size:10px; font-weight:800;" title="Verified">✓</span>'
+                    : (rcStatus === 'flagged' ? `<span style="color:var(--ui-neg); font-size:10px; font-weight:800;" title="${escapeHtml((e.recheck && e.recheck.note) || 'Flagged')}">⚠</span>` : '');
+                const noteText = (rcStatus === 'flagged' && e.recheck.note) ? ('⚠ ' + e.recheck.note) : (e.customerName || e.remarks || '');
                 const noteHtml = noteText
-                    ? `<div style="font-size:10px; color:var(--ui-muted); font-weight:500; overflow:hidden; text-overflow:ellipsis; max-width:96px;">${escapeHtml(noteText)}</div>`
+                    ? `<div style="font-size:9.5px; color:${rcStatus === 'flagged' ? 'var(--ui-neg)' : 'var(--ui-muted)'}; font-weight:${rcStatus === 'flagged' ? 700 : 500}; overflow:hidden; text-overflow:ellipsis; max-width:92px;">${escapeHtml(noteText)}</div>`
                     : '';
 
                 const cashCell = c > 0
                     ? `<span style="color:var(--ui-pos); font-weight:700;">${c.toLocaleString()}</span>`
                     : '<span class="ledger-dot">·</span>';
 
-                const onlTag = (e.online || 0) > 0 ? '<span class="ledger-tag">ONL</span>' : '';
                 const qrCell = q > 0
-                    ? `${onlTag}<span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span>`
+                    ? ((e.online || 0) > 0
+                        ? `<div class="ledger-stack"><span class="ledger-tag">ONL</span><span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span></div>`
+                        : `<span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span>`)
                     : '<span class="ledger-dot">·</span>';
 
                 const othParts = [];
-                if ((e.pos || 0) > 0) othParts.push(`<span class="ledger-tag">POS</span>${e.pos.toLocaleString()}`);
-                if ((e.ips || 0) > 0) othParts.push(`<span class="ledger-tag">IPS</span>${e.ips.toLocaleString()}`);
-                if ((e.esewa || 0) > 0) othParts.push(`<span class="ledger-tag">eS</span>${e.esewa.toLocaleString()}`);
-                const otherCell = othParts.length ? othParts.join('<br>') : '<span class="ledger-dot">·</span>';
+                if ((e.pos || 0) > 0) othParts.push(`<div class="ledger-stack"><span class="ledger-tag">POS</span><span>${e.pos.toLocaleString()}</span></div>`);
+                if ((e.ips || 0) > 0) othParts.push(`<div class="ledger-stack"><span class="ledger-tag">IPS</span><span>${e.ips.toLocaleString()}</span></div>`);
+                if ((e.esewa || 0) > 0) othParts.push(`<div class="ledger-stack"><span class="ledger-tag">eS</span><span>${e.esewa.toLocaleString()}</span></div>`);
+                const otherCell = othParts.length ? othParts.join('') : '<span class="ledger-dot">·</span>';
 
                 const ccParts = [];
-                if ((e.cheque || 0) > 0) ccParts.push(`<span class="ledger-tag">CHQ</span><span style="color:var(--ui-warn); font-weight:700;">${e.cheque.toLocaleString()}</span>`);
-                if ((e.credit || 0) > 0) ccParts.push(`<span class="ledger-tag">CR</span><span style="color:var(--ui-neg); font-weight:700;">${e.credit.toLocaleString()}</span>`);
-                const ccCell = ccParts.length ? ccParts.join('<br>') : '<span class="ledger-dot">·</span>';
+                if ((e.cheque || 0) > 0) ccParts.push(`<div class="ledger-stack"><span class="ledger-tag">CHQ</span><span style="color:var(--ui-warn); font-weight:700;">${e.cheque.toLocaleString()}</span></div>`);
+                if ((e.credit || 0) > 0) ccParts.push(`<div class="ledger-stack"><span class="ledger-tag">CR</span><span style="color:var(--ui-neg); font-weight:700;">${e.credit.toLocaleString()}</span></div>`);
+                const ccCell = ccParts.length ? ccParts.join('') : '<span class="ledger-dot">·</span>';
 
                 const isOpen = String(openAccordionEntryId) === String(e.id);
                 const hasHist = Array.isArray(e.history) && e.history.length > 0;
 
                 tr.innerHTML = `
                     <td class="col-sticky" style="cursor:pointer;" onclick="openCaptureSheet('${e.id}')">
-                        <div style="display:flex; align-items:center; gap:5px;">
-                            <span style="font-size:10px; color:var(--ui-muted); font-weight:700;">#${snMap[e.id] || ''}</span>
+                        <div style="display:flex; align-items:center; gap:3px;">
+                            <span style="font-size:9.5px; color:var(--ui-muted); font-weight:700;">#${snMap[e.id] || ''}</span>
                             <span style="font-weight:700; color:var(--ui-info);">${escapeHtml(shortTime)}</span>
+                            ${fastMark}${rcMark}
                         </div>
                         ${noteHtml}
                     </td>
@@ -6395,8 +6678,12 @@
                     const accTr = document.createElement('tr');
                     accTr.className = 'ledger-acc-row';
                     const moveOpts = ['0','1','2','3','4','5'].map(cOpt => `<option value="${cOpt}" ${String(e.counterId) === cOpt ? 'selected' : ''}>Counter ${cOpt}${cOpt === '0' ? ' (Coll)' : ''}</option>`).join('');
+                    const rcBanner = (rcStatus === 'flagged')
+                        ? `<div style="margin-bottom:8px; padding:7px 10px; border-radius:8px; background:var(--ui-neg-soft); color:var(--ui-neg); font-size:11.5px; font-weight:700;">⚠ Flagged Discrepancy: ${escapeHtml((e.recheck && e.recheck.note) || 'Needs review')}</div>`
+                        : '';
                     accTr.innerHTML = `
                         <td colspan="7">
+                            ${rcBanner}
                             <div class="ledger-acc-grid">
                                 <div class="ledger-acc-field"><label>Cash</label><input type="number" id="acc-in-${e.id}-cash" value="${e.cash || ''}" placeholder="0" inputmode="decimal"></div>
                                 <div class="ledger-acc-field"><label>QR</label><input type="number" id="acc-in-${e.id}-qr" value="${e.qr || ''}" placeholder="0" inputmode="decimal"></div>
@@ -6408,9 +6695,12 @@
                                 <div class="ledger-acc-field"><label>Credit</label><input type="number" id="acc-in-${e.id}-credit" value="${e.credit || ''}" placeholder="0" inputmode="decimal"></div>
                                 <div class="ledger-acc-field"><label>Move Counter</label><select id="acc-move-${e.id}">${moveOpts}</select></div>
                             </div>
-                            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
-                                <button class="glass-btn" onclick="toggleLedgerAccordion('${cid}', '${e.id}')" style="padding:6px 12px !important; font-size:11.5px !important;">Cancel</button>
-                                <button class="glass-btn-primary" onclick="saveLedgerAccordion('${cid}', '${e.id}')" style="padding:6px 14px !important; font-size:11.5px !important;">Save Changes</button>
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                                <button class="glass-btn" onclick="quickResolveRecheck('${cid}', '${e.id}')" style="padding:6px 10px !important; font-size:11px !important; color:var(--ui-pos) !important;">✓ Mark Verified</button>
+                                <div style="display:flex; gap:8px;">
+                                    <button class="glass-btn" onclick="toggleLedgerAccordion('${cid}', '${e.id}')" style="padding:6px 12px !important; font-size:11.5px !important;">Cancel</button>
+                                    <button class="glass-btn-primary" onclick="saveLedgerAccordion('${cid}', '${e.id}')" style="padding:6px 14px !important; font-size:11.5px !important;">Save Changes</button>
+                                </div>
                             </div>
                         </td>
                     `;
@@ -6454,18 +6744,16 @@
                 const counterName = i === 0 ? 'Counter 0 · Collections' : `Counter ${i}`;
 
                 statusGridHtml += `
-                    <div class="counter-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                            <span style="font-weight:700; font-size:13px; color:var(--ui-text);">${counterName}</span>
+                    <div class="counter-card-compact">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-weight:700; font-size:12.5px; color:var(--ui-text);">${counterName}</span>
                             <span class="status-chip ${chipClass}"><span class="status-dot"></span>${label}</span>
                         </div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                            <button class="glass-btn" onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="padding:7px 10px !important; font-size:11.5px !important;">${actionLabel}</button>
-                            <button class="glass-btn-primary" onclick="adminEnterWorkspace('${counterIdStr}')" style="padding:7px 10px !important; font-size:11.5px !important;"><span class="material-icons" style="font-size:13px;">login</span> Enter</button>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <button class="glass-btn" onclick="toggleCounterAccess('${counterIdStr}', ${enabled})" style="padding:5px 9px !important; font-size:11px !important;">${actionLabel}</button>
+                            <button class="glass-btn-primary" onclick="adminEnterWorkspace('${counterIdStr}')" style="padding:5px 9px !important; font-size:11px !important;">Enter</button>
+                            <button class="glass-btn-danger" onclick="forceResetCounterSession('${counterIdStr}')" style="padding:5px 8px !important; font-size:11px !important;" title="Reset Session Lease">↺</button>
                         </div>
-                        <button class="glass-btn-danger" onclick="forceResetCounterSession('${counterIdStr}')" style="width:100%;">
-                            <span class="material-icons" style="font-size:13px;">restart_alt</span> Reset Session Lease
-                        </button>
                     </div>
                 `;
             }
@@ -6525,7 +6813,7 @@
                 const list = groups[cid];
                 const nonVoid = list.filter(e => !e.isVoid);
                 let cCash = 0, cQr = 0, cOther = 0, cTotal = 0;
-                let nCash = 0, nQr = 0, nOther = 0;
+                let nCash = 0, nQr = 0, nOther = 0, nFlagged = 0, nUnchecked = 0;
                 nonVoid.forEach(e => {
                     const ca = e.cash || 0;
                     const qr = (e.qr || 0) + (e.online || 0);
@@ -6534,6 +6822,8 @@
                     if (ca > 0) nCash++;
                     if (qr > 0) nQr++;
                     if (ot > 0) nOther++;
+                    if (e.recheck && e.recheck.status === 'flagged') nFlagged++;
+                    if (!(e.recheck && e.recheck.status === 'verified')) nUnchecked++;
                 });
 
                 const activeFilter = counterLedgerFilters[cid] || 'all';
@@ -6564,7 +6854,9 @@
                         <button class="sec-filter-chip ${activeFilter === 'all' ? 'active' : ''}" data-mode="all" onclick="setCounterLedgerFilter('${cid}', 'all')">All (${list.length})</button>
                         <button class="sec-filter-chip ${activeFilter === 'cash' ? 'active' : ''}" data-mode="cash" onclick="setCounterLedgerFilter('${cid}', 'cash')" style="color:var(--ui-pos);">Cash ${nCash} · ${cCash.toLocaleString()}</button>
                         <button class="sec-filter-chip ${activeFilter === 'qr' ? 'active' : ''}" data-mode="qr" onclick="setCounterLedgerFilter('${cid}', 'qr')" style="color:var(--ui-info);">QR ${nQr} · ${cQr.toLocaleString()}</button>
-                        <button class="sec-filter-chip ${activeFilter === 'other' ? 'active' : ''}" data-mode="other" onclick="setCounterLedgerFilter('${cid}', 'other')">Other ${nOther} · ${cOther.toLocaleString()}</button>
+                        <button class="sec-filter-chip ${activeFilter === 'other' ? 'active' : ''}" data-mode="other" onclick="setCounterLedgerFilter('${cid}', 'other')">Other ${nOther}</button>
+                        <button class="sec-filter-chip ${activeFilter === 'flagged' ? 'active' : ''}" data-mode="flagged" onclick="setCounterLedgerFilter('${cid}', 'flagged')" style="color:var(--ui-neg);">⚠ Flagged (${nFlagged})</button>
+                        <button class="sec-filter-chip ${activeFilter === 'unchecked' ? 'active' : ''}" data-mode="unchecked" onclick="setCounterLedgerFilter('${cid}', 'unchecked')">Unchecked (${nUnchecked})</button>
                     </div>
                 `;
                 sec.appendChild(headerWrapper);
@@ -8466,15 +8758,17 @@
                         const noteHtml = noteTxt ? `<div style="font-size:10px; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; max-width:92px;">${esc(noteTxt)}</div>` : '';
                         const ctrTd = isCounter ? '' : `<td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>`;
 
-                        const onlTag = (e.online || 0) > 0 ? '<span class="ledger-tag">ONL</span>' : '';
+                        const onlStack = (e.online || 0) > 0
+                            ? `<div class="ledger-stack"><span class="ledger-tag">ONL</span><span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span></div>`
+                            : `<span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span>`;
                         const othParts = [];
-                        if ((e.pos || 0) > 0) othParts.push(`<span class="ledger-tag">POS</span>${e.pos.toLocaleString()}`);
-                        if ((e.ips || 0) > 0) othParts.push(`<span class="ledger-tag">IPS</span>${e.ips.toLocaleString()}`);
-                        if ((e.esewa || 0) > 0) othParts.push(`<span class="ledger-tag">eS</span>${e.esewa.toLocaleString()}`);
+                        if ((e.pos || 0) > 0) othParts.push(`<div class="ledger-stack"><span class="ledger-tag">POS</span><span>${e.pos.toLocaleString()}</span></div>`);
+                        if ((e.ips || 0) > 0) othParts.push(`<div class="ledger-stack"><span class="ledger-tag">IPS</span><span>${e.ips.toLocaleString()}</span></div>`);
+                        if ((e.esewa || 0) > 0) othParts.push(`<div class="ledger-stack"><span class="ledger-tag">eS</span><span>${e.esewa.toLocaleString()}</span></div>`);
 
                         const ccParts = [];
-                        if ((e.cheque || 0) > 0) ccParts.push(`<span class="ledger-tag">CHQ</span><span style="color:var(--ui-warn); font-weight:700;">${e.cheque.toLocaleString()}</span>`);
-                        if ((e.credit || 0) > 0) ccParts.push(`<span class="ledger-tag">CR</span><span style="color:var(--ui-neg); font-weight:700;">${e.credit.toLocaleString()}</span>`);
+                        if ((e.cheque || 0) > 0) ccParts.push(`<div class="ledger-stack"><span class="ledger-tag">CHQ</span><span style="color:var(--ui-warn); font-weight:700;">${e.cheque.toLocaleString()}</span></div>`);
+                        if ((e.credit || 0) > 0) ccParts.push(`<div class="ledger-stack"><span class="ledger-tag">CR</span><span style="color:var(--ui-neg); font-weight:700;">${e.credit.toLocaleString()}</span></div>`);
 
                         return `<tr>
                             <td class="col-sticky">
@@ -8486,9 +8780,9 @@
                             </td>
                             ${ctrTd}
                             <td style="text-align:right;">${c ? `<span style="color:var(--ui-pos); font-weight:700;">${c.toLocaleString()}</span>` : '<span class="ledger-dot">·</span>'}</td>
-                            <td style="text-align:right;">${q ? `${onlTag}<span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span>` : '<span class="ledger-dot">·</span>'}</td>
-                            <td style="text-align:right;">${othParts.length ? othParts.join('<br>') : '<span class="ledger-dot">·</span>'}</td>
-                            <td style="text-align:right;">${ccParts.length ? ccParts.join('<br>') : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right;">${q ? onlStack : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right;">${othParts.length ? othParts.join('') : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right;">${ccParts.length ? ccParts.join('') : '<span class="ledger-dot">·</span>'}</td>
                             <td style="text-align:right; font-weight:800;">${rowTot.toLocaleString()}</td>
                         </tr>`;
                     }).join('');
@@ -9212,6 +9506,49 @@
                 alert(err.message || 'Failed to revoke code.');
             }
         }
+
+        async function quickResolveRecheck(cid, entryId) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+            const prevRecheck = entry.recheck ? JSON.parse(JSON.stringify(entry.recheck)) : null;
+            entry.recheck = {
+                status: 'verified',
+                note: '',
+                by: `Admin ${activeAdminId || ''}`.trim(),
+                at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr()
+            };
+            recordEntryVersion(entry, 'Recheck: Marked Verified by Admin', { recheck: prevRecheck });
+            openAccordionEntryId = null;
+            await persistAndSyncEntry(entry);
+            renderAdminActive();
+            pushAdminUndo('Marked entry verified', async () => {
+                await applyEntryRestore(entry.id, { recheck: prevRecheck }, 'Undid verify mark');
+            });
+        }
+
+        // Global Keyboard UX: Fast-Lane Enter=Save, Regular Capture Enter=Next Box, Esc=Close Modal/Sheet
+        if (typeof document !== 'undefined' && document.addEventListener) document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const id = document.activeElement && document.activeElement.id;
+                if (id === 'fast-cash' || id === 'fast-qr') {
+                    e.preventDefault();
+                    saveFastLane();
+                    return;
+                }
+                const captureOrder = ['inp-cash', 'inp-qr', 'inp-ips', 'inp-pos', 'inp-esewa', 'inp-online', 'inp-cheque', 'inp-credit', 'inp-remarks'];
+                const idx = captureOrder.indexOf(id);
+                if (idx >= 0 && idx < captureOrder.length - 1) {
+                    e.preventDefault();
+                    const nextEl = document.getElementById(captureOrder[idx + 1]);
+                    if (nextEl) { nextEl.focus(); nextEl.select && nextEl.select(); }
+                }
+            } else if (e.key === 'Escape') {
+                closeIsolatedLedger();
+                closeChequeModal();
+                closeEntryHistoryModal();
+                closeAdminMenu();
+            }
+        });
 
         // ── Inactivity Auto-Lock ─────────────────────────────────────────────
         let inactivityTimer = null;
