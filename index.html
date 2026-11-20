@@ -1561,16 +1561,28 @@
 
         @media (max-width: 640px) {
             .ledger-v6 {
-                font-size: 11.5px;
+                font-size: 11px;
+                table-layout: fixed;
+                width: 100%;
             }
             .ledger-v6 thead th,
             .ledger-v6 tbody td,
             .ledger-v6 tfoot td {
-                padding: 7px 5px !important;
+                padding: 6px 3px !important;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .ledger-v6 th.col-sticky,
             .ledger-v6 td.col-sticky {
-                max-width: 92px;
+                position: static;
+                box-shadow: none;
+                background: transparent !important;
+                max-width: none;
+            }
+            .row-info-btn {
+                width: 20px;
+                height: 20px;
+                margin-left: 2px;
             }
         }
 
@@ -2255,48 +2267,72 @@
         /* Responsive Layout Breakpoints (Mobile / Tablet / Desktop) */
         @media (max-width: 640px) {
             #view-admin {
-                padding: 0 12px 48px !important;
+                padding: 0 4px 44px !important;
             }
             #view-admin .admin-header {
-                margin: 0 -12px 12px !important;
-                padding: 11px 12px !important;
+                margin: 0 -4px 8px !important;
+                padding: 8px 8px !important;
             }
             #view-admin #admin-title {
-                font-size: 14.5px !important;
+                font-size: 14px !important;
             }
             .glass-card {
-                padding: 14px !important;
+                padding: 10px 8px !important;
+                border-radius: 12px !important;
+            }
+            .sticky-sec-bar {
+                padding: 8px 8px !important;
+                border-radius: 10px !important;
+            }
+            .table-shell {
+                border-radius: 10px !important;
             }
             .bento-kpi-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-                gap: 10px !important;
+                gap: 6px !important;
             }
             .bento-3col {
                 grid-template-columns: 1fr !important;
-                gap: 10px !important;
+                gap: 8px !important;
             }
             .bento-2col {
                 grid-template-columns: 1fr !important;
             }
             .counter-grid {
                 grid-template-columns: 1fr !important;
+                gap: 8px !important;
             }
             .kpi-tile {
-                padding: 13px 14px !important;
+                padding: 10px 10px !important;
+                border-radius: 12px !important;
             }
             .kpi-value {
-                font-size: 19px !important;
+                font-size: 17px !important;
                 word-break: break-word;
             }
             #view-admin .admin-tab {
-                padding: 7px 12px !important;
+                padding: 7px 10px !important;
                 font-size: 12px !important;
+            }
+            #view-admin .eod-table {
+                table-layout: fixed;
+                width: 100%;
+                font-size: 11.5px !important;
+            }
+            #view-admin .eod-table th,
+            #view-admin .eod-table td {
+                padding: 6px 4px !important;
+                word-break: break-word;
+            }
+            #view-admin .eod-input {
+                padding: 5px 5px !important;
+                font-size: 11.5px !important;
             }
             .hide-xs {
                 display: none !important;
             }
             #admin-active-tab-label {
-                max-width: 135px;
+                max-width: 145px;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
@@ -2957,10 +2993,10 @@
                     <table class="eod-table" style="width: 100%; font-size: 12.5px;">
                         <thead>
                             <tr>
-                                <th style="text-align: left;">Particulars</th>
-                                <th style="text-align: right; min-width: 74px;">IN</th>
-                                <th style="text-align: right; min-width: 90px;">OUT</th>
-                                <th style="text-align: right; min-width: 72px;">Var</th>
+                                <th style="text-align: left; width: 38%;">Particulars</th>
+                                <th style="text-align: right; width: 20%;">IN</th>
+                                <th style="text-align: right; width: 24%;">OUT</th>
+                                <th style="text-align: right; width: 18%;">Var</th>
                             </tr>
                         </thead>
                         <tbody id="daily-table-body">
@@ -3381,19 +3417,15 @@
                 </button>
             </div>
 
-            <!-- Master Cheques Table -->
+            <!-- Master Cheques Table (4-column mobile-first 100% fit) -->
             <div class="table-shell">
                 <table class="eod-table" style="width:100%; font-size:12px;">
                     <thead>
                         <tr>
-                            <th style="text-align:left;">Date</th>
-                            <th style="text-align:center;">Ctr</th>
-                            <th style="text-align:left;">Party / Customer</th>
-                            <th style="text-align:left;">Bank &amp; Cheque #</th>
-                            <th style="text-align:left;">Chq Date</th>
-                            <th style="text-align:right;">Amount</th>
-                            <th style="text-align:left;">Status &amp; Details</th>
-                            <th style="text-align:center;">Manage</th>
+                            <th style="text-align:left; width:34%;">Party / Bank</th>
+                            <th style="text-align:right; width:19%;">Amount</th>
+                            <th style="text-align:left; width:35%;">Status</th>
+                            <th style="text-align:right; width:12%;"></th>
                         </tr>
                     </thead>
                     <tbody id="chq-master-tbody"></tbody>
@@ -6295,6 +6327,9 @@
             for (let i = 0; i <= 5; i++) {
                 if (counterPermissions[i.toString()] !== false) openCnt++;
             }
+            if (counterCollapsedState['_access'] === undefined) {
+                counterCollapsedState['_access'] = (window.innerWidth <= 640);
+            }
             const accessCollapsed = !!counterCollapsedState['_access'];
             accessCard.innerHTML = `
                 <div class="section-kicker" style="margin-bottom:0; cursor:pointer; user-select:none;" onclick="counterCollapsedState['_access']=!counterCollapsedState['_access']; renderAdminActive();">
@@ -6397,13 +6432,13 @@
                 table.innerHTML = `
                     <thead>
                         <tr>
-                            <th class="col-sticky" style="text-align:left; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')"># / Time ⇅</th>
-                            <th style="text-align:right; color:var(--ui-pos); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">Cash ⇅</th>
-                            <th style="text-align:right; color:var(--ui-info); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">QR ⇅</th>
-                            <th style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'other')">Other ⇅</th>
-                            <th style="text-align:right; color:var(--ui-neg); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'chqcr')">Chq/Cr ⇅</th>
-                            <th style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Total ⇅</th>
-                            <th style="text-align:right; width:56px;"></th>
+                            <th class="col-sticky" style="text-align:left; width:20%; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')"># Time</th>
+                            <th style="text-align:right; width:15%; color:var(--ui-pos); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">Cash</th>
+                            <th style="text-align:right; width:15%; color:var(--ui-info); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">QR</th>
+                            <th style="text-align:right; width:13%; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'other')">Other</th>
+                            <th style="text-align:right; width:13%; color:var(--ui-neg); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'chqcr')">Chq/Cr</th>
+                            <th style="text-align:right; width:14%; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Total</th>
+                            <th style="text-align:right; width:10%;"></th>
                         </tr>
                     </thead>
                     <tbody class="active-sess-tbody-${cid}"></tbody>
@@ -8669,7 +8704,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px; color:var(--ui-muted);">No cheques match the current filter.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:32px; color:var(--ui-muted);">No cheques match the current filter.</td></tr>';
                 return;
             }
 
@@ -8680,38 +8715,35 @@
                 const info = e.chequeInfo || {};
                 const st = normalizeChequeStatus(info);
                 const party = info.partyName || e.customerName || (e.remarks ? e.remarks.split('—')[0].trim() : '—');
-                const bankLine = [info.bankName, info.chequeNumber ? `#${info.chequeNumber}` : ''].filter(Boolean).join(' · ') || 'Details not added';
-                const chqDate = info.chequeDate || e.date || '—';
+                const metaLine = [`C${e.counterId}`, info.bankName, info.chequeNumber ? `#${info.chequeNumber}` : '', info.chequeDate || e.date].filter(Boolean).join(' · ');
                 const hasLog = Array.isArray(e.history) && e.history.length > 0;
 
                 const opts = statusKeys.map(k => `<option value="${k}" ${st === k ? 'selected' : ''}>${CHEQUE_STATUS_LABELS[k]}</option>`).join('');
                 const subNotes = [];
-                if (st === 'cleared') subNotes.push('Posted → Today EBL');
-                else if (st === 'returned_to_customer_cash') subNotes.push('Posted → Today Cash');
-                else if (st === 'returned_to_customer_qr') subNotes.push('Posted → Today QR');
+                if (st === 'cleared') subNotes.push('→ Today EBL');
+                else if (st === 'returned_to_customer_cash') subNotes.push('→ Today Cash');
+                else if (st === 'returned_to_customer_qr') subNotes.push('→ Today QR');
                 if (info.reason) subNotes.push(info.reason);
-                if (info.statusDate) subNotes.push(info.statusDate);
                 const subHtml = subNotes.length
-                    ? `<div style="font-size:10.5px; color:var(--ui-muted); margin-top:3px;">${esc(subNotes.join(' · '))}</div>`
+                    ? `<div style="font-size:10px; color:var(--ui-muted); margin-top:2px; overflow:hidden; text-overflow:ellipsis;">${esc(subNotes.join(' · '))}</div>`
                     : '';
 
                 return `<tr>
-                    <td style="white-space:nowrap;">${esc(e.date || '—')}</td>
-                    <td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>
-                    <td style="font-weight:600;">${esc(party)}</td>
-                    <td style="color:var(--ui-text-soft);">${esc(bankLine)}</td>
-                    <td style="white-space:nowrap;">${esc(chqDate)}</td>
-                    <td style="text-align:right; font-weight:800; font-variant-numeric:tabular-nums;">NPR ${Number(e.cheque || 0).toLocaleString()}</td>
                     <td>
-                        <select class="chq-inline-sel" onchange="inlineUpdateChequeStatus('${e.id}', this.value)">${opts}</select>
+                        <div style="font-weight:700; color:var(--ui-text);">${esc(party)}</div>
+                        <div style="font-size:10px; color:var(--ui-muted); margin-top:2px;">${esc(metaLine)}</div>
+                    </td>
+                    <td style="text-align:right; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;">${Number(e.cheque || 0).toLocaleString()}</td>
+                    <td>
+                        <select class="chq-inline-sel" style="width:100%; max-width:100%;" onchange="inlineUpdateChequeStatus('${e.id}', this.value)">${opts}</select>
                         ${subHtml}
                     </td>
-                    <td style="text-align:center; white-space:nowrap;">
-                        <button class="row-info-btn ${hasLog ? 'has-log' : ''}" onclick="openEntryHistoryModal('${e.id}')" title="Status change log &amp; undo">
-                            <span class="material-icons" style="font-size:14px;">info</span>
+                    <td style="text-align:right; white-space:nowrap;">
+                        <button class="row-info-btn ${hasLog ? 'has-log' : ''}" onclick="openEntryHistoryModal('${e.id}')" title="Status history &amp; undo">
+                            <span class="material-icons" style="font-size:13px;">info</span>
                         </button>
-                        <button class="glass-btn" onclick="openChequeModal('${e.id}')" style="padding:4px 9px !important; font-size:11px !important; margin-left:4px;">
-                            <span class="material-icons" style="font-size:13px;">edit</span> Edit
+                        <button class="row-info-btn" onclick="openChequeModal('${e.id}')" title="Edit cheque details">
+                            <span class="material-icons" style="font-size:13px;">edit</span>
                         </button>
                     </td>
                 </tr>`;
