@@ -85,11 +85,17 @@
 
         .calc-display {
             font-size: 64px;
+            line-height: 1.15;
             text-align: right;
-            padding: 20px 30px;
+            padding: 16px 30px;
             word-break: break-all;
-            min-height: 100px;
+            height: 118px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            overflow: hidden;
             font-weight: 300;
+            flex-shrink: 0;
         }
 
         .calc-grid {
@@ -726,8 +732,9 @@
 
             .calc-display {
                 font-size: 32px;
+                line-height: 1.2;
                 padding: 8px 20px;
-                min-height: auto;
+                height: 58px;
                 width: 100%;
                 max-width: 320px;
             }
@@ -2141,25 +2148,20 @@
         }
 
         #view-admin table thead th {
-            position: sticky;
-            top: 0;
-            z-index: 15;
-            background: var(--ui-header) !important;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            color: var(--ui-muted) !important;
-            font-size: 10.5px !important;
-            font-weight: 700 !important;
+            background: var(--ui-thead-bg);
+            color: var(--ui-muted);
+            font-size: 10.5px;
+            font-weight: 700;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            border-bottom: 1px solid var(--ui-border-strong) !important;
-            padding: 9px 8px !important;
+            border-bottom: 1px solid var(--ui-border-strong);
+            padding: 9px 8px;
         }
 
         #view-admin table tbody td,
         #view-admin .eod-table td {
-            border-bottom: 1px solid var(--ui-border) !important;
-            padding: 8px !important;
+            border-bottom: 1px solid var(--ui-border);
+            padding: 8px;
             color: var(--ui-text);
         }
 
@@ -2289,6 +2291,14 @@
             #view-admin .admin-tab {
                 padding: 7px 12px !important;
                 font-size: 12px !important;
+            }
+            .hide-xs {
+                display: none !important;
+            }
+            #admin-active-tab-label {
+                max-width: 135px;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
 
@@ -2660,10 +2670,10 @@
                 <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
                     <span class="material-icons" style="font-size:15px;">undo</span> <span id="admin-undo-cnt">Undo</span>
                 </button>
-                <button class="glass-btn" id="btn-theme-toggle" onclick="toggleTheme()"><span
-                        class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label">Light</span></button>
-                <button class="glass-btn" onclick="lockApp()"><span class="material-icons"
-                        style="font-size:15px;">lock</span> Lock</button>
+                <button class="glass-btn" id="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Light / Dark theme"><span
+                        class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label" class="hide-xs">Light</span></button>
+                <button class="glass-btn" onclick="lockApp()" title="Lock App"><span class="material-icons"
+                        style="font-size:15px;">lock</span> <span class="hide-xs">Lock</span></button>
             </div>
         </div>
         <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 14px; width: 100%;">
@@ -2689,17 +2699,17 @@
 
             <div id="admin-archived-main-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
                 <!-- EOD Archive Date Picker & Reconciler -->
-                <div
-                    style="background: #1f2937; padding: 16px; border-radius: 12px; border: 1px solid #374151; display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
-                    <div style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">
+                <div class="glass-card"
+                    style="display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">
                         Reconciliation & EOD Archive Viewer</div>
 
                     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                         <!-- Double Calendar View B.S. & A.D. -->
-                        <div
-                            style="display:inline-flex; align-items:center; gap:8px; background:#111827; padding:6px 12px; border-radius:8px; border:1px solid #374151; flex-wrap: wrap;">
-                            <span class="material-icons" style="font-size:16px; color:#FF5A5F;">calendar_month</span>
-                            <span style="font-size:12px; font-weight:700; color:#9ca3af;">BS Date:</span>
+                        <div class="glass-subcard"
+                            style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px !important; flex-wrap: wrap;">
+                            <span class="material-icons" style="font-size:16px; color:var(--ui-neg);">calendar_month</span>
+                            <span style="font-size:12px; font-weight:700; color:var(--ui-muted);">BS Date:</span>
                             <div style="display: inline-flex; align-items: center; gap: 4px;">
                                 <select id="bs-year" onchange="handleBsSelectChange()"
                                     style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
@@ -2735,31 +2745,18 @@
                     <div id="archived-eod-reconciler-wrap"
                         style="display:none; flex-direction:column; gap:16px; border-top: 1px solid #374151; padding-top:16px; width: 100%;">
                         <!-- Sales Summary Dashboard Widgets -->
-                        <div
-                            style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
-                            <div
-                                style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                                <div
-                                    style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">
-                                    Total Sales</div>
-                                <div style="font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;"
-                                    id="archived-summary-total-sales">NPR 0</div>
+                        <div class="bento-3col" style="margin-bottom: 14px;">
+                            <div class="glass-subcard" style="text-align: center;">
+                                <div style="font-size: 10px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Total Sales</div>
+                                <div style="font-size: 16px; font-weight: 800; color: var(--ui-text); margin-top: 4px; font-variant-numeric: tabular-nums;" id="archived-summary-total-sales">NPR 0</div>
                             </div>
-                            <div
-                                style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                                <div
-                                    style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">
-                                    Total Cash (C)</div>
-                                <div style="font-size: 15px; font-weight: 800; color: #10b981; margin-top: 4px;"
-                                    id="archived-summary-cash-sales">NPR 0</div>
+                            <div class="glass-subcard" style="text-align: center;">
+                                <div style="font-size: 10px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Total Cash (C)</div>
+                                <div style="font-size: 16px; font-weight: 800; color: var(--ui-pos); margin-top: 4px; font-variant-numeric: tabular-nums;" id="archived-summary-cash-sales">NPR 0</div>
                             </div>
-                            <div
-                                style="background: #111827; padding: 12px 8px; border-radius: 8px; border: 1px solid #374151; text-align: center;">
-                                <div
-                                    style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">
-                                    Total QR/Bank</div>
-                                <div style="font-size: 15px; font-weight: 800; color: #f59e0b; margin-top: 4px;"
-                                    id="archived-summary-other-sales">NPR 0</div>
+                            <div class="glass-subcard" style="text-align: center;">
+                                <div style="font-size: 10px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Total QR/Bank</div>
+                                <div style="font-size: 16px; font-weight: 800; color: var(--ui-info); margin-top: 4px; font-variant-numeric: tabular-nums;" id="archived-summary-other-sales">NPR 0</div>
                             </div>
                         </div>
 
@@ -2847,12 +2844,12 @@
                         </div>
 
                         <!-- Cash Split Summary Widgets -->
-                        <div
-                            style="background: #111827; padding: 16px; border-radius: 8px; border: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; font-size: 13px; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+                        <div class="glass-subcard"
+                            style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
                             <div>
-                                <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">
+                                <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">
                                     Take Home (INR + 1000 + 500)</div>
-                                <div style="font-size: 16px; font-weight:800; color:#10b981; margin-top:4px;"
+                                <div style="font-size: 16px; font-weight:800; color:var(--ui-pos); margin-top:4px;"
                                     id="archived-split-take-home">NPR 0</div>
                             </div>
                             <div>
@@ -2957,13 +2954,13 @@
                     </button>
                 </div>
                 <div style="overflow-x: auto;">
-                    <table class="eod-table" style="width: 100%; font-size: 13px;">
+                    <table class="eod-table" style="width: 100%; font-size: 12.5px;">
                         <thead>
                             <tr>
                                 <th style="text-align: left;">Particulars</th>
-                                <th style="text-align: right; width: 125px;">IN (Expected)</th>
-                                <th style="text-align: right; width: 145px;">OUT (Actual)</th>
-                                <th style="text-align: right; width: 135px;">Variance</th>
+                                <th style="text-align: right; min-width: 74px;">IN</th>
+                                <th style="text-align: right; min-width: 90px;">OUT</th>
+                                <th style="text-align: right; min-width: 72px;">Var</th>
                             </tr>
                         </thead>
                         <tbody id="daily-table-body">
@@ -6294,12 +6291,20 @@
                 `;
             }
 
+            let openCnt = 0;
+            for (let i = 0; i <= 5; i++) {
+                if (counterPermissions[i.toString()] !== false) openCnt++;
+            }
+            const accessCollapsed = !!counterCollapsedState['_access'];
             accessCard.innerHTML = `
-                <div class="section-kicker" style="margin-bottom:0;">
-                    <span>Counter Login Access Control</span>
-                    <span class="kpi-badge">6 COUNTERS</span>
+                <div class="section-kicker" style="margin-bottom:0; cursor:pointer; user-select:none;" onclick="counterCollapsedState['_access']=!counterCollapsedState['_access']; renderAdminActive();">
+                    <span style="display:inline-flex; align-items:center; gap:5px;">
+                        <span class="material-icons" style="font-size:17px; transition:transform 0.16s; transform:rotate(${accessCollapsed ? '-90deg' : '0deg'});">expand_more</span>
+                        Counter Login Access Control
+                    </span>
+                    <span class="kpi-badge">${openCnt} OPEN · ${6 - openCnt} LOCKED</span>
                 </div>
-                <div class="counter-grid">
+                <div class="counter-grid" style="display:${accessCollapsed ? 'none' : 'grid'};">
                     ${statusGridHtml}
                 </div>
             `;
