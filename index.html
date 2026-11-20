@@ -1001,6 +1001,9 @@
             --ui-info: #818cf8;
             --ui-btn-primary-bg: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
             --ui-btn-primary-text: #ffffff;
+            --ui-sheet-bg: #0f1420;
+            --ui-sheet-card: #161d2e;
+            --ui-sheet-border: rgba(255, 255, 255, 0.14);
         }
 
         body.theme-light {
@@ -1036,7 +1039,151 @@
             --ui-info: #5b4bb7;
             --ui-btn-primary-bg: linear-gradient(135deg, #5b4bb7 0%, #7c6df0 100%);
             --ui-btn-primary-text: #ffffff;
+            --ui-sheet-bg: #f4f6fc;
+            --ui-sheet-card: #ffffff;
+            --ui-sheet-border: rgba(91, 75, 183, 0.22);
         }
+
+        /* Counter-Side Dual-Theme Contrast Fixes (zero white-on-white in Light or Dark mode) */
+        #sheet-list,
+        #capture-sheet {
+            background: var(--ui-sheet-bg) !important;
+            color: var(--ui-text) !important;
+        }
+
+        #sheet-list .sheet-header,
+        #sheet-list .bottom-summary-bar,
+        #capture-sheet .action-footer {
+            background: var(--ui-sheet-card) !important;
+            color: var(--ui-text) !important;
+            border-color: var(--ui-sheet-border) !important;
+        }
+
+        #sheet-list .entry-item {
+            background: var(--ui-sheet-card) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        .counter-ledger-strip {
+            display: flex;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--ui-sheet-bg);
+            border-bottom: 1px solid var(--ui-sheet-border);
+        }
+
+        .counter-ledger-strip .glass-btn {
+            flex: 1;
+            padding: 8px 10px !important;
+            font-size: 12px !important;
+            background: var(--ui-sheet-card) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+            color: var(--ui-text) !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        .btn-close-session {
+            background: var(--ui-neg-soft) !important;
+            color: var(--ui-neg) !important;
+            border: 1px solid rgba(225, 29, 72, 0.35) !important;
+            padding: 10px 18px !important;
+            border-radius: 9px !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            letter-spacing: 0.02em;
+        }
+
+        #capture-sheet .preview-area {
+            background: var(--ui-sheet-card) !important;
+            border-bottom: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        #capture-sheet .input-field,
+        #capture-sheet .btn-cancel-capture {
+            color: var(--ui-text) !important;
+        }
+
+        #capture-sheet .input-field {
+            background: var(--ui-sheet-card) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        #capture-sheet .btn-cancel-capture {
+            background: var(--ui-sheet-bg) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+            padding: 8px 14px !important;
+            border-radius: 8px !important;
+        }
+
+        #capture-sheet .btn-next {
+            background: var(--ui-btn-primary-bg) !important;
+            color: #ffffff !important;
+            border-radius: 10px !important;
+        }
+
+        .modal-card {
+            background: var(--ui-sheet-card) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45) !important;
+        }
+
+        .modal-input {
+            background: var(--ui-sheet-bg) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        #close-totals-summary {
+            background: var(--ui-sheet-bg) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        .btn-cancel {
+            background: var(--ui-sheet-bg) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        .btn-confirm {
+            background: var(--ui-btn-primary-bg) !important;
+            color: #ffffff !important;
+            border: none !important;
+        }
+
+        #coll-edit-modal > div {
+            background: var(--ui-sheet-card) !important;
+            color: var(--ui-text) !important;
+            border-top: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        #coll-edit-modal .input-field {
+            background: var(--ui-sheet-bg) !important;
+            color: var(--ui-text) !important;
+            border: 1px solid var(--ui-sheet-border) !important;
+        }
+
+        /* Cheque Master Status Badges */
+        .chq-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 9px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .chq-received { background: rgba(148, 163, 184, 0.16); color: var(--ui-text-soft); border-color: var(--ui-border-strong); }
+        .chq-sent_to_bank { background: rgba(99, 102, 241, 0.16); color: var(--ui-info); border-color: rgba(99, 102, 241, 0.34); }
+        .chq-cleared { background: var(--ui-pos-soft); color: var(--ui-pos); border-color: rgba(16, 185, 129, 0.32); }
+        .chq-returned_from_bank { background: rgba(245, 158, 11, 0.16); color: var(--ui-warn); border-color: rgba(245, 158, 11, 0.35); }
+        .chq-bounced { background: var(--ui-neg-soft); color: var(--ui-neg); border-color: rgba(239, 68, 68, 0.38); }
+        .chq-returned_to_customer { background: rgba(168, 85, 247, 0.16); color: #a855f7; border-color: rgba(168, 85, 247, 0.35); }
+        .chq-canceled { background: rgba(100, 116, 139, 0.18); color: var(--ui-muted); border-color: var(--ui-border); text-decoration: line-through; }
 
         #view-admin,
         #collection-workspace {
@@ -2105,15 +2252,15 @@
                 </div>
             </div>
 
-            <div style="display:flex; gap:6px; padding:8px 16px; border-bottom:1px solid var(--border); background:var(--surface);">
-                <button class="glass-btn" onclick="openIsolatedLedger('cash', 'counter')" style="flex:1; padding:7px 8px !important; font-size:11.5px !important; color:var(--ui-pos) !important;">
-                    <span class="material-icons" style="font-size:14px;">payments</span> Cash List
+            <div class="counter-ledger-strip">
+                <button class="glass-btn" onclick="openIsolatedLedger('cash', 'counter')" style="color:var(--ui-pos) !important;">
+                    <span class="material-icons" style="font-size:15px;">payments</span> Cash List
                 </button>
-                <button class="glass-btn" onclick="openIsolatedLedger('qr', 'counter')" style="flex:1; padding:7px 8px !important; font-size:11.5px !important; color:var(--ui-info) !important;">
-                    <span class="material-icons" style="font-size:14px;">qr_code_2</span> QR List
+                <button class="glass-btn" onclick="openIsolatedLedger('qr', 'counter')" style="color:var(--ui-info) !important;">
+                    <span class="material-icons" style="font-size:15px;">qr_code_2</span> QR List
                 </button>
-                <button class="glass-btn" onclick="openIsolatedLedger('all', 'counter')" style="flex:1; padding:7px 8px !important; font-size:11.5px !important;">
-                    <span class="material-icons" style="font-size:14px;">table_chart</span> Full Ledger
+                <button class="glass-btn" onclick="openIsolatedLedger('all', 'counter')">
+                    <span class="material-icons" style="font-size:15px;">table_chart</span> Full Ledger
                 </button>
             </div>
 
@@ -2121,17 +2268,12 @@
 
             <div class="bottom-summary-bar">
                 <div>
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);" id="bottom-bar-label">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--ui-muted);" id="bottom-bar-label">
                         CREDIT</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--c-credit);" id="list-total-credit">0
+                    <div style="font-size: 16px; font-weight: 700; color: var(--ui-neg);" id="list-total-credit">0
                     </div>
                 </div>
-                <div style="display:flex; gap:8px; align-items:center;">
-                    <button class="glass-btn" onclick="openIsolatedLedger('all', 'counter')" style="padding:10px 14px !important;">
-                        <span class="material-icons" style="font-size:16px;">table_chart</span> LEDGER
-                    </button>
-                    <button class="btn-close-session" onclick="openCloseModal()">CLOSING</button>
-                </div>
+                <button class="btn-close-session" onclick="openCloseModal()">CLOSING</button>
             </div>
         </div>
 
@@ -2241,6 +2383,9 @@
                     </div>
                     <div class="admin-tab" onclick="switchAdminTab('analytics')">
                         <span class="material-icons" style="font-size:16px;">insights</span> Analytics & History
+                    </div>
+                    <div class="admin-tab" onclick="switchAdminTab('cheques')">
+                        <span class="material-icons" style="font-size:16px;">account_balance</span> Cheques Master
                     </div>
                     <div style="height:1px; background:var(--ui-border); margin:4px 6px;"></div>
                     <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('cash', 'admin');">
@@ -2925,6 +3070,74 @@
                 </div>
             </div>
         </div>
+
+        <!-- Cheques Master Tab Content -->
+        <div class="admin-content" id="admin-cheques-content"
+            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
+
+            <!-- Cheques KPI Summary Strip -->
+            <div class="bento-kpi-grid">
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Total Cheques</span><span class="kpi-badge" id="chq-kpi-all-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:20px;" id="chq-kpi-all-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>In Hand</span><span class="kpi-badge" id="chq-kpi-hand-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:20px; color:var(--ui-text-soft);" id="chq-kpi-hand-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Sent to Bank</span><span class="kpi-badge" style="color:var(--ui-info);" id="chq-kpi-bank-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:20px; color:var(--ui-info);" id="chq-kpi-bank-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Cleared</span><span class="kpi-badge" style="color:var(--ui-pos);" id="chq-kpi-clr-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:20px; color:var(--ui-pos);" id="chq-kpi-clr-amt">NPR 0</div>
+                </div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Bounced / Returned</span><span class="kpi-badge" style="color:var(--ui-neg);" id="chq-kpi-ret-cnt">0</span></div>
+                    <div class="kpi-value" style="font-size:20px; color:var(--ui-neg);" id="chq-kpi-ret-amt">NPR 0</div>
+                </div>
+            </div>
+
+            <!-- Filter & Action Bar -->
+            <div class="glass-card" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; padding:14px 16px !important;">
+                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; flex:1;">
+                    <select id="chq-filter-status" onchange="renderAdminCheques()" style="padding:8px 12px; font-size:12.5px; min-width:170px;">
+                        <option value="all">All Statuses</option>
+                        <option value="received">Received (In Hand)</option>
+                        <option value="sent_to_bank">Sent to Bank</option>
+                        <option value="cleared">Cleared</option>
+                        <option value="returned_from_bank">Returned from Bank</option>
+                        <option value="bounced">Bounced</option>
+                        <option value="returned_to_customer">Returned to Customer</option>
+                        <option value="canceled">Canceled</option>
+                    </select>
+                    <input type="text" id="chq-search" oninput="renderAdminCheques()" placeholder="Search party, bank, cheque #, remarks..." style="padding:8px 12px; font-size:12.5px; flex:1; min-width:180px;">
+                </div>
+                <button class="glass-btn-primary" onclick="openChequeModal(null)" style="padding:8px 14px !important; font-size:12px !important;">
+                    <span class="material-icons" style="font-size:15px;">add</span> Add Cheque
+                </button>
+            </div>
+
+            <!-- Master Cheques Table -->
+            <div class="table-shell">
+                <table class="eod-table" style="width:100%; font-size:12px;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;">Date</th>
+                            <th style="text-align:center;">Ctr</th>
+                            <th style="text-align:left;">Party / Customer</th>
+                            <th style="text-align:left;">Bank &amp; Cheque #</th>
+                            <th style="text-align:left;">Chq Date</th>
+                            <th style="text-align:right;">Amount</th>
+                            <th style="text-align:left;">Status &amp; Details</th>
+                            <th style="text-align:center;">Manage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chq-master-tbody"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Isolated Cash / QR & Individual Counter Ledger Reconciliation Modal -->
@@ -2953,6 +3166,83 @@
             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-top:1px solid var(--ui-border-strong); background:var(--ui-card-inner); gap:12px; flex-wrap:wrap; font-variant-numeric:tabular-nums;">
                 <div style="font-size:12px; font-weight:700; color:var(--ui-muted);" id="ledger-modal-count">0 invoices</div>
                 <div style="font-size:17px; font-weight:800; color:var(--ui-pos);" id="ledger-modal-sum">Total: NPR 0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cheque Master Details & Status Modal -->
+    <div id="cheque-edit-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeChequeModal()">
+        <div class="ledger-modal-card" style="max-width:520px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border);">
+                <div>
+                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="chq-modal-sub">Cheque Master</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="chq-modal-title">Edit Cheque Details</div>
+                </div>
+                <button class="glass-btn" onclick="closeChequeModal()" style="padding:6px 10px !important;">
+                    <span class="material-icons" style="font-size:16px;">close</span>
+                </button>
+            </div>
+            <div style="padding:16px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Party / Customer Name</label>
+                        <input type="text" id="chq-inp-party" class="input-field" placeholder="e.g. Himalaya Garments" style="padding:9px 11px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Amount (NPR)</label>
+                        <input type="number" id="chq-inp-amount" class="input-field" placeholder="0" style="padding:9px 11px; font-size:13px; font-weight:700;">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Bank Name</label>
+                        <input type="text" id="chq-inp-bank" class="input-field" placeholder="e.g. Nabil / NIC Asia / Global IME" style="padding:9px 11px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Number</label>
+                        <input type="text" id="chq-inp-number" class="input-field" placeholder="e.g. 00458219" style="padding:9px 11px; font-size:13px;">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Date (PD / Issue)</label>
+                        <input type="date" id="chq-inp-date" class="input-field" style="padding:9px 11px; font-size:13px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Status Date</label>
+                        <input type="date" id="chq-inp-status-date" class="input-field" style="padding:9px 11px; font-size:13px;">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Status</label>
+                    <select id="chq-inp-status" onchange="toggleChequeSettlementFields()" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
+                        <option value="received">Received (In Hand)</option>
+                        <option value="sent_to_bank">Sent to Bank (In Clearing)</option>
+                        <option value="cleared">Cleared</option>
+                        <option value="returned_from_bank">Returned from Bank</option>
+                        <option value="bounced">Bounced</option>
+                        <option value="returned_to_customer">Returned to Customer (Settled)</option>
+                        <option value="canceled">Canceled</option>
+                    </select>
+                </div>
+                <div id="chq-settle-wrap" class="input-group" style="display:none;">
+                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Returned Against (Settlement Mode)</label>
+                    <select id="chq-inp-settled-via" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
+                        <option value="Cash">Cash</option>
+                        <option value="QR">QR / Online</option>
+                        <option value="Credit">Credit (Moved to Ledger)</option>
+                        <option value="Replacement Cheque">Replacement Cheque</option>
+                        <option value="Other">Other / No Settlement</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Reason / Bank Remarks</label>
+                    <input type="text" id="chq-inp-reason" class="input-field" placeholder="e.g. Signature mismatch, insufficient funds, cleared in EBL..." style="padding:9px 11px; font-size:13px;">
+                </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; padding:12px 18px; border-top:1px solid var(--ui-border); background:var(--ui-card-inner);">
+                <button class="glass-btn" onclick="closeChequeModal()">Cancel</button>
+                <button class="glass-btn-primary" onclick="saveChequeDetails()">Save Cheque</button>
             </div>
         </div>
     </div>
@@ -5306,7 +5596,8 @@
             archived: 'Archived Logs',
             eod: 'EOD Closing',
             reports: 'Daily Report',
-            analytics: 'Analytics & History'
+            analytics: 'Analytics & History',
+            cheques: 'Cheques Master'
         };
 
         function toggleAdminMenu(e) {
@@ -5342,6 +5633,8 @@
             document.getElementById('admin-reports-content').style.display = 'none';
             const anaEl = document.getElementById('admin-analytics-content');
             if (anaEl) anaEl.style.display = 'none';
+            const chqEl = document.getElementById('admin-cheques-content');
+            if (chqEl) chqEl.style.display = 'none';
 
             if (tab === 'active') {
                 document.querySelectorAll('.admin-tab')[0].classList.add('active');
@@ -5404,6 +5697,11 @@
                 } else {
                     renderAdminAnalytics();
                 }
+            } else if (tab === 'cheques') {
+                document.querySelectorAll('.admin-tab')[5].classList.add('active');
+                const chqEl = document.getElementById('admin-cheques-content');
+                if (chqEl) chqEl.style.display = 'flex';
+                renderAdminCheques();
             }
         }
 
@@ -5419,6 +5717,8 @@
                     renderAdminReports();
                 } else if (activeAdminTab === 'analytics') {
                     renderAdminAnalytics();
+                } else if (activeAdminTab === 'cheques') {
+                    renderAdminCheques();
                 }
             } catch (err) {
                 console.error("Error rendering admin portal:", err);
@@ -7626,6 +7926,249 @@
                     sumEl.style.color = 'var(--ui-text)';
                     sumEl.innerText = `Grand Total: NPR ${grandTotal.toLocaleString()}`;
                 }
+            }
+        }
+
+        // ============================================================
+        // ADMIN CHEQUES MASTER PANEL (Lifecycle Tracking & Settlement)
+        // ============================================================
+        const CHEQUE_STATUS_LABELS = {
+            received: 'Received (In Hand)',
+            sent_to_bank: 'Sent to Bank',
+            cleared: 'Cleared',
+            returned_from_bank: 'Returned from Bank',
+            bounced: 'Bounced',
+            returned_to_customer: 'Returned to Customer',
+            canceled: 'Canceled'
+        };
+        let editingChequeEntryId = null;
+
+        function renderAdminCheques() {
+            const tbody = document.getElementById('chq-master-tbody');
+            if (!tbody) return;
+
+            const statusFilter = document.getElementById('chq-filter-status')?.value || 'all';
+            const searchQ = (document.getElementById('chq-search')?.value || '').trim().toLowerCase();
+
+            // Master list: all non-void entries with cheque > 0
+            const allCheques = entries
+                .filter(e => !e.isVoid && Number(e.cheque || 0) > 0)
+                .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+
+            // Compute KPI buckets across ALL cheques
+            const stats = {
+                all: { c: 0, a: 0 },
+                hand: { c: 0, a: 0 },
+                bank: { c: 0, a: 0 },
+                clr: { c: 0, a: 0 },
+                ret: { c: 0, a: 0 }
+            };
+            allCheques.forEach(e => {
+                const amt = Number(e.cheque || 0);
+                const st = (e.chequeInfo && e.chequeInfo.status) || 'received';
+                stats.all.c++; stats.all.a += amt;
+                if (st === 'received') { stats.hand.c++; stats.hand.a += amt; }
+                else if (st === 'sent_to_bank') { stats.bank.c++; stats.bank.a += amt; }
+                else if (st === 'cleared') { stats.clr.c++; stats.clr.a += amt; }
+                else if (st === 'bounced' || st === 'returned_from_bank' || st === 'returned_to_customer' || st === 'canceled') {
+                    stats.ret.c++; stats.ret.a += amt;
+                }
+            });
+
+            const setT = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+            setT('chq-kpi-all-cnt', String(stats.all.c));
+            setT('chq-kpi-all-amt', `NPR ${stats.all.a.toLocaleString()}`);
+            setT('chq-kpi-hand-cnt', String(stats.hand.c));
+            setT('chq-kpi-hand-amt', `NPR ${stats.hand.a.toLocaleString()}`);
+            setT('chq-kpi-bank-cnt', String(stats.bank.c));
+            setT('chq-kpi-bank-amt', `NPR ${stats.bank.a.toLocaleString()}`);
+            setT('chq-kpi-clr-cnt', String(stats.clr.c));
+            setT('chq-kpi-clr-amt', `NPR ${stats.clr.a.toLocaleString()}`);
+            setT('chq-kpi-ret-cnt', String(stats.ret.c));
+            setT('chq-kpi-ret-amt', `NPR ${stats.ret.a.toLocaleString()}`);
+
+            // Filter rows
+            const filtered = allCheques.filter(e => {
+                const info = e.chequeInfo || {};
+                const st = info.status || 'received';
+                if (statusFilter !== 'all' && st !== statusFilter) return false;
+                if (searchQ) {
+                    const hay = [
+                        info.partyName, e.customerName, info.bankName, info.chequeNumber,
+                        info.reason, info.settledVia, e.remarks, e.date
+                    ].filter(Boolean).join(' ').toLowerCase();
+                    if (!hay.includes(searchQ)) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px; color:var(--ui-muted);">No cheques match the current filter.</td></tr>';
+                return;
+            }
+
+            const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            tbody.innerHTML = filtered.map(e => {
+                const info = e.chequeInfo || {};
+                const st = info.status || 'received';
+                const party = info.partyName || e.customerName || (e.remarks ? e.remarks.split('—')[0].trim() : '—');
+                const bankLine = [info.bankName, info.chequeNumber ? `#${info.chequeNumber}` : ''].filter(Boolean).join(' · ') || 'Details not added';
+                const chqDate = info.chequeDate || e.date || '—';
+                const statusLabel = CHEQUE_STATUS_LABELS[st] || st;
+
+                const subNotes = [];
+                if (st === 'returned_to_customer' && info.settledVia) subNotes.push(`Against: ${info.settledVia}`);
+                if (info.reason) subNotes.push(info.reason);
+                if (info.statusDate) subNotes.push(info.statusDate);
+                const subHtml = subNotes.length
+                    ? `<div style="font-size:10.5px; color:var(--ui-muted); margin-top:3px;">${esc(subNotes.join(' · '))}</div>`
+                    : '';
+
+                return `<tr>
+                    <td style="white-space:nowrap;">${esc(e.date || '—')}</td>
+                    <td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>
+                    <td style="font-weight:600;">${esc(party)}</td>
+                    <td style="color:var(--ui-text-soft);">${esc(bankLine)}</td>
+                    <td style="white-space:nowrap;">${esc(chqDate)}</td>
+                    <td style="text-align:right; font-weight:800; font-variant-numeric:tabular-nums;">NPR ${Number(e.cheque || 0).toLocaleString()}</td>
+                    <td>
+                        <span class="chq-badge chq-${esc(st)}">${esc(statusLabel)}</span>
+                        ${subHtml}
+                    </td>
+                    <td style="text-align:center;">
+                        <button class="glass-btn" onclick="openChequeModal('${e.id}')" style="padding:5px 10px !important; font-size:11px !important;">
+                            <span class="material-icons" style="font-size:13px;">edit</span> Edit
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function toggleChequeSettlementFields() {
+            const st = document.getElementById('chq-inp-status')?.value || 'received';
+            const wrap = document.getElementById('chq-settle-wrap');
+            if (wrap) wrap.style.display = (st === 'returned_to_customer') ? 'block' : 'none';
+        }
+
+        function openChequeModal(entryId) {
+            editingChequeEntryId = entryId;
+            const today = getLocalTodayStr();
+            const titleEl = document.getElementById('chq-modal-title');
+            const subEl = document.getElementById('chq-modal-sub');
+            const amtInp = document.getElementById('chq-inp-amount');
+
+            if (entryId) {
+                const entry = entries.find(e => String(e.id) === String(entryId));
+                if (!entry) return;
+                const info = entry.chequeInfo || {};
+                if (titleEl) titleEl.innerText = `Cheque · NPR ${Number(entry.cheque || 0).toLocaleString()}`;
+                if (subEl) subEl.innerText = `Counter ${entry.counterId} · Received ${entry.date || ''}`;
+                document.getElementById('chq-inp-party').value = info.partyName || entry.customerName || '';
+                amtInp.value = Number(entry.cheque || 0);
+                amtInp.readOnly = true;
+                document.getElementById('chq-inp-bank').value = info.bankName || '';
+                document.getElementById('chq-inp-number').value = info.chequeNumber || '';
+                document.getElementById('chq-inp-date').value = info.chequeDate || entry.date || today;
+                document.getElementById('chq-inp-status').value = info.status || 'received';
+                document.getElementById('chq-inp-settled-via').value = info.settledVia || 'Cash';
+                document.getElementById('chq-inp-reason').value = info.reason || '';
+                document.getElementById('chq-inp-status-date').value = info.statusDate || today;
+            } else {
+                if (titleEl) titleEl.innerText = 'Add New Cheque';
+                if (subEl) subEl.innerText = 'Admin Manual Cheque Entry (Counter 0)';
+                document.getElementById('chq-inp-party').value = '';
+                amtInp.value = '';
+                amtInp.readOnly = false;
+                document.getElementById('chq-inp-bank').value = '';
+                document.getElementById('chq-inp-number').value = '';
+                document.getElementById('chq-inp-date').value = today;
+                document.getElementById('chq-inp-status').value = 'received';
+                document.getElementById('chq-inp-settled-via').value = 'Cash';
+                document.getElementById('chq-inp-reason').value = '';
+                document.getElementById('chq-inp-status-date').value = today;
+            }
+
+            toggleChequeSettlementFields();
+            const modal = document.getElementById('cheque-edit-modal');
+            if (modal) modal.classList.add('open');
+        }
+
+        function closeChequeModal() {
+            editingChequeEntryId = null;
+            const modal = document.getElementById('cheque-edit-modal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        async function saveChequeDetails() {
+            const partyName = (document.getElementById('chq-inp-party').value || '').trim();
+            const amount = parseFloat(document.getElementById('chq-inp-amount').value) || 0;
+            const bankName = (document.getElementById('chq-inp-bank').value || '').trim();
+            const chequeNumber = (document.getElementById('chq-inp-number').value || '').trim();
+            const chequeDate = document.getElementById('chq-inp-date').value || getLocalTodayStr();
+            const status = document.getElementById('chq-inp-status').value || 'received';
+            const settledVia = status === 'returned_to_customer' ? (document.getElementById('chq-inp-settled-via').value || 'Cash') : '';
+            const reason = (document.getElementById('chq-inp-reason').value || '').trim();
+            const statusDate = document.getElementById('chq-inp-status-date').value || getLocalTodayStr();
+
+            if (!editingChequeEntryId && amount <= 0) {
+                alert('Please enter a valid cheque amount.');
+                return;
+            }
+
+            const chequeInfo = {
+                partyName,
+                bankName,
+                chequeNumber,
+                chequeDate,
+                status,
+                settledVia,
+                reason,
+                statusDate
+            };
+
+            let targetEntry;
+            if (editingChequeEntryId) {
+                targetEntry = entries.find(e => String(e.id) === String(editingChequeEntryId));
+                if (!targetEntry) return;
+                targetEntry.chequeInfo = chequeInfo;
+                if (partyName && !targetEntry.customerName) targetEntry.customerName = partyName;
+                targetEntry.synced = false;
+            } else {
+                const now = new Date();
+                const dd = String(now.getDate()).padStart(2, '0');
+                const mm = String(now.getMonth() + 1).padStart(2, '0');
+                const yy = String(now.getFullYear()).slice(-2);
+                const hh = String(now.getHours()).padStart(2, '0');
+                const min = String(now.getMinutes()).padStart(2, '0');
+                const today = getLocalTodayStr(now);
+                targetEntry = {
+                    id: Date.now(),
+                    timestamp: `${hh}:${min} ${dd}/${mm}/${yy}`,
+                    time: `${hh}:${min}`,
+                    date: today,
+                    counterId: '0',
+                    cash: 0, qr: 0, ips: 0, pos: 0, esewa: 0, online: 0,
+                    cheque: amount,
+                    credit: 0,
+                    totalIn: 0,
+                    totalCredit: amount,
+                    remarks: [partyName, bankName, chequeNumber ? `#${chequeNumber}` : ''].filter(Boolean).join(' · ') || 'Cheque',
+                    customerName: partyName,
+                    isVoid: false,
+                    images: [],
+                    sessionStatus: 'active',
+                    chequeInfo,
+                    synced: false
+                };
+                entries.push(targetEntry);
+            }
+
+            await saveEntryToIDB(targetEntry);
+            closeChequeModal();
+            renderAdminCheques();
+            if (typeof syncWithServer === 'function') {
+                syncWithServer();
             }
         }
 
