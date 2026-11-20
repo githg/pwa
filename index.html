@@ -4557,6 +4557,61 @@
             return `${cid}-${modes}-${mmdd}-${sn}`;
         }
 
+        // Canonical 24-hour timestamp: "HH:mm dd/MM/yy"
+        function formatCanonicalTimestamp(d = new Date()) {
+            const hh = String(d.getHours()).padStart(2, '0');
+            const min = String(d.getMinutes()).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const yy = String(d.getFullYear()).slice(-2);
+            return `${hh}:${min} ${dd}/${mm}/${yy}`;
+        }
+
+        // Deterministic chronological sort key from actual (date + HH:mm) + sub-minute creation order
+        function getEntrySortKey(entry) {
+            if (!entry) return 0;
+            let dateStr = String(entry.date || '');
+            const ts = String(entry.timestamp || '').trim();
+            if (!dateStr && ts) {
+                const mDate = ts.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+                if (mDate) {
+                    const dd = mDate[1].padStart(2, '0');
+                    const mm = mDate[2].padStart(2, '0');
+                    const yy = mDate[3].length === 2 ? ('20' + mDate[3]) : mDate[3];
+                    dateStr = `${yy}-${mm}-${dd}`;
+                }
+            }
+            const dp = dateStr.split('-');
+            if (dp.length === 3) {
+                const y = parseInt(dp[0], 10), m = parseInt(dp[1], 10), d = parseInt(dp[2], 10);
+                let hh = 0, min = 0;
+                const mTime = ts.match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i);
+                if (mTime) {
+                    hh = parseInt(mTime[1], 10) || 0;
+                    min = parseInt(mTime[2], 10) || 0;
+                    if (mTime[3]) {
+                        const ap = mTime[3].toUpperCase();
+                        if (ap === 'PM' && hh < 12) hh += 12;
+                        if (ap === 'AM' && hh === 12) hh = 0;
+                    }
+                }
+                if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                    const baseMs = Date.UTC(y, m - 1, d, hh, min, 0, 0);
+                    const idNum = Number(entry.id);
+                    const subMin = (!isNaN(idNum) && idNum > 0) ? (idNum % 60000) : 0;
+                    return baseMs + subMin;
+                }
+            }
+            const fallback = Number(entry.id);
+            return isNaN(fallback) ? 0 : fallback;
+        }
+
+        function compareEntriesChrono(a, b) {
+            const diff = getEntrySortKey(a) - getEntrySortKey(b);
+            if (diff !== 0) return diff;
+            return String(a && a.id || '').localeCompare(String(b && b.id || ''));
+        }
+
         function getPendingDeletes() {
             try {
                 return JSON.parse(localStorage.getItem('pendingDeleteIds') || '[]');
@@ -4682,6 +4737,7 @@
         });
 
         async function saveEntryToIDB(entry) {
+            entry.id = String(entry.id != null ? entry.id : Date.now()).trim();
             entry.synced = false;
             const db = await dbPromise;
             await new Promise((resolve, reject) => {
@@ -4713,7 +4769,8 @@
             for (let i = 0; i < oldList.length; i++) {
                 const a = oldList[i];
                 const b = newList[i];
-                if (a.id !== b.id ||
+                if (String(a.id) !== String(b.id) ||
+                    String(a.counterId) !== String(b.counterId) ||
                     a.isVoid !== b.isVoid ||
                     a.sessionStatus !== b.sessionStatus ||
                     a.cash !== b.cash ||
@@ -4724,7 +4781,13 @@
                     a.online !== b.online ||
                     a.cheque !== b.cheque ||
                     a.credit !== b.credit ||
-                    a.remarks !== b.remarks ||
+                    (a.remarks || '') !== (b.remarks || '') ||
+                    (a.customerName || '') !== (b.customerName || '') ||
+                    (a.customerPhone || '') !== (b.customerPhone || '') ||
+                    ((a.recheck && a.recheck.status) || '') !== ((b.recheck && b.recheck.status) || '') ||
+                    ((a.chequeInfo && a.chequeInfo.status) || '') !== ((b.chequeInfo && b.chequeInfo.status) || '') ||
+                    ((a.creditInfo && a.creditInfo.status) || '') !== ((b.creditInfo && b.creditInfo.status) || '') ||
+                    (Array.isArray(a.history) ? a.history.length : 0) !== (Array.isArray(b.history) ? b.history.length : 0) ||
                     (a.images && a.images.length) !== (b.images && b.images.length)) {
                     return true;
                 }
@@ -4802,12 +4865,14 @@
                 const mergedEntries = [];
                 const seenIds = new Set();
                 serverEntries.forEach(gasEntry => {
-                    const idStr = String(gasEntry.id);
+                    const idStr = String(gasEntry.id).trim();
+                    gasEntry.id = idStr;
                     if (stillDeleted.has(idStr)) return;
                     seenIds.add(idStr);
 
                     const local = localMap[idStr];
                     if (local && (failedUploadIds.has(idStr) || unsynced.some(u => String(u.id) === idStr))) {
+                        local.id = idStr;
                         mergedEntries.push(local);
                         return;
                     }
@@ -4821,12 +4886,16 @@
 
                 // Re-add locally-created entries that aren't in serverEntries yet
                 unsynced.forEach(entry => {
-                    const idStr = String(entry.id);
+                    const idStr = String(entry.id).trim();
+                    entry.id = idStr;
                     if (!seenIds.has(idStr)) {
                         if (entry.synced === undefined) entry.synced = false;
                         mergedEntries.push(entry);
                     }
                 });
+
+                // Keep merged entries canonically ordered so diffs & lists are deterministic
+                mergedEntries.sort(compareEntriesChrono);
 
                 // Check if anything has actually changed before writing to database or re-rendering
                 const changed = hasEntriesChanged(entries, mergedEntries);
@@ -4937,7 +5006,7 @@
                 id: Date.now().toString(),
                 counterId: '0',
                 date: getLocalTodayStr(),
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                timestamp: formatCanonicalTimestamp(),
                 images: [],
                 isVoid: false,
                 // Combined payment mode fields (used by EOD totals)
@@ -5226,8 +5295,10 @@
                 const tx = db.transaction(STORE_NAME, 'readonly');
                 const req = tx.objectStore(STORE_NAME).getAll();
                 req.onsuccess = () => {
-                    const result = req.result || [];
-                    result.forEach(e => {
+                    const raw = req.result || [];
+                    const dedupMap = new Map();
+                    raw.forEach(e => {
+                        e.id = String(e.id != null ? e.id : '').trim();
                         if (!e.date && e.timestamp) {
                             const parts = e.timestamp.split(" ");
                             if (parts.length === 2 && parts[1].includes("/")) {
@@ -5240,8 +5311,12 @@
                                 }
                             }
                         }
+                        const prev = dedupMap.get(e.id);
+                        if (!prev || prev.synced === false || e.synced === true) {
+                            dedupMap.set(e.id, e);
+                        }
                     });
-                    resolve(result);
+                    resolve(Array.from(dedupMap.values()).sort(compareEntriesChrono));
                 };
                 req.onerror = reject;
             });
@@ -5619,7 +5694,7 @@
             if (!currentEntry) return;
             const list = entries
                 .filter(e => String(e.counterId) === String(currentEntry.counterId) && e.sessionStatus === currentEntry.sessionStatus)
-                .sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+                .sort(compareEntriesChrono);
             const idx = list.findIndex(e => String(e.id) === String(currentEntry.id));
             [idx + 1, idx + 2].forEach(nIdx => {
                 const nxt = list[nIdx];
@@ -6448,7 +6523,7 @@
                 if (targetEntry) {
                     const sameCtr = entries
                         .filter(x => String(x.counterId) === String(targetEntry.counterId) && x.date === targetEntry.date)
-                        .sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+                        .sort(compareEntriesChrono);
                     const sn = Math.max(1, sameCtr.findIndex(x => String(x.id) === String(targetEntry.id)) + 1);
                     refBadge.innerText = formatEntryRef(targetEntry, sn);
                 } else {
@@ -6878,9 +6953,9 @@
             const isCollection = (activeCounterId === '0');
 
             // Permanent chronological S.N map
-            const chrono = allCounterEntries.slice().sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+            const chrono = allCounterEntries.slice().sort(compareEntriesChrono);
             const snMap = {};
-            chrono.forEach((e, i) => { snMap[e.id] = i + 1; });
+            chrono.forEach((e, i) => { snMap[String(e.id)] = i + 1; });
 
             // Marketplace 2-Column Big-Thumbnail Split View (Cash Left | QR Right) for standard counters
             if (!isCollection && counterSheetFilter === 'split') {
@@ -6889,8 +6964,8 @@
                     grandTotalCredit += e.totalCredit || 0;
                 });
 
-                const cashItems = allCounterEntries.filter(e => !e.isVoid && (e.cash || 0) > 0).slice().reverse();
-                const qrItems = allCounterEntries.filter(e => !e.isVoid && ((e.qr || 0) + (e.online || 0)) > 0).slice().reverse();
+                const cashItems = chrono.filter(e => !e.isVoid && (e.cash || 0) > 0).reverse();
+                const qrItems = chrono.filter(e => !e.isVoid && ((e.qr || 0) + (e.online || 0)) > 0).reverse();
                 const sumCash = cashItems.reduce((s, e) => s + (e.cash || 0), 0);
                 const sumQr = qrItems.reduce((s, e) => s + (e.qr || 0) + (e.online || 0), 0);
 
@@ -6985,7 +7060,7 @@
                 container.innerHTML = `<div style="text-align:center; padding: 36px; color: var(--ui-muted); font-size:13px;">${isCollection ? 'No collection entries yet.' : (counterSheetFilter === 'all' ? `No captures yet for Counter ${activeCounterId}.` : `No ${counterSheetFilter} entries yet.`)}</div>`;
             }
 
-            filteredEntries.slice().reverse().forEach((entry) => {
+            filteredEntries.slice().sort((a, b) => compareEntriesChrono(b, a)).forEach((entry) => {
                 grandTotalIn += entry.totalIn || 0;
                 grandTotalCredit += isCollection ? (entry.totalIn || 0) : (entry.totalCredit || 0);
 
@@ -7584,9 +7659,9 @@
             if (!tbody) return;
 
             const allCounterEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
-            const chronological = allCounterEntries.slice().sort((a, b) => String(a.id || '').localeCompare(String(b.id || '')));
+            const chronological = allCounterEntries.slice().sort(compareEntriesChrono);
             const snMap = {};
-            chronological.forEach((e, idx) => { snMap[e.id] = idx + 1; });
+            chronological.forEach((e, idx) => { snMap[String(e.id)] = idx + 1; });
 
             const modeFilter = counterLedgerFilters[cid] || 'all';
             const activeEntries = allCounterEntries.filter(e => {
@@ -7606,16 +7681,18 @@
             activeEntries.sort((a, b) => {
                 let valA = 0, valB = 0;
                 switch (column) {
-                    case 'time': valA = String(a.id || ''); valB = String(b.id || ''); break;
+                    case 'time': valA = getEntrySortKey(a); valB = getEntrySortKey(b); break;
                     case 'cash': valA = a.cash || 0; valB = b.cash || 0; break;
                     case 'qr': valA = getQr(a); valB = getQr(b); break;
                     case 'other': valA = getOther(a); valB = getOther(b); break;
                     case 'chqcr': valA = getChqCr(a); valB = getChqCr(b); break;
                     case 'totSales': valA = getTotal(a); valB = getTotal(b); break;
-                    default: valA = snMap[a.id] || 0; valB = snMap[b.id] || 0;
+                    default: valA = snMap[String(a.id)] || 0; valB = snMap[String(b.id)] || 0;
                 }
                 if (typeof valA === 'string') return state.desc ? valB.localeCompare(valA) : valA.localeCompare(valB);
-                return state.desc ? valB - valA : valA - valB;
+                const diff = state.desc ? (valB - valA) : (valA - valB);
+                if (diff !== 0) return diff;
+                return state.desc ? compareEntriesChrono(b, a) : compareEntriesChrono(a, b);
             });
 
             const { cols, hasOther, hasChqCr } = getCounterColumns(cid, allCounterEntries);
@@ -8588,10 +8665,10 @@
             const counterEntries = dayEntries.filter(e => (e.counterId || 'unknown') === cid);
 
             // Establish permanent chronological sequence maps for S.N.
-            const chronological = counterEntries.slice().sort((a, b) => String(a.id || '').localeCompare(String(b.id || '')));
+            const chronological = counterEntries.slice().sort(compareEntriesChrono);
             const snMap = {};
             chronological.forEach((e, idx) => {
-                snMap[e.id] = idx + 1;
+                snMap[String(e.id)] = idx + 1;
             });
 
             counterEntries.sort((a, b) => {
@@ -8603,12 +8680,12 @@
 
                 switch (column) {
                     case 'sn':
-                        valA = snMap[a.id] || 0;
-                        valB = snMap[b.id] || 0;
+                        valA = snMap[String(a.id)] || 0;
+                        valB = snMap[String(b.id)] || 0;
                         break;
                     case 'time':
-                        valA = String(a.id || '');
-                        valB = String(b.id || '');
+                        valA = getEntrySortKey(a);
+                        valB = getEntrySortKey(b);
                         break;
                     case 'cash': valA = a.cash || 0; valB = b.cash || 0; break;
                     case 'qr': valA = a.qr || 0; valB = b.qr || 0; break;
@@ -10070,7 +10147,7 @@
 
                 if (!linked) {
                     linked = {
-                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        id: String(Date.now() + Math.floor(Math.random() * 1000)),
                         counterId: '0',
                         date: today,
                         timestamp: `${hh}:${min} ${dd}/${mm}/${yy}`,
@@ -10683,7 +10760,7 @@
 
                 if (!linked) {
                     linked = {
-                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        id: String(Date.now() + Math.floor(Math.random() * 1000)),
                         counterId: '0',
                         date: today,
                         timestamp: `${hh}:${min} ${dd}/${mm}/${yy}`,
