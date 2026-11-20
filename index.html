@@ -123,6 +123,22 @@
             background: #555;
         }
 
+        .calc-btn.calc-dot-pending {
+            background: #f59e0b !important;
+            color: #000 !important;
+            animation: pulse-red 0.9s infinite;
+        }
+        .calc-btn.calc-dot-ok {
+            background: #10b981 !important;
+            color: #fff !important;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.85);
+        }
+        .calc-btn.calc-dot-err {
+            background: #ef4444 !important;
+            color: #fff !important;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.85);
+        }
+
         .calc-btn.op {
             background: #f09a36;
         }
@@ -2875,7 +2891,7 @@
             <button class="calc-btn" onclick="calcInput('3')">3</button>
             <button class="calc-btn op" onclick="calcInput('+')">+</button>
             <button class="calc-btn zero" onclick="calcInput('0')">0</button>
-            <button class="calc-btn" onclick="calcInput('.')">.</button>
+            <button class="calc-btn" id="calc-dot-btn" onclick="calcInput('.')">.</button>
             <button class="calc-btn op" onclick="calcInput('=')">=</button>
         </div>
     </div>
@@ -5898,6 +5914,20 @@
             }
         }
 
+        let calcDotResetTimer = null;
+        function setCalcDotState(state) {
+            const btn = document.getElementById('calc-dot-btn');
+            if (!btn) return;
+            clearTimeout(calcDotResetTimer);
+            btn.classList.remove('calc-dot-pending', 'calc-dot-ok', 'calc-dot-err');
+            if (state === 'pending') {
+                btn.classList.add('calc-dot-pending');
+            } else if (state === 'ok' || state === 'err') {
+                btn.classList.add(state === 'ok' ? 'calc-dot-ok' : 'calc-dot-err');
+                calcDotResetTimer = setTimeout(() => btn.classList.remove('calc-dot-ok', 'calc-dot-err'), 2500);
+            }
+        }
+
         let justPressed100Pct = false;
 
         function calcInput(val) {
@@ -5947,9 +5977,19 @@
                 if (currentSequence === '911' && hasAdminCred) {
                     display.innerText = "";
                     currentSequence = "";
+                    setCalcDotState('pending');
                     callGas('TRIGGER_KILL_SWITCH', {})
-                        .then(() => executeLocalEmergencyWipe(true))
-                        .catch(() => executeLocalEmergencyWipe(true));
+                        .then((res) => {
+                            if (res && res.killed) {
+                                setCalcDotState('ok');
+                                setTimeout(() => executeLocalEmergencyWipe(true), 250);
+                            } else {
+                                setCalcDotState('err');
+                            }
+                        })
+                        .catch(() => {
+                            setCalcDotState('err');
+                        });
                     return;
                 }
 
@@ -5958,13 +5998,18 @@
                     justPressed100Pct = false;
                     display.innerText = "";
                     currentSequence = "";
+                    setCalcDotState('pending');
                     callGas('RESUME_SYSTEM', {})
                         .then((res) => {
                             if (res && res.resumed) {
+                                setCalcDotState('ok');
                                 showMsg("System resumed for this Admin device.\nLog in using ..=");
+                            } else {
+                                setCalcDotState('err');
                             }
                         })
                         .catch((err) => {
+                            setCalcDotState('err');
                             showMsg(err.message || "Unable to resume system.");
                         });
                     return;
