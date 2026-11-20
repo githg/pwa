@@ -3010,14 +3010,16 @@
                     <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('qr', 'admin');">
                         <span class="material-icons" style="font-size:16px; color:var(--ui-info);">qr_code_2</span> QR-Only List
                     </div>
+                    <div style="height:1px; background:var(--ui-border); margin:4px 6px;"></div>
+                    <div class="admin-tab" id="btn-theme-toggle" onclick="toggleTheme()">
+                        <span class="material-icons" style="font-size:16px;">light_mode</span> <span id="theme-toggle-label">Light</span> Theme
+                    </div>
                 </div>
             </div>
             <div style="display:flex; gap:8px; align-items:center;">
                 <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
                     <span class="material-icons" style="font-size:15px;">undo</span> <span id="admin-undo-cnt">Undo</span>
                 </button>
-                <button class="glass-btn" id="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Light / Dark theme"><span
-                        class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label" class="hide-xs">Light</span></button>
                 <button class="glass-btn" onclick="lockApp()" title="Lock App"><span class="material-icons"
                         style="font-size:15px;">lock</span> <span class="hide-xs">Lock</span></button>
             </div>
@@ -4270,6 +4272,27 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        // Human-readable entry reference: <counter>-<modes>-<MMDD>-<serial> (e.g. 1-CsQr-1120-1, 4-CsCh-1119-22)
+        function formatEntryRef(entry, serialNum) {
+            if (!entry) return '';
+            const cid = entry.counterId != null ? String(entry.counterId) : '0';
+            let modes = '';
+            if (Number(entry.cash || 0) > 0) modes += 'Cs';
+            if (Number(entry.qr || 0) > 0) modes += 'Qr';
+            if (Number(entry.online || 0) > 0) modes += 'On';
+            if (Number(entry.pos || 0) > 0) modes += 'Ps';
+            if (Number(entry.ips || 0) > 0) modes += 'Ip';
+            if (Number(entry.esewa || 0) > 0) modes += 'Es';
+            if (Number(entry.cheque || 0) > 0) modes += 'Ch';
+            if (Number(entry.credit || 0) > 0) modes += 'Cr';
+            if (!modes) modes = entry.isVoid ? 'Vd' : 'Pd';
+            const dStr = String(entry.date || getLocalTodayStr());
+            const parts = dStr.split('-');
+            const mmdd = parts.length === 3 ? (parts[1] + parts[2]) : dStr.replace(/\D/g, '').slice(-4);
+            const sn = serialNum || 1;
+            return `${cid}-${modes}-${mmdd}-${sn}`;
         }
 
         function getPendingDeletes() {
@@ -5935,6 +5958,11 @@
             renderPreviewScroll();
             calculateFormTotals();
             updateRecheckBar(existingId ? targetEntry : null);
+            const previewArea = document.querySelector('#capture-sheet .preview-area');
+            if (previewArea) {
+                const isTextOnlyFast = !!(targetEntry && currentImages.length === 0 && targetEntry.isFastLane);
+                previewArea.style.height = isTextOnlyFast ? '56px' : '';
+            }
             const wmEl = document.getElementById('img-privacy-wm');
             if (wmEl) {
                 const who = activeActorLabel || (isAdmin ? `Admin ${activeAdminId || ''}` : `Counter ${activeCounterId || ''}`);
@@ -6106,10 +6134,13 @@
             let entryDate = getLocalTodayStr();
 
             const existingIndex = entries.findIndex(e => String(e.id) === String(currentEditingId));
-            if (existingIndex >= 0) {
-                entryCounterId = entries[existingIndex].counterId;
-                entryTimestamp = entries[existingIndex].timestamp;
-                entryDate = entries[existingIndex].date || getLocalTodayStr();
+            const old = existingIndex >= 0 ? entries[existingIndex] : null;
+            if (old) {
+                entryCounterId = old.counterId != null ? String(old.counterId) : (activeCounterId || '1');
+                entryTimestamp = old.timestamp || entryTimestamp;
+                entryDate = old.date || getLocalTodayStr();
+            } else {
+                entryCounterId = activeCounterId != null ? String(activeCounterId) : '1';
             }
 
             const entryData = {
@@ -6125,52 +6156,69 @@
                 remarks: document.getElementById('inp-remarks').value || ''
             };
 
+            // Preserve metadata (recheck, chequeInfo, creditInfo, customerName, isFastLane, seedTag)
+            if (old) {
+                ['recheck', 'chequeInfo', 'creditInfo', 'customerName', 'isFastLane', 'seedTag',
+                 'coll_rasid_cash', 'coll_rasid_qr', 'coll_cheq_cash', 'coll_cheq_ebl', 'coll_cheq_qr'].forEach(k => {
+                    if (old[k] !== undefined) entryData[k] = old[k];
+                });
+            }
+
             entryData.totalIn = entryData.isVoid ? 0 : (entryData.cash + entryData.qr + entryData.ips + entryData.pos + entryData.esewa + entryData.online);
             entryData.totalCredit = entryData.isVoid ? 0 : (entryData.cheque + entryData.credit);
 
-            // Compare new data with old data (if editing)
+            // Compare new data with old data (if editing) and record reversible prev snapshot
             let history = [];
-            if (existingIndex >= 0) {
-                const old = entries[existingIndex];
-                history = old.history || [];
-
+            let prevSnap = null;
+            let changes = [];
+            if (old) {
+                history = Array.isArray(old.history) ? [...old.history] : [];
+                prevSnap = {};
                 const fields = ['cash', 'qr', 'ips', 'pos', 'esewa', 'online', 'cheque', 'credit'];
-                let changes = [];
                 fields.forEach(f => {
-                    if (entryData[f] !== old[f]) {
-                        changes.push(`${f.toUpperCase()}: ${old[f]} → ${entryData[f]}`);
+                    if (Number(entryData[f] || 0) !== Number(old[f] || 0)) {
+                        prevSnap[f] = Number(old[f] || 0);
+                        changes.push(`${f.toUpperCase()}: ${Number(old[f] || 0)} → ${Number(entryData[f] || 0)}`);
                     }
                 });
-
-                if (JSON.stringify(entryData.images) !== JSON.stringify(old.images)) {
-                    changes.push(`Images modified (pages: ${old.images.length} → ${entryData.images.length})`);
+                if (entryData.remarks !== (old.remarks || '')) {
+                    prevSnap.remarks = old.remarks || '';
+                    changes.push(`Remarks updated`);
                 }
-
-                if (entryData.isVoid !== old.isVoid) {
+                if (JSON.stringify(entryData.images) !== JSON.stringify(old.images || [])) {
+                    changes.push(`Images modified (pages: ${(old.images || []).length} → ${entryData.images.length})`);
+                }
+                if (entryData.isVoid !== !!old.isVoid) {
+                    prevSnap.isVoid = !!old.isVoid;
                     changes.push(`Status: ${old.isVoid ? 'VOID' : 'ACTIVE'} → ${entryData.isVoid ? 'VOID' : 'ACTIVE'}`);
                 }
-
                 if (changes.length > 0) {
                     history.push({
-                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' ' + getLocalTodayStr(),
                         changes: changes,
-                        user: isAdmin ? `Admin ${activeAdminId}` : `Counter ${activeCounterId}`
+                        user: activeActorLabel || (isAdmin ? `Admin ${activeAdminId || ''}`.trim() : `Counter ${activeCounterId}`),
+                        prev: Object.keys(prevSnap).length > 0 ? prevSnap : null
                     });
                 }
             }
             entryData.history = history;
-            entryData.sessionStatus = (existingIndex >= 0 && entries[existingIndex].sessionStatus) ? entries[existingIndex].sessionStatus : 'active';
-            if (existingIndex >= 0 && entries[existingIndex].closureId) {
-                entryData.closureId = entries[existingIndex].closureId;
-                entryData.closureTimestamp = entries[existingIndex].closureTimestamp;
-                entryData.closureRemarks = entries[existingIndex].closureRemarks;
+            entryData.synced = false;
+            entryData.sessionStatus = (old && old.sessionStatus) ? old.sessionStatus : 'active';
+            if (old && old.closureId) {
+                entryData.closureId = old.closureId;
+                entryData.closureTimestamp = old.closureTimestamp;
+                entryData.closureRemarks = old.closureRemarks;
             }
 
-            const existingIndexMem = entries.findIndex(e => String(e.id) === String(currentEditingId));
-            if (existingIndexMem >= 0) entries[existingIndexMem] = entryData;
+            if (existingIndex >= 0) entries[existingIndex] = entryData;
             else entries.push(entryData);
 
             await saveEntryToIDB(entryData);
+            if (isAdmin && prevSnap && Object.keys(prevSnap).length > 0 && changes.length > 0) {
+                pushAdminUndo(changes.join(', '), async () => {
+                    await applyEntryRestore(entryData.id, prevSnap, `Undid: ${changes.join(', ')}`);
+                });
+            }
 
             currentImages = [];
             currentEditingId = null;
@@ -6340,19 +6388,27 @@
                 const buildMktCard = (entry, mode) => {
                     const hasPhoto = Array.isArray(entry.images) && entry.images.length > 0;
                     const isFast = !!entry.isFastLane || !hasPhoto;
-                    const isSplit = (entry.cash || 0) > 0 && ((entry.qr || 0) + (entry.online || 0)) > 0;
                     const rcStatus = entry.recheck && entry.recheck.status;
-                    const amt = mode === 'cash' ? (entry.cash || 0) : ((entry.qr || 0) + (entry.online || 0));
+                    const cashVal = Number(entry.cash || 0);
+                    const qrVal = Number(entry.qr || 0) + Number(entry.online || 0);
+                    const amt = mode === 'cash' ? cashVal : qrVal;
                     const shortTime = (entry.timestamp || '').split(' ')[0] || '—';
+                    const refCode = formatEntryRef(entry, snMap[entry.id]);
 
+                    // Photo bills get big 112px readable thumbnail; Fast-Lane gets compact text-only card (zero wasted box)
                     const thumb = hasPhoto
                         ? `<div class="mkt-thumb"><img src="${entry.images[0]}" onerror="loadImgFallback(this, '${entry.images[0]}')">${entry.images.length > 1 ? `<div class="page-badge">${entry.images.length}</div>` : ''}</div>`
-                        : `<div class="mkt-thumb" style="background:rgba(245,158,11,0.12);"><span class="material-icons" style="font-size:30px; color:var(--ui-warn);">bolt</span><span style="font-size:10px; font-weight:800; color:var(--ui-warn);">FAST-LANE</span></div>`;
+                        : '';
 
+                    // Cross-mode badges so split bills clearly show partner mode in each column
                     const badges = [];
-                    if (isFast) badges.push('<span class="mode-pill mp-fast">⚡</span>');
-                    if (isSplit) badges.push('<span class="mode-pill mp-pos">SPLIT</span>');
+                    if (isFast) badges.push('<span class="mode-pill mp-fast">⚡ FAST</span>');
+                    if (mode === 'cash' && qrVal > 0) badges.push(`<span class="mode-pill mp-bill">+QR ${qrVal.toLocaleString()}</span>`);
+                    if (mode === 'qr' && cashVal > 0) badges.push(`<span class="mode-pill mp-ok">+Cash ${cashVal.toLocaleString()}</span>`);
                     if (mode === 'qr' && (entry.online || 0) > 0) badges.push('<span class="mode-pill mp-online">ONL</span>');
+                    if ((entry.cheque || 0) > 0) badges.push(`<span class="mode-pill mp-cheque">+Chq ${entry.cheque.toLocaleString()}</span>`);
+                    if ((entry.credit || 0) > 0) badges.push(`<span class="mode-pill mp-credit">+Cr ${entry.credit.toLocaleString()}</span>`);
+                    if ((entry.pos || 0) > 0) badges.push(`<span class="mode-pill mp-pos">+POS ${entry.pos.toLocaleString()}</span>`);
                     if (rcStatus === 'verified') badges.push('<span class="mode-pill mp-ok">✓</span>');
                     if (rcStatus === 'flagged') badges.push('<span class="mode-pill mp-flag">⚠</span>');
 
@@ -6363,10 +6419,13 @@
                         ${thumb}
                         <div class="mkt-card-meta">
                             <div style="display:flex; justify-content:space-between; align-items:center; gap:3px;">
-                                <span style="font-size:10.5px; font-weight:800; color:var(--ui-muted);">#${snMap[entry.id]} · ${escapeHtml(shortTime)}</span>
+                                <span style="font-size:10px; font-weight:800; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(refCode)}</span>
                                 <span class="sync-dot ${entry.synced ? 'synced' : 'pending'}"></span>
                             </div>
-                            <div style="font-size:15px; font-weight:800; color:${mode === 'cash' ? 'var(--ui-pos)' : 'var(--ui-info)'}; font-variant-numeric:tabular-nums;">NPR ${amt.toLocaleString()}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:baseline; gap:4px;">
+                                <span style="font-size:15px; font-weight:800; color:${mode === 'cash' ? 'var(--ui-pos)' : 'var(--ui-info)'}; font-variant-numeric:tabular-nums;">${amt.toLocaleString()}</span>
+                                <span style="font-size:10px; color:var(--ui-muted);">${escapeHtml(shortTime)}</span>
+                            </div>
                             ${badges.length ? `<div style="display:flex; flex-wrap:wrap; gap:3px;">${badges.join('')}</div>` : ''}
                             ${entry.remarks ? `<div style="font-size:10px; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(entry.remarks)}</div>` : ''}
                         </div>
@@ -7037,13 +7096,14 @@
                 const isOpen = String(openAccordionEntryId) === String(e.id);
                 const hasHist = Array.isArray(e.history) && e.history.length > 0;
 
+                const refCode = formatEntryRef(e, snMap[e.id]);
                 tr.innerHTML = `
                     <td class="col-sticky" style="cursor:pointer;" onclick="openCaptureSheet('${e.id}')">
                         <div style="display:flex; align-items:center; gap:3px;">
-                            <span style="font-size:9.5px; color:var(--ui-muted); font-weight:700;">#${snMap[e.id] || ''}</span>
-                            <span style="font-weight:700; color:var(--ui-info);">${escapeHtml(shortTime)}</span>
+                            <span style="font-size:9.5px; font-weight:800; color:var(--ui-info);">${escapeHtml(refCode)}</span>
                             ${fastMark}${rcMark}
                         </div>
+                        <div style="font-size:9px; color:var(--ui-muted);">${escapeHtml(shortTime)}</div>
                         ${noteHtml}
                     </td>
                     <td style="text-align:right;">${cashCell}</td>
