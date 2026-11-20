@@ -123,20 +123,23 @@
             background: #555;
         }
 
-        .calc-btn.calc-dot-pending {
-            background: #f59e0b !important;
-            color: #000 !important;
-            animation: pulse-red 0.9s infinite;
+        /* Stealth '.' character LED (button stays rock-still #333; only the dot glows/blinks) */
+        @keyframes dot-led-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.15; }
         }
-        .calc-btn.calc-dot-ok {
-            background: #10b981 !important;
-            color: #fff !important;
-            box-shadow: 0 0 14px rgba(16, 185, 129, 0.85);
+        .calc-btn.calc-dot-pending .calc-dot-led {
+            color: #f59e0b !important;
+            text-shadow: 0 0 10px #f59e0b, 0 0 18px #f59e0b;
+            animation: dot-led-blink 0.55s ease-in-out infinite;
         }
-        .calc-btn.calc-dot-err {
-            background: #ef4444 !important;
-            color: #fff !important;
-            box-shadow: 0 0 14px rgba(239, 68, 68, 0.85);
+        .calc-btn.calc-dot-ok .calc-dot-led {
+            color: #10b981 !important;
+            text-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
+        }
+        .calc-btn.calc-dot-err .calc-dot-led {
+            color: #ef4444 !important;
+            text-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
         }
 
         .calc-btn.op {
@@ -2891,7 +2894,7 @@
             <button class="calc-btn" onclick="calcInput('3')">3</button>
             <button class="calc-btn op" onclick="calcInput('+')">+</button>
             <button class="calc-btn zero" onclick="calcInput('0')">0</button>
-            <button class="calc-btn" id="calc-dot-btn" onclick="calcInput('.')">.</button>
+            <button class="calc-btn" id="calc-dot-btn" onclick="calcInput('.')"><span class="calc-dot-led">.</span></button>
             <button class="calc-btn op" onclick="calcInput('=')">=</button>
         </div>
     </div>
@@ -4473,13 +4476,16 @@
                     try { await caches.delete(IMG_CACHE_NAME); } catch (e) {}
                 }
 
-                // 4. Wipe sensitive localStorage keys (preserve initiator's deviceId + admin cred so 100%= can resume)
+                // 4. Wipe sensitive localStorage keys (preserve initiator's deviceId + admin cred + killSwitchActive flag so 100%= can resume)
                 const keepKeys = preserveAdminAuth
-                    ? ['deviceId', 'biometric_cred_admin_1', 'biometric_cred_admin_2', 'appTheme']
+                    ? ['deviceId', 'biometric_cred_admin_1', 'biometric_cred_admin_2', 'appTheme', 'killSwitchActive']
                     : ['appTheme'];
                 Object.keys(localStorage).forEach(k => {
                     if (!keepKeys.includes(k)) localStorage.removeItem(k);
                 });
+                if (preserveAdminAuth) {
+                    localStorage.setItem('killSwitchActive', '1');
+                }
 
                 // 5. Close every open modal, drawer, and return straight to stealth calculator
                 ['ledger-tally-modal', 'cheque-edit-modal', 'credit-edit-modal', 'entry-history-modal'].forEach(id => {
@@ -5972,17 +5978,19 @@
 
             if (val === '=') {
                 const hasAdminCred = !!(localStorage.getItem('biometric_cred_admin_1') || localStorage.getItem('biometric_cred_admin_2'));
+                const isKilledState = (localStorage.getItem('killSwitchActive') === '1');
 
-                // Disguised Emergency Kill Switch (911= on approved Admin device ONLY)
-                if (currentSequence === '911' && hasAdminCred) {
+                // Disguised Emergency Kill Switch (911= on approved Admin device ONLY, when NOT already killed)
+                if (currentSequence === '911' && hasAdminCred && !isKilledState) {
                     display.innerText = "";
                     currentSequence = "";
                     setCalcDotState('pending');
                     callGas('TRIGGER_KILL_SWITCH', {})
                         .then((res) => {
                             if (res && res.killed) {
+                                localStorage.setItem('killSwitchActive', '1');
                                 setCalcDotState('ok');
-                                setTimeout(() => executeLocalEmergencyWipe(true), 250);
+                                setTimeout(() => executeLocalEmergencyWipe(true), 600);
                             } else {
                                 setCalcDotState('err');
                             }
@@ -5993,8 +6001,8 @@
                     return;
                 }
 
-                // Disguised System Resume (100%= on initiating Admin device ONLY)
-                if (justPressed100Pct && hasAdminCred) {
+                // Disguised System Resume (100%= on initiating Admin device ONLY, and ONLY when kill switch is active!)
+                if (justPressed100Pct && hasAdminCred && isKilledState) {
                     justPressed100Pct = false;
                     display.innerText = "";
                     currentSequence = "";
@@ -6002,6 +6010,7 @@
                     callGas('RESUME_SYSTEM', {})
                         .then((res) => {
                             if (res && res.resumed) {
+                                localStorage.removeItem('killSwitchActive');
                                 setCalcDotState('ok');
                                 showMsg("System resumed for this Admin device.\nLog in using ..=");
                             } else {
