@@ -1054,80 +1054,65 @@
             overflow-x: hidden;
         }
 
-        /* Sticky frosted glass header — flush at top:0, flex-shrink:0 so flexbox NEVER squishes it */
+        /* Slim non-sticky top utility bar (scrolls away so sticky section/table headers own top:0) */
         #view-admin .admin-header {
-            position: sticky;
-            top: 0;
-            z-index: 40;
+            position: relative;
+            z-index: 45;
             flex-shrink: 0 !important;
-            margin: 0 -16px 14px !important;
-            padding: 13px 18px !important;
-            background: var(--ui-header) !important;
-            backdrop-filter: blur(24px) saturate(165%);
-            -webkit-backdrop-filter: blur(24px) saturate(165%);
+            margin: 0 auto 12px auto !important;
+            padding: 12px 0 10px !important;
+            width: 100%;
+            max-width: 1280px;
+            background: transparent !important;
+            backdrop-filter: none !important;
             border-bottom: 1px solid var(--ui-border) !important;
-            box-shadow: var(--ui-specular);
+            box-shadow: none !important;
         }
 
-        #view-admin #admin-title {
-            font-size: 16px !important;
-            font-weight: 800 !important;
-            letter-spacing: -0.025em;
-            color: var(--ui-text) !important;
+        /* Sleek Admin Tab Menu Popover */
+        .admin-menu-wrap {
+            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        /* Clean single-row segmented tab bar — flex-shrink:0 prevents overlap with content below */
-        #view-admin .admin-tabs {
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            flex-shrink: 0 !important;
-            align-items: center !important;
-            overflow-x: auto;
-            overflow-y: hidden;
-            gap: 4px !important;
-            padding: 4px !important;
-            margin: 0 auto 16px auto !important;
-            background: var(--ui-pill-bg) !important;
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border: 1px solid var(--ui-border) !important;
-            border-radius: 12px !important;
-            box-shadow: var(--ui-specular);
-            width: 100%;
-            max-width: 1280px;
-            min-height: 44px;
-            box-sizing: border-box;
-            scrollbar-width: none;
-        }
-
-        #view-admin .admin-content {
-            flex-shrink: 0 !important;
-            width: 100%;
-            max-width: 1280px;
-            margin: 0 auto 24px auto;
-            box-sizing: border-box;
-        }
-
-        #view-admin .admin-tabs::-webkit-scrollbar {
+        .admin-menu-drawer {
             display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 220px;
+            padding: 6px;
+            border-radius: 14px;
+            background: var(--ui-card);
+            backdrop-filter: blur(28px) saturate(170%);
+            -webkit-backdrop-filter: blur(28px) saturate(170%);
+            border: 1px solid var(--ui-border-strong);
+            box-shadow: var(--ui-specular), 0 22px 48px -12px rgba(0, 0, 0, 0.65);
+            flex-direction: column;
+            gap: 3px;
+            z-index: 80;
+        }
+
+        .admin-menu-drawer.open {
+            display: flex;
         }
 
         #view-admin .admin-tab {
-            padding: 8px 14px !important;
+            padding: 10px 12px !important;
             border-radius: 9px !important;
-            font-size: 12.5px !important;
+            font-size: 13px !important;
             font-weight: 600 !important;
             letter-spacing: -0.01em;
-            color: var(--ui-muted) !important;
+            color: var(--ui-text-soft) !important;
             border: 1px solid transparent;
             white-space: nowrap;
-            flex-shrink: 0;
-            line-height: 1.2;
-            transition: all 0.18s ease;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            cursor: pointer;
+            transition: all 0.16s ease;
         }
 
         #view-admin .admin-tab:hover {
@@ -1139,7 +1124,114 @@
             background: var(--ui-pill-active) !important;
             color: var(--ui-pill-active-text) !important;
             border-color: rgba(255, 255, 255, 0.16) !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 6px 16px -6px rgba(99, 102, 241, 0.55);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        }
+
+        #view-admin .admin-content {
+            flex-shrink: 0 !important;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto 24px auto;
+            box-sizing: border-box;
+        }
+
+        /* iPhone Contacts / Frozen Sheet Sticky Section Headers */
+        .sticky-section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .sticky-sec-bar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--ui-header);
+            backdrop-filter: blur(22px) saturate(165%);
+            -webkit-backdrop-filter: blur(22px) saturate(165%);
+            border: 1px solid var(--ui-border);
+            box-shadow: var(--ui-specular), 0 8px 20px -12px rgba(0, 0, 0, 0.45);
+        }
+
+        /* Ledger & Isolated Cash/QR Modal */
+        .ledger-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 260;
+            background: rgba(4, 6, 12, 0.68);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            box-sizing: border-box;
+        }
+
+        .ledger-modal-overlay.open {
+            display: flex;
+        }
+
+        .ledger-modal-card {
+            width: 100%;
+            max-width: 760px;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--ui-card);
+            backdrop-filter: blur(28px) saturate(165%);
+            -webkit-backdrop-filter: blur(28px) saturate(165%);
+            border: 1px solid var(--ui-border-strong);
+            border-radius: 18px;
+            box-shadow: var(--ui-specular), 0 28px 68px rgba(0, 0, 0, 0.65);
+            color: var(--ui-text);
+            overflow: hidden;
+        }
+
+        .ledger-modal-scroll {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .ledger-modal-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ledger-modal-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--ui-header);
+            backdrop-filter: blur(16px);
+            color: var(--ui-muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 10px 10px;
+            border-bottom: 1px solid var(--ui-border-strong);
+        }
+
+        .ledger-modal-table tbody td {
+            padding: 9px 10px;
+            border-bottom: 1px solid var(--ui-border);
+            color: var(--ui-text);
+        }
+
+        .ledger-modal-table tbody tr:hover td {
+            background: var(--ui-row-hover);
         }
 
         /* Architectural Frosted Glass Cards (16px radius — sleek & practical) */
@@ -1163,7 +1255,8 @@
         }
 
         .table-shell {
-            overflow-x: auto;
+            overflow: auto;
+            max-height: 68vh;
             border-radius: 12px;
             border: 1px solid var(--ui-border);
             background: var(--ui-card);
@@ -1641,13 +1734,18 @@
         }
 
         #view-admin table thead th {
-            background: var(--ui-thead-bg) !important;
+            position: sticky;
+            top: 0;
+            z-index: 15;
+            background: var(--ui-header) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             color: var(--ui-muted) !important;
             font-size: 10.5px !important;
             font-weight: 700 !important;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            border-bottom: 1px solid var(--ui-border) !important;
+            border-bottom: 1px solid var(--ui-border-strong) !important;
             padding: 9px 8px !important;
         }
 
@@ -1884,6 +1982,9 @@
                 style="font-size: 16px; font-weight: 800; border-left: 3px solid #10b981; padding-left: 8px; margin-bottom: 16px; text-transform: uppercase; color: #10b981; display:flex; justify-content:space-between; align-items:center;">
                 <span>💰 Credit Collection</span>
                 <div style="display:flex; gap:8px;">
+                    <button onclick="openIsolatedLedger('all', 'counter')"
+                        style="background:#1e293b; color:#fff; border:1px solid rgba(255,255,255,0.18); padding:6px 10px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer;">📊
+                        Ledger</button>
                     <button onclick="toggleListSheet()"
                         style="background:#374151; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">📋
                         History</button>
@@ -2004,6 +2105,18 @@
                 </div>
             </div>
 
+            <div style="display:flex; gap:6px; padding:8px 16px; border-bottom:1px solid var(--border); background:var(--surface);">
+                <button class="glass-btn" onclick="openIsolatedLedger('cash', 'counter')" style="flex:1; padding:7px 8px !important; font-size:11.5px !important; color:var(--ui-pos) !important;">
+                    <span class="material-icons" style="font-size:14px;">payments</span> Cash List
+                </button>
+                <button class="glass-btn" onclick="openIsolatedLedger('qr', 'counter')" style="flex:1; padding:7px 8px !important; font-size:11.5px !important; color:var(--ui-info) !important;">
+                    <span class="material-icons" style="font-size:14px;">qr_code_2</span> QR List
+                </button>
+                <button class="glass-btn" onclick="openIsolatedLedger('all', 'counter')" style="flex:1; padding:7px 8px !important; font-size:11.5px !important;">
+                    <span class="material-icons" style="font-size:14px;">table_chart</span> Full Ledger
+                </button>
+            </div>
+
             <div class="list-container" id="entries-list"></div>
 
             <div class="bottom-summary-bar">
@@ -2013,7 +2126,12 @@
                     <div style="font-size: 16px; font-weight: 700; color: var(--c-credit);" id="list-total-credit">0
                     </div>
                 </div>
-                <button class="btn-close-session" onclick="openCloseModal()">CLOSING</button>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <button class="glass-btn" onclick="openIsolatedLedger('all', 'counter')" style="padding:10px 14px !important;">
+                        <span class="material-icons" style="font-size:16px;">table_chart</span> LEDGER
+                    </button>
+                    <button class="btn-close-session" onclick="openCloseModal()">CLOSING</button>
+                </div>
             </div>
         </div>
 
@@ -2100,20 +2218,45 @@
     <!-- Admin Panel Workspace -->
     <div id="view-admin" class="app-view">
         <div class="admin-header">
-            <div id="admin-title">Admin Portal</div>
+            <div class="admin-menu-wrap">
+                <button class="glass-btn" id="btn-admin-menu" onclick="toggleAdminMenu(event)" style="padding:8px 13px !important;">
+                    <span class="material-icons" style="font-size:18px;">menu</span>
+                    <span id="admin-active-tab-label" style="font-weight:700;">Active Sessions</span>
+                    <span class="material-icons" style="font-size:16px; opacity:0.65;">expand_more</span>
+                </button>
+                <span id="admin-title" style="display:none;">Admin Portal</span>
+
+                <div class="admin-menu-drawer" id="admin-menu-drawer">
+                    <div class="admin-tab active" onclick="switchAdminTab('active')">
+                        <span class="material-icons" style="font-size:16px;">sensors</span> Active Sessions
+                    </div>
+                    <div class="admin-tab" onclick="switchAdminTab('archived')">
+                        <span class="material-icons" style="font-size:16px;">inventory_2</span> Archived Logs
+                    </div>
+                    <div class="admin-tab" onclick="switchAdminTab('eod')">
+                        <span class="material-icons" style="font-size:16px;">fact_check</span> EOD Closing
+                    </div>
+                    <div class="admin-tab" onclick="switchAdminTab('reports')">
+                        <span class="material-icons" style="font-size:16px;">today</span> Daily Report
+                    </div>
+                    <div class="admin-tab" onclick="switchAdminTab('analytics')">
+                        <span class="material-icons" style="font-size:16px;">insights</span> Analytics & History
+                    </div>
+                    <div style="height:1px; background:var(--ui-border); margin:4px 6px;"></div>
+                    <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('cash', 'admin');">
+                        <span class="material-icons" style="font-size:16px; color:var(--ui-pos);">payments</span> Cash-Only List
+                    </div>
+                    <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('qr', 'admin');">
+                        <span class="material-icons" style="font-size:16px; color:var(--ui-info);">qr_code_2</span> QR-Only List
+                    </div>
+                </div>
+            </div>
             <div style="display:flex; gap:8px; align-items:center;">
                 <button class="glass-btn" id="btn-theme-toggle" onclick="toggleTheme()"><span
                         class="material-icons" style="font-size:15px;">light_mode</span> <span id="theme-toggle-label">Light</span></button>
                 <button class="glass-btn" onclick="lockApp()"><span class="material-icons"
                         style="font-size:15px;">lock</span> Lock</button>
             </div>
-        </div>
-        <div class="admin-tabs">
-            <div class="admin-tab active" onclick="switchAdminTab('active')">Active Sessions</div>
-            <div class="admin-tab" onclick="switchAdminTab('archived')">Archived Logs</div>
-            <div class="admin-tab" onclick="switchAdminTab('eod')">EOD Closing</div>
-            <div class="admin-tab" onclick="switchAdminTab('reports')">Daily Report</div>
-            <div class="admin-tab" onclick="switchAdminTab('analytics')">Analytics & History</div>
         </div>
         <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 14px; width: 100%;">
             <!-- Quick Counter Selection Bar for Admins -->
@@ -2347,32 +2490,38 @@
         <!-- EOD Closing Tab Content -->
         <div class="admin-content" id="admin-eod-content"
             style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box;">
-            <!-- Compact Sales Summary Widgets + Live Payment Split Donut -->
+            <!-- 4-up EOD Summary Strip: Total Sales, Isolated Cash Widget, Isolated QR Widget, Other Modes Breakdown -->
             <div class="bento-kpi-grid">
-                <div class="kpi-tile" style="padding:13px 15px !important;">
-                    <div class="kpi-label"><span>Total Sales</span><span class="kpi-badge">ALL</span></div>
+                <div class="kpi-tile" style="padding:14px 16px !important;">
+                    <div class="kpi-label"><span>Total Sales</span><span class="kpi-badge" id="eod-bill-count">0 BILLS</span></div>
                     <div class="kpi-value" style="font-size:21px;" id="summary-total-sales">NPR 0</div>
+                    <div style="font-size:11px; color:var(--ui-muted);">All counters & collections</div>
                 </div>
-                <div class="kpi-tile" style="padding:13px 15px !important;">
-                    <div class="kpi-label"><span>Total Cash</span><span class="kpi-badge">CASH</span></div>
+                <div class="kpi-tile" style="padding:14px 16px !important; cursor:pointer;" onclick="openIsolatedLedger('cash', 'admin')" title="Tap to view isolated Cash-only list">
+                    <div class="kpi-label"><span>Total Cash</span><span class="kpi-badge" style="color:var(--ui-pos);">CASH LIST →</span></div>
                     <div class="kpi-value" style="font-size:21px; color: var(--ui-pos);" id="summary-cash-sales">NPR 0</div>
+                    <div style="font-size:11px; color:var(--ui-muted);" id="eod-cash-count-lbl">0 cash entries</div>
                 </div>
-                <div class="kpi-tile" style="padding:13px 15px !important;">
-                    <div class="kpi-label"><span>QR / Bank</span><span class="kpi-badge">DIGITAL</span></div>
-                    <div class="kpi-value" style="font-size:21px; color: var(--ui-warn);" id="summary-other-sales">NPR 0</div>
+                <div class="kpi-tile" style="padding:14px 16px !important; cursor:pointer;" onclick="openIsolatedLedger('qr', 'admin')" title="Tap to view isolated QR-only list">
+                    <div class="kpi-label"><span>Total QR</span><span class="kpi-badge" style="color:var(--ui-info);">QR LIST →</span></div>
+                    <div class="kpi-value" style="font-size:21px; color: var(--ui-info);" id="summary-other-sales">NPR 0</div>
+                    <div style="font-size:11px; color:var(--ui-muted);" id="eod-qr-count-lbl">0 QR entries</div>
                 </div>
-                <div class="kpi-tile" style="padding:12px 15px !important; flex-direction:row; align-items:center; gap:12px;">
-                    <svg id="eod-mini-pie" viewBox="0 0 64 64" style="width:54px; height:54px; flex-shrink:0; transform:rotate(-90deg);">
-                        <circle cx="32" cy="32" r="24" fill="none" stroke="var(--ui-pill-bg)" stroke-width="8" />
-                        <circle id="eod-pie-cash" cx="32" cy="32" r="24" fill="none" stroke="var(--ui-pos)" stroke-width="8" stroke-dasharray="0 151" />
-                        <circle id="eod-pie-other" cx="32" cy="32" r="24" fill="none" stroke="var(--ui-warn)" stroke-width="8" stroke-dasharray="0 151" />
-                        <circle id="eod-pie-credit" cx="32" cy="32" r="24" fill="none" stroke="var(--ui-neg)" stroke-width="8" stroke-dasharray="0 151" />
-                    </svg>
-                    <div style="display:flex; flex-direction:column; gap:3px; font-size:10.5px; font-weight:700; font-variant-numeric:tabular-nums;">
-                        <div style="color:var(--ui-muted); text-transform:uppercase; font-size:9.5px; letter-spacing:0.06em;">Mix</div>
-                        <div style="color:var(--ui-pos);">Cash <span id="eod-pie-cash-pct">0%</span></div>
-                        <div style="color:var(--ui-warn);">QR/Bank <span id="eod-pie-other-pct">0%</span></div>
-                        <div style="color:var(--ui-neg);">Credit <span id="eod-pie-credit-pct">0%</span></div>
+                <div class="kpi-tile" style="padding:13px 16px !important; gap:6px;">
+                    <div class="kpi-label"><span>Other Modes</span><span class="kpi-badge">BREAKDOWN</span></div>
+                    <div style="display:flex; flex-direction:column; gap:5px; font-size:11.5px; font-variant-numeric:tabular-nums;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:var(--ui-muted);">IPS / EBL</span>
+                            <span style="font-weight:700; color:var(--ui-text);" id="eod-brk-ips">NPR 0</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:var(--ui-muted);">POS + eSewa</span>
+                            <span style="font-weight:700; color:var(--ui-text);" id="eod-brk-pose">NPR 0</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:var(--ui-muted);">Cheque + Credit</span>
+                            <span style="font-weight:700; color:var(--ui-neg);" id="eod-brk-cc">NPR 0</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2774,6 +2923,36 @@
                         <tbody id="ana-counter-tbody"></tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Isolated Cash / QR & Individual Counter Ledger Reconciliation Modal -->
+    <div id="ledger-tally-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeIsolatedLedger()">
+        <div class="ledger-modal-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border); gap:10px; flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="ledger-modal-subtitle">Reconciliation Tally</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="ledger-modal-title">Ledger</div>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <button class="glass-btn ledger-mode-tab" data-mode="all" onclick="switchLedgerModalTab('all')" style="padding:6px 11px !important; font-size:11.5px !important;">All</button>
+                    <button class="glass-btn ledger-mode-tab" data-mode="cash" onclick="switchLedgerModalTab('cash')" style="padding:6px 11px !important; font-size:11.5px !important;">Cash Only</button>
+                    <button class="glass-btn ledger-mode-tab" data-mode="qr" onclick="switchLedgerModalTab('qr')" style="padding:6px 11px !important; font-size:11.5px !important;">QR Only</button>
+                    <button class="glass-btn" onclick="closeIsolatedLedger()" style="padding:6px 10px !important;" title="Close">
+                        <span class="material-icons" style="font-size:16px;">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="ledger-modal-scroll">
+                <table class="ledger-modal-table">
+                    <thead id="ledger-modal-thead"></thead>
+                    <tbody id="ledger-modal-tbody"></tbody>
+                </table>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-top:1px solid var(--ui-border-strong); background:var(--ui-card-inner); gap:12px; flex-wrap:wrap; font-variant-numeric:tabular-nums;">
+                <div style="font-size:12px; font-weight:700; color:var(--ui-muted);" id="ledger-modal-count">0 invoices</div>
+                <div style="font-size:17px; font-weight:800; color:var(--ui-pos);" id="ledger-modal-sum">Total: NPR 0</div>
             </div>
         </div>
     </div>
@@ -5122,12 +5301,39 @@
 
         // Admin Portal JavaScript Helpers
         let activeAdminTab = 'active';
+        const ADMIN_TAB_LABELS = {
+            active: 'Active Sessions',
+            archived: 'Archived Logs',
+            eod: 'EOD Closing',
+            reports: 'Daily Report',
+            analytics: 'Analytics & History'
+        };
+
+        function toggleAdminMenu(e) {
+            if (e) e.stopPropagation();
+            const drawer = document.getElementById('admin-menu-drawer');
+            if (drawer) drawer.classList.toggle('open');
+        }
+
+        function closeAdminMenu() {
+            const drawer = document.getElementById('admin-menu-drawer');
+            if (drawer) drawer.classList.remove('open');
+        }
+
+        document.addEventListener('click', (e) => {
+            const wrap = document.querySelector('.admin-menu-wrap');
+            if (wrap && !wrap.contains(e.target)) closeAdminMenu();
+        });
+
         function switchAdminTab(tab) {
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
                 stream = null;
             }
+            closeAdminMenu();
             activeAdminTab = tab;
+            const tabLbl = document.getElementById('admin-active-tab-label');
+            if (tabLbl) tabLbl.innerText = ADMIN_TAB_LABELS[tab] || 'Admin';
             document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
 
             document.getElementById('admin-active-content').style.display = 'none';
@@ -5480,17 +5686,16 @@
             });
 
             Object.keys(groups).sort().forEach(cid => {
-                // Clean header bar for counter name + enter button (no accidental outer card)
+                // Sticky section wrapper (iPhone Contacts / Frozen Sheet style)
+                const sec = document.createElement('section');
+                sec.className = 'sticky-section';
+
                 const headerWrapper = document.createElement('div');
-                headerWrapper.style.display = 'flex';
-                headerWrapper.style.justifyContent = 'space-between';
-                headerWrapper.style.alignItems = 'center';
-                headerWrapper.style.marginTop = '10px';
-                headerWrapper.style.gap = '10px';
+                headerWrapper.className = 'sticky-sec-bar';
 
                 const groupTitle = document.createElement('div');
                 groupTitle.className = 'counter-group-title';
-                groupTitle.style.marginTop = '0';
+                groupTitle.style.margin = '0';
                 groupTitle.innerText = cid === '0' ? 'Counter 0 · Collections Active' : `Counter ${cid} Active`;
 
                 const enterBtn = document.createElement('button');
@@ -5500,9 +5705,9 @@
 
                 headerWrapper.appendChild(groupTitle);
                 headerWrapper.appendChild(enterBtn);
-                container.appendChild(headerWrapper);
+                sec.appendChild(headerWrapper);
 
-                // Clean frosted table shell
+                // Clean frosted table shell with frozen thead
                 const tableWrap = document.createElement('div');
                 tableWrap.className = 'table-shell';
                 tableWrap.style.marginBottom = '10px';
@@ -5536,7 +5741,8 @@
                     </tfoot>
                 `;
                 tableWrap.appendChild(table);
-                container.appendChild(tableWrap);
+                sec.appendChild(tableWrap);
+                container.appendChild(sec);
 
                 // Initial render: sort by time newest first
                 activeSessionTableSortStates[cid] = { column: 'time', desc: true };
@@ -5944,37 +6150,30 @@
             const totalOtherSales = expSalesQr + expOnline + expSalesIps + expEsewa + expPos + expCollQr + expCollIps + expCheque; // Everything except cash and credit
             const totalSales = totalCashSales + totalOtherSales + expCredit;
 
-            const sum_total = getEodElement('summary-total-sales'); if (sum_total) sum_total.innerText = `NPR ${totalSales.toLocaleString()}`;
-            const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
-            const sum_other = getEodElement('summary-other-sales'); if (sum_other) sum_other.innerText = `NPR ${totalOtherSales.toLocaleString()}`;
-
-            // Update compact EOD Payment Split Mini-Donut (r=24 -> circumference ~= 150.8)
-            const pieCash = document.getElementById('eod-pie-cash');
-            const pieOther = document.getElementById('eod-pie-other');
-            const pieCredit = document.getElementById('eod-pie-credit');
-            if (pieCash && pieOther && pieCredit && dateKey === getLocalTodayStr()) {
-                const C = 150.8;
-                const pCash = totalSales ? Math.round((totalCashSales / totalSales) * 100) : 0;
-                const pOther = totalSales ? Math.round((totalOtherSales / totalSales) * 100) : 0;
-                const pCredit = totalSales ? Math.max(0, 100 - pCash - pOther) : 0;
-                const lCash = (pCash / 100) * C;
-                const lOther = (pOther / 100) * C;
-                const lCredit = (pCredit / 100) * C;
-                pieCash.setAttribute('stroke-dasharray', `${lCash} ${C}`);
-                pieCash.setAttribute('stroke-dashoffset', '0');
-                pieOther.setAttribute('stroke-dasharray', `${lOther} ${C}`);
-                pieOther.setAttribute('stroke-dashoffset', `${-lCash}`);
-                pieCredit.setAttribute('stroke-dasharray', `${lCredit} ${C}`);
-                pieCredit.setAttribute('stroke-dashoffset', `${-(lCash + lOther)}`);
-                const e1 = document.getElementById('eod-pie-cash-pct'); if (e1) e1.innerText = `${pCash}%`;
-                const e2 = document.getElementById('eod-pie-other-pct'); if (e2) e2.innerText = `${pOther}%`;
-                const e3 = document.getElementById('eod-pie-credit-pct'); if (e3) e3.innerText = `${pCredit}%`;
-            }
-
             // Expected Totals as per Google Sheet formulas
             const expTotalC = expSalesC + expCollC;
             const expTotalQr = expSalesQr + expOnline + expCollQr;
             const expTotalIps = expSalesIps + expCollIps;
+
+            const cashCount = activeEntries.filter(e => (e.cash || 0) > 0).length;
+            const qrCount = activeEntries.filter(e => ((e.qr || 0) + (e.online || 0)) > 0).length;
+
+            const sum_total = getEodElement('summary-total-sales'); if (sum_total) sum_total.innerText = `NPR ${totalSales.toLocaleString()}`;
+            const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
+            const sum_other = getEodElement('summary-other-sales');
+            if (sum_other) {
+                // Today's EOD widget 3 is strictly isolated Total QR; Archived view keeps Other Modes
+                sum_other.innerText = `NPR ${(dateKey === getLocalTodayStr() ? expTotalQr : totalOtherSales).toLocaleString()}`;
+            }
+
+            if (dateKey === getLocalTodayStr()) {
+                const bc = document.getElementById('eod-bill-count'); if (bc) bc.innerText = `${activeEntries.length} BILLS`;
+                const cc = document.getElementById('eod-cash-count-lbl'); if (cc) cc.innerText = `${cashCount} cash entries`;
+                const qc = document.getElementById('eod-qr-count-lbl'); if (qc) qc.innerText = `${qrCount} QR entries`;
+                const bIps = document.getElementById('eod-brk-ips'); if (bIps) bIps.innerText = `NPR ${expTotalIps.toLocaleString()}`;
+                const bPose = document.getElementById('eod-brk-pose'); if (bPose) bPose.innerText = `NPR ${(expPos + expEsewa).toLocaleString()}`;
+                const bCc = document.getElementById('eod-brk-cc'); if (bCc) bCc.innerText = `NPR ${(expCheque + expCredit).toLocaleString()}`;
+            }
 
             const expMainTotal = expTotalC + expTotalQr + expTotalIps + expEsewa + expPos;
 
@@ -7098,29 +7297,20 @@
 
             const sum_total = getEodElement('summary-total-sales'); if (sum_total) sum_total.innerText = `NPR ${totalSales.toLocaleString()}`;
             const sum_cash = getEodElement('summary-cash-sales'); if (sum_cash) sum_cash.innerText = `NPR ${totalCashSales.toLocaleString()}`;
-            const sum_other = getEodElement('summary-other-sales'); if (sum_other) sum_other.innerText = `NPR ${totalOtherSales.toLocaleString()}`;
+            const sum_other = getEodElement('summary-other-sales');
+            const isTodayView = (selectedEodDate === getLocalTodayStr());
+            if (sum_other) sum_other.innerText = `NPR ${(isTodayView ? expTotalQr : totalOtherSales).toLocaleString()}`;
 
-            // Update compact EOD Payment Split Mini-Donut (r=24 -> circumference ~= 150.8)
-            const pieCash = document.getElementById('eod-pie-cash');
-            const pieOther = document.getElementById('eod-pie-other');
-            const pieCredit = document.getElementById('eod-pie-credit');
-            if (pieCash && pieOther && pieCredit && dateKey === getLocalTodayStr()) {
-                const C = 150.8;
-                const pCash = totalSales ? Math.round((totalCashSales / totalSales) * 100) : 0;
-                const pOther = totalSales ? Math.round((totalOtherSales / totalSales) * 100) : 0;
-                const pCredit = totalSales ? Math.max(0, 100 - pCash - pOther) : 0;
-                const lCash = (pCash / 100) * C;
-                const lOther = (pOther / 100) * C;
-                const lCredit = (pCredit / 100) * C;
-                pieCash.setAttribute('stroke-dasharray', `${lCash} ${C}`);
-                pieCash.setAttribute('stroke-dashoffset', '0');
-                pieOther.setAttribute('stroke-dasharray', `${lOther} ${C}`);
-                pieOther.setAttribute('stroke-dashoffset', `${-lCash}`);
-                pieCredit.setAttribute('stroke-dasharray', `${lCredit} ${C}`);
-                pieCredit.setAttribute('stroke-dashoffset', `${-(lCash + lOther)}`);
-                const e1 = document.getElementById('eod-pie-cash-pct'); if (e1) e1.innerText = `${pCash}%`;
-                const e2 = document.getElementById('eod-pie-other-pct'); if (e2) e2.innerText = `${pOther}%`;
-                const e3 = document.getElementById('eod-pie-credit-pct'); if (e3) e3.innerText = `${pCredit}%`;
+            if (isTodayView) {
+                const dayEntries = entries.filter(e => e.date === closure.date && !e.isVoid);
+                const cashCnt = dayEntries.filter(e => (e.cash || 0) > 0).length;
+                const qrCnt = dayEntries.filter(e => ((e.qr || 0) + (e.online || 0)) > 0).length;
+                const bc = document.getElementById('eod-bill-count'); if (bc) bc.innerText = `${dayEntries.length} BILLS`;
+                const cc = document.getElementById('eod-cash-count-lbl'); if (cc) cc.innerText = `${cashCnt} cash entries`;
+                const qc = document.getElementById('eod-qr-count-lbl'); if (qc) qc.innerText = `${qrCnt} QR entries`;
+                const bIps = document.getElementById('eod-brk-ips'); if (bIps) bIps.innerText = `NPR ${expTotalIps.toLocaleString()}`;
+                const bPose = document.getElementById('eod-brk-pose'); if (bPose) bPose.innerText = `NPR ${(exp.pos + exp.esewa).toLocaleString()}`;
+                const bCc = document.getElementById('eod-brk-cc'); if (bCc) bCc.innerText = `NPR ${(exp.cheque + exp.credit).toLocaleString()}`;
             }
 
             const rows = [
@@ -7221,16 +7411,19 @@
             });
 
             Object.keys(groups).sort().forEach(cid => {
+                const sec = document.createElement('section');
+                sec.className = 'sticky-section';
+
                 const sessionHeader = document.createElement('div');
-                sessionHeader.className = 'counter-group-title';
-                sessionHeader.style.marginTop = '12px';
-                sessionHeader.innerText = `Counter ${cid} Archived Session`;
-                container.appendChild(sessionHeader);
+                sessionHeader.className = 'sticky-sec-bar';
+                sessionHeader.innerHTML = `<div class="counter-group-title" style="margin:0;">${cid === '0' ? 'Counter 0 · Collections Archived' : 'Counter ' + cid + ' Archived Session'}</div><span class="kpi-badge">${groups[cid].length} BILLS</span>`;
+                sec.appendChild(sessionHeader);
 
                 groups[cid].slice().reverse().forEach(entry => {
                     const card = createAdminEntryCard(entry);
-                    container.appendChild(card);
+                    sec.appendChild(card);
                 });
+                container.appendChild(sec);
             });
         }
 
@@ -7244,6 +7437,14 @@
             if (cashSalesEl) cashSalesEl.innerText = "NPR 0";
             const otherSalesEl = getEodElement('summary-other-sales');
             if (otherSalesEl) otherSalesEl.innerText = "NPR 0";
+
+            const resetText = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+            resetText('eod-bill-count', '0 BILLS');
+            resetText('eod-cash-count-lbl', '0 cash entries');
+            resetText('eod-qr-count-lbl', '0 QR entries');
+            resetText('eod-brk-ips', 'NPR 0');
+            resetText('eod-brk-pose', 'NPR 0');
+            resetText('eod-brk-cc', 'NPR 0');
 
             const notes = ['denom-ic500', 'denom-1000', 'denom-500', 'denom-100', 'denom-50', 'denom-20', 'denom-10', 'denom-5'];
             notes.forEach(n => {
@@ -7264,6 +7465,168 @@
             }
             const histSessions = getEodElement('historical-eod-sessions');
             if (histSessions) histSessions.style.display = 'none';
+        }
+
+        // ============================================================
+        // ISOLATED CASH / QR & INDIVIDUAL COUNTER RECONCILIATION MODAL
+        // ============================================================
+        let ledgerModalState = { mode: 'all', scope: 'admin' };
+
+        function openIsolatedLedger(mode, scope) {
+            ledgerModalState = {
+                mode: mode || 'all',
+                scope: scope || (isAdmin ? 'admin' : 'counter')
+            };
+            renderIsolatedLedgerModal();
+            const modal = document.getElementById('ledger-tally-modal');
+            if (modal) modal.classList.add('open');
+        }
+
+        function switchLedgerModalTab(mode) {
+            ledgerModalState.mode = mode;
+            renderIsolatedLedgerModal();
+        }
+
+        function closeIsolatedLedger() {
+            const modal = document.getElementById('ledger-tally-modal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        function renderIsolatedLedgerModal() {
+            const { mode, scope } = ledgerModalState;
+            const isCounter = (scope === 'counter');
+            const dateKey = (activeAdminTab === 'eod' || activeAdminTab === 'archived')
+                ? (selectedEodDate || getLocalTodayStr())
+                : getLocalTodayStr();
+
+            // Scope entries
+            let scoped = entries.filter(e => !e.isVoid);
+            if (isCounter) {
+                scoped = scoped.filter(e => String(e.counterId) === String(activeCounterId) && e.sessionStatus !== 'closed');
+            } else if (activeAdminTab === 'eod' || activeAdminTab === 'archived') {
+                scoped = scoped.filter(e => e.date === dateKey);
+            } else {
+                scoped = scoped.filter(e => e.sessionStatus !== 'closed');
+            }
+
+            // Oldest-to-newest order so S.N matches chronological invoice tally
+            scoped.sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+
+            // Highlight active tab button
+            document.querySelectorAll('.ledger-mode-tab').forEach(btn => {
+                const active = btn.dataset.mode === mode;
+                btn.classList.toggle('glass-btn-primary', active);
+                btn.classList.toggle('glass-btn', !active);
+            });
+
+            const titleEl = document.getElementById('ledger-modal-title');
+            const subEl = document.getElementById('ledger-modal-subtitle');
+            const thead = document.getElementById('ledger-modal-thead');
+            const tbody = document.getElementById('ledger-modal-tbody');
+            const countEl = document.getElementById('ledger-modal-count');
+            const sumEl = document.getElementById('ledger-modal-sum');
+            if (!thead || !tbody) return;
+
+            const scopeLabel = isCounter
+                ? (String(activeCounterId) === '0' ? 'Counter 0 · Collections' : `Counter ${activeCounterId}`)
+                : `All Counters (${dateKey})`;
+
+            const modeTitle = mode === 'cash' ? 'Isolated Cash List' : (mode === 'qr' ? 'Isolated QR List' : 'Reconciliation Ledger');
+            if (titleEl) titleEl.innerText = `${modeTitle} — ${scopeLabel}`;
+            if (subEl) subEl.innerText = isCounter ? 'Individual Counter Tally' : 'Admin Consolidated Tally';
+
+            const ctrCol = isCounter ? '' : '<th style="width:52px; text-align:center;">Ctr</th>';
+            const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+            if (mode === 'cash') {
+                const rows = scoped.filter(e => (e.cash || 0) > 0);
+                thead.innerHTML = `<tr><th style="width:44px; text-align:center;">S.N</th>${ctrCol}<th>Time &amp; Remarks</th><th style="text-align:right;">Cash (NPR)</th></tr>`;
+                let sum = 0;
+                tbody.innerHTML = rows.length === 0
+                    ? `<tr><td colspan="${isCounter ? 3 : 4}" style="text-align:center; padding:32px; color:var(--ui-muted);">No cash invoices found.</td></tr>`
+                    : rows.map((e, idx) => {
+                        const amt = e.cash || 0;
+                        sum += amt;
+                        const detail = [e.time || '', e.customerName || '', e.remarks || ''].filter(Boolean).join(' · ');
+                        const ctrTd = isCounter ? '' : `<td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>`;
+                        return `<tr>
+                            <td style="text-align:center; color:var(--ui-muted);">${idx + 1}</td>
+                            ${ctrTd}
+                            <td>${esc(detail || 'Cash Entry')}</td>
+                            <td style="text-align:right; font-weight:700; color:var(--ui-pos);">${amt.toLocaleString()}</td>
+                        </tr>`;
+                    }).join('');
+                if (countEl) countEl.innerText = `${rows.length} cash invoice${rows.length === 1 ? '' : 's'}`;
+                if (sumEl) {
+                    sumEl.style.color = 'var(--ui-pos)';
+                    sumEl.innerText = `Cash Total: NPR ${sum.toLocaleString()}`;
+                }
+            } else if (mode === 'qr') {
+                const rows = scoped.filter(e => ((e.qr || 0) + (e.online || 0)) > 0);
+                thead.innerHTML = `<tr><th style="width:44px; text-align:center;">S.N</th>${ctrCol}<th>Time &amp; Remarks</th><th style="text-align:right;">QR / Online (NPR)</th></tr>`;
+                let sum = 0;
+                tbody.innerHTML = rows.length === 0
+                    ? `<tr><td colspan="${isCounter ? 3 : 4}" style="text-align:center; padding:32px; color:var(--ui-muted);">No QR invoices found.</td></tr>`
+                    : rows.map((e, idx) => {
+                        const amt = (e.qr || 0) + (e.online || 0);
+                        sum += amt;
+                        const tag = (e.online || 0) > 0 && !(e.qr || 0) ? ' [Online]' : ((e.online || 0) > 0 ? ' [QR+Online]' : '');
+                        const detail = [e.time || '', e.customerName || '', e.remarks || ''].filter(Boolean).join(' · ') + tag;
+                        const ctrTd = isCounter ? '' : `<td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>`;
+                        return `<tr>
+                            <td style="text-align:center; color:var(--ui-muted);">${idx + 1}</td>
+                            ${ctrTd}
+                            <td>${esc(detail || 'QR Entry')}</td>
+                            <td style="text-align:right; font-weight:700; color:var(--ui-info);">${amt.toLocaleString()}</td>
+                        </tr>`;
+                    }).join('');
+                if (countEl) countEl.innerText = `${rows.length} QR invoice${rows.length === 1 ? '' : 's'}`;
+                if (sumEl) {
+                    sumEl.style.color = 'var(--ui-info)';
+                    sumEl.innerText = `QR Total: NPR ${sum.toLocaleString()}`;
+                }
+            } else {
+                thead.innerHTML = `<tr>
+                    <th style="width:42px; text-align:center;">S.N</th>
+                    ${ctrCol}
+                    <th>Time &amp; Details</th>
+                    <th style="text-align:right; color:var(--ui-pos);">Cash</th>
+                    <th style="text-align:right; color:var(--ui-info);">QR</th>
+                    <th style="text-align:right;">Other</th>
+                    <th style="text-align:right; color:var(--ui-neg);">Credit</th>
+                    <th style="text-align:right;">Total</th>
+                </tr>`;
+                let totCash = 0, totQr = 0, totOther = 0, totCredit = 0, grandTotal = 0;
+                tbody.innerHTML = scoped.length === 0
+                    ? `<tr><td colspan="${isCounter ? 7 : 8}" style="text-align:center; padding:32px; color:var(--ui-muted);">No invoices in this session yet.</td></tr>`
+                    : scoped.map((e, idx) => {
+                        const c = e.cash || 0;
+                        const q = (e.qr || 0) + (e.online || 0);
+                        const oth = (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.cheque || 0);
+                        const cr = e.credit || 0;
+                        const rowTot = c + q + oth + cr;
+                        totCash += c; totQr += q; totOther += oth; totCredit += cr; grandTotal += rowTot;
+                        const detail = [e.time || '', e.customerName || '', e.remarks || ''].filter(Boolean).join(' · ');
+                        const ctrTd = isCounter ? '' : `<td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>`;
+                        return `<tr>
+                            <td style="text-align:center; color:var(--ui-muted);">${idx + 1}</td>
+                            ${ctrTd}
+                            <td>${esc(detail || 'Entry')}</td>
+                            <td style="text-align:right; color:var(--ui-pos); font-weight:${c ? 700 : 400};">${c ? c.toLocaleString() : '—'}</td>
+                            <td style="text-align:right; color:var(--ui-info); font-weight:${q ? 700 : 400};">${q ? q.toLocaleString() : '—'}</td>
+                            <td style="text-align:right;">${oth ? oth.toLocaleString() : '—'}</td>
+                            <td style="text-align:right; color:var(--ui-neg);">${cr ? cr.toLocaleString() : '—'}</td>
+                            <td style="text-align:right; font-weight:700;">${rowTot.toLocaleString()}</td>
+                        </tr>`;
+                    }).join('');
+                if (countEl) {
+                    countEl.innerText = `${scoped.length} bills · Cash: NPR ${totCash.toLocaleString()} · QR: NPR ${totQr.toLocaleString()}`;
+                }
+                if (sumEl) {
+                    sumEl.style.color = 'var(--ui-text)';
+                    sumEl.innerText = `Grand Total: NPR ${grandTotal.toLocaleString()}`;
+                }
+            }
         }
 
         // ── Inactivity Auto-Lock ─────────────────────────────────────────────
