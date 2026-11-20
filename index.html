@@ -1353,13 +1353,13 @@
             box-sizing: border-box;
         }
 
-        /* iPhone Contacts / Frozen Sheet Sticky Section Headers */
+        /* Uniform-Scroll Sticky Section Headers (iPhone Contacts Style + Collapsible) */
         .sticky-section {
             position: relative;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 6px;
+            margin-top: 10px;
         }
 
         .sticky-sec-bar {
@@ -1367,16 +1367,204 @@
             top: 0;
             z-index: 30;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 12px;
             border-radius: 12px;
             background: var(--ui-header);
             backdrop-filter: blur(22px) saturate(165%);
             -webkit-backdrop-filter: blur(22px) saturate(165%);
             border: 1px solid var(--ui-border);
             box-shadow: var(--ui-specular), 0 8px 20px -12px rgba(0, 0, 0, 0.45);
+        }
+
+        .sec-bar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sec-bar-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            user-select: none;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .sec-bar-chevron {
+            font-size: 18px !important;
+            color: var(--ui-muted);
+            transition: transform 0.18s ease;
+        }
+
+        .sticky-section.collapsed .sec-bar-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .sticky-section.collapsed .sec-bar-filters,
+        .sticky-section.collapsed .table-shell {
+            display: none !important;
+        }
+
+        .sec-bar-filters {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 1px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .sec-bar-filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sec-filter-chip {
+            padding: 4px 9px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid var(--ui-border);
+            background: var(--ui-pill-bg);
+            color: var(--ui-text-soft);
+            cursor: pointer;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            transition: all 0.14s ease;
+        }
+
+        .sec-filter-chip.active {
+            background: var(--ui-pill-active);
+            color: var(--ui-pill-active-text);
+            border-color: transparent;
+        }
+
+        /* 6-Lane Phone/Tablet-First Vertical Ledger Table */
+        .ledger-v6 {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 12px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ledger-v6 thead th {
+            padding: 8px 7px !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--ui-muted) !important;
+            background: var(--ui-thead-bg) !important;
+            border-bottom: 1px solid var(--ui-border-strong) !important;
+            white-space: nowrap;
+        }
+
+        .ledger-v6 tbody td {
+            padding: 8px 7px !important;
+            border-bottom: 1px solid var(--ui-border) !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .ledger-v6 tfoot td {
+            padding: 9px 7px !important;
+            background: var(--ui-thead-bg) !important;
+            border-top: 1px solid var(--ui-border-strong) !important;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        /* Frozen #/Time first column on narrow phones */
+        .ledger-v6 th.col-sticky,
+        .ledger-v6 td.col-sticky {
+            position: sticky;
+            left: 0;
+            z-index: 6;
+            background: var(--ui-sheet-card);
+            box-shadow: 2px 0 6px -4px rgba(0, 0, 0, 0.35);
+            max-width: 118px;
+        }
+
+        .ledger-v6 thead th.col-sticky {
+            z-index: 12;
+            background: var(--ui-sheet-card) !important;
+        }
+
+        .ledger-dot {
+            color: var(--ui-muted);
+            opacity: 0.35;
+        }
+
+        .ledger-tag {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: var(--ui-pill-bg);
+            color: var(--ui-muted);
+            margin-right: 3px;
+        }
+
+        /* Inline Accordion Edit Tray */
+        .ledger-acc-row td {
+            padding: 12px !important;
+            background: var(--ui-card-inner) !important;
+            border-bottom: 2px solid var(--ui-border-strong) !important;
+            white-space: normal !important;
+        }
+
+        .ledger-acc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+            gap: 8px;
+        }
+
+        .ledger-acc-field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .ledger-acc-field label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--ui-muted);
+        }
+
+        .ledger-acc-field input,
+        .ledger-acc-field select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 7px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--ui-border-strong);
+            background: var(--ui-input-bg);
+            color: var(--ui-text);
+            font-size: 13px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 640px) {
+            .ledger-v6 {
+                font-size: 11.5px;
+            }
+            .ledger-v6 thead th,
+            .ledger-v6 tbody td,
+            .ledger-v6 tfoot td {
+                padding: 7px 5px !important;
+            }
+            .ledger-v6 th.col-sticky,
+            .ledger-v6 td.col-sticky {
+                max-width: 92px;
+            }
         }
 
         /* Ledger & Isolated Cash/QR Modal */
@@ -1473,8 +1661,9 @@
         }
 
         .table-shell {
-            overflow: auto;
-            max-height: 68vh;
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
             border-radius: 12px;
             border: 1px solid var(--ui-border);
             background: var(--ui-card);
@@ -3234,7 +3423,7 @@
                 </div>
             </div>
             <div class="ledger-modal-scroll">
-                <table class="ledger-modal-table">
+                <table class="ledger-modal-table ledger-v6">
                     <thead id="ledger-modal-thead"></thead>
                     <tbody id="ledger-modal-tbody"></tbody>
                 </table>
@@ -5817,189 +6006,252 @@
         }
 
         const activeSessionTableSortStates = {};
+        const counterLedgerFilters = {};
+        const counterCollapsedState = {};
+        let openAccordionEntryId = null;
 
-        function sortActiveSessionTable(cid, column, forceDesc = false) {
+        function toggleCounterSection(cid) {
+            counterCollapsedState[cid] = !counterCollapsedState[cid];
+            const sec = document.getElementById(`active-sec-${cid}`);
+            if (sec) sec.classList.toggle('collapsed', !!counterCollapsedState[cid]);
+        }
+
+        function setCounterLedgerFilter(cid, mode) {
+            counterLedgerFilters[cid] = mode;
+            const bar = document.getElementById(`sec-filters-${cid}`);
+            if (bar) {
+                bar.querySelectorAll('.sec-filter-chip').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === mode);
+                });
+            }
+            const st = activeSessionTableSortStates[cid] || { column: 'time', desc: true };
+            sortActiveSessionTable(cid, st.column, st.desc, true);
+        }
+
+        function toggleLedgerAccordion(cid, entryId) {
+            openAccordionEntryId = (String(openAccordionEntryId) === String(entryId)) ? null : String(entryId);
+            const st = activeSessionTableSortStates[cid] || { column: 'time', desc: true };
+            sortActiveSessionTable(cid, st.column, st.desc, true);
+        }
+
+        async function saveLedgerAccordion(cid, entryId) {
+            const entry = entries.find(e => String(e.id) === String(entryId));
+            if (!entry) return;
+
+            const fields = ['cash', 'qr', 'pos', 'ips', 'esewa', 'online', 'cheque', 'credit'];
+            const prevSnap = {};
+            const changes = [];
+            fields.forEach(f => {
+                const inp = document.getElementById(`acc-in-${entryId}-${f}`);
+                if (!inp) return;
+                const oldV = Number(entry[f] || 0);
+                const newV = parseFloat(inp.value) || 0;
+                if (oldV !== newV) {
+                    prevSnap[f] = oldV;
+                    entry[f] = newV;
+                    changes.push(`${f}: ${oldV.toLocaleString()} → ${newV.toLocaleString()}`);
+                }
+            });
+
+            const moveSel = document.getElementById(`acc-move-${entryId}`);
+            const oldCid = String(entry.counterId);
+            const newCid = moveSel ? String(moveSel.value) : oldCid;
+            if (newCid !== oldCid) {
+                prevSnap.counterId = oldCid;
+                entry.counterId = newCid;
+                changes.push(`Counter ${oldCid} → ${newCid}`);
+            }
+
+            if (changes.length === 0) {
+                openAccordionEntryId = null;
+                sortActiveSessionTable(cid, (activeSessionTableSortStates[cid] || { column: 'time' }).column, (activeSessionTableSortStates[cid] || { desc: true }).desc, true);
+                return;
+            }
+
+            entry.totalIn = entry.isVoid ? 0 : ((entry.cash || 0) + (entry.qr || 0) + (entry.pos || 0) + (entry.ips || 0) + (entry.esewa || 0) + (entry.online || 0));
+            entry.totalCredit = entry.isVoid ? 0 : ((entry.cheque || 0) + (entry.credit || 0));
+
+            const summary = changes.join(', ');
+            recordEntryVersion(entry, summary, prevSnap);
+            openAccordionEntryId = null;
+            await persistAndSyncEntry(entry);
+
+            renderAdminActive();
+            if (activeAdminTab === 'eod') renderAdminEOD();
+            pushAdminUndo(summary, async () => {
+                await applyEntryRestore(entry.id, prevSnap, `Undid: ${summary}`);
+            });
+        }
+
+        function sortActiveSessionTable(cid, column, forceDesc = false, keepDir = false) {
             const key = cid;
             if (!activeSessionTableSortStates[key]) {
-                activeSessionTableSortStates[key] = { column: '', desc: false };
+                activeSessionTableSortStates[key] = { column: 'time', desc: true };
             }
             const state = activeSessionTableSortStates[key];
-            if (forceDesc) {
-                state.column = column;
-                state.desc = true;
-            } else {
-                if (state.column === column) {
+            if (!keepDir) {
+                if (forceDesc) {
+                    state.column = column;
+                    state.desc = true;
+                } else if (state.column === column) {
                     state.desc = !state.desc;
                 } else {
                     state.column = column;
-                    state.desc = false;
+                    state.desc = true;
                 }
             }
 
             const tbody = document.querySelector(`.active-sess-tbody-${cid}`);
             if (!tbody) return;
 
-            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
-
-            // Establish permanent chronological sequence maps for S.N.
-            const chronological = activeEntries.slice().sort((a, b) => String(a.id || '').localeCompare(String(b.id || '')));
+            const allCounterEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
+            const chronological = allCounterEntries.slice().sort((a, b) => String(a.id || '').localeCompare(String(b.id || '')));
             const snMap = {};
-            chronological.forEach((e, idx) => {
-                snMap[e.id] = idx + 1;
+            chronological.forEach((e, idx) => { snMap[e.id] = idx + 1; });
+
+            const modeFilter = counterLedgerFilters[cid] || 'all';
+            const activeEntries = allCounterEntries.filter(e => {
+                if (modeFilter === 'cash') return !e.isVoid && (e.cash || 0) > 0;
+                if (modeFilter === 'qr') return !e.isVoid && ((e.qr || 0) + (e.online || 0)) > 0;
+                if (modeFilter === 'other') return !e.isVoid && ((e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.cheque || 0) + (e.credit || 0)) > 0;
+                return true;
             });
 
+            const getQr = x => (x.qr || 0) + (x.online || 0);
+            const getOther = x => (x.pos || 0) + (x.ips || 0) + (x.esewa || 0);
+            const getChqCr = x => (x.cheque || 0) + (x.credit || 0);
+            const getTotal = x => x.isVoid ? 0 : ((x.cash || 0) + getQr(x) + getOther(x) + getChqCr(x));
+
             activeEntries.sort((a, b) => {
-                let valA = 0;
-                let valB = 0;
-
-                const getTotCash = (x) => x.isVoid ? 0 : ((x.cash || 0) + (x.qr || 0) + (x.pos || 0) + (x.ips || 0) + (x.esewa || 0) + (x.online || 0));
-                const getTotCredit = (x) => x.isVoid ? 0 : ((x.cheque || 0) + (x.credit || 0));
-
+                let valA = 0, valB = 0;
                 switch (column) {
-                    case 'sn':
-                        valA = snMap[a.id] || 0;
-                        valB = snMap[b.id] || 0;
-                        break;
-                    case 'time':
-                        valA = String(a.id || '');
-                        valB = String(b.id || '');
-                        break;
+                    case 'time': valA = String(a.id || ''); valB = String(b.id || ''); break;
                     case 'cash': valA = a.cash || 0; valB = b.cash || 0; break;
-                    case 'qr': valA = a.qr || 0; valB = b.qr || 0; break;
-                    case 'pos': valA = a.pos || 0; valB = b.pos || 0; break;
-                    case 'ips': valA = a.ips || 0; valB = b.ips || 0; break;
-                    case 'esewa': valA = a.esewa || 0; valB = b.esewa || 0; break;
-                    case 'online': valA = a.online || 0; valB = b.online || 0; break;
-                    case 'totCash':
-                        valA = getTotCash(a);
-                        valB = getTotCash(b);
-                        break;
-                    case 'cheque': valA = a.cheque || 0; valB = b.cheque || 0; break;
-                    case 'credit': valA = a.credit || 0; valB = b.credit || 0; break;
-                    case 'totCredit':
-                        valA = getTotCredit(a);
-                        valB = getTotCredit(b);
-                        break;
-                    case 'totSales':
-                        valA = getTotCash(a) + getTotCredit(a);
-                        valB = getTotCash(b) + getTotCredit(b);
-                        break;
+                    case 'qr': valA = getQr(a); valB = getQr(b); break;
+                    case 'other': valA = getOther(a); valB = getOther(b); break;
+                    case 'chqcr': valA = getChqCr(a); valB = getChqCr(b); break;
+                    case 'totSales': valA = getTotal(a); valB = getTotal(b); break;
+                    default: valA = snMap[a.id] || 0; valB = snMap[b.id] || 0;
                 }
-
-                if (typeof valA === 'string') {
-                    return state.desc ? valB.localeCompare(valA) : valA.localeCompare(valB);
-                } else {
-                    return state.desc ? valB - valA : valA - valB;
-                }
+                if (typeof valA === 'string') return state.desc ? valB.localeCompare(valA) : valA.localeCompare(valB);
+                return state.desc ? valB - valA : valA - valB;
             });
 
             tbody.innerHTML = '';
-            let sumC = 0, sumQ = 0, sumPos = 0, sumIps = 0, sumEsewa = 0, sumOnline = 0, sumTotCash = 0;
-            let sumCheque = 0, sumCredit = 0, sumTotCredit = 0, sumTotSales = 0;
+            let sumCash = 0, sumQr = 0, sumOther = 0, sumChqCr = 0, sumTotal = 0;
 
-            let cntC = 0, cntQ = 0, cntPos = 0, cntIps = 0, cntEsewa = 0, cntOnline = 0, cntTotCash = 0;
-            let cntCheque = 0, cntCredit = 0, cntTotCredit = 0, cntTotSales = 0;
+            if (activeEntries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:22px; color:var(--ui-muted);">No entries match this filter.</td></tr>';
+            }
 
             activeEntries.forEach(e => {
+                const c = e.cash || 0;
+                const q = getQr(e);
+                const oth = getOther(e);
+                const cc = getChqCr(e);
+                const tot = getTotal(e);
+
+                if (!e.isVoid) {
+                    sumCash += c; sumQr += q; sumOther += oth; sumChqCr += cc; sumTotal += tot;
+                }
+
                 const tr = document.createElement('tr');
                 tr.dataset.entryId = e.id;
                 if (e.isVoid) {
-                    tr.style.opacity = '0.5';
+                    tr.style.opacity = '0.45';
                     tr.style.textDecoration = 'line-through';
                 }
 
-                const totCash = e.isVoid ? 0 : ((e.cash || 0) + (e.qr || 0) + (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.online || 0));
-                const totCredit = e.isVoid ? 0 : ((e.cheque || 0) + (e.credit || 0));
-                const totSales = totCash + totCredit;
+                const shortTime = (e.timestamp || '').split(' ')[0] || e.time || '—';
+                const noteText = e.customerName || e.remarks || '';
+                const noteHtml = noteText
+                    ? `<div style="font-size:10px; color:var(--ui-muted); font-weight:500; overflow:hidden; text-overflow:ellipsis; max-width:96px;">${escapeHtml(noteText)}</div>`
+                    : '';
 
-                if (!e.isVoid) {
-                    sumC += (e.cash || 0);
-                    sumQ += (e.qr || 0);
-                    sumPos += (e.pos || 0);
-                    sumIps += (e.ips || 0);
-                    sumEsewa += (e.esewa || 0);
-                    sumOnline += (e.online || 0);
-                    sumTotCash += totCash;
-                    sumCheque += (e.cheque || 0);
-                    sumCredit += (e.credit || 0);
-                    sumTotCredit += totCredit;
-                    sumTotSales += totSales;
+                const cashCell = c > 0
+                    ? `<span style="color:var(--ui-pos); font-weight:700;">${c.toLocaleString()}</span>`
+                    : '<span class="ledger-dot">·</span>';
 
-                    if ((e.cash || 0) > 0) cntC++;
-                    if ((e.qr || 0) > 0) cntQ++;
-                    if ((e.pos || 0) > 0) cntPos++;
-                    if ((e.ips || 0) > 0) cntIps++;
-                    if ((e.esewa || 0) > 0) cntEsewa++;
-                    if ((e.online || 0) > 0) cntOnline++;
-                    if (totCash > 0) cntTotCash++;
-                    if ((e.cheque || 0) > 0) cntCheque++;
-                    if ((e.credit || 0) > 0) cntCredit++;
-                    if (totCredit > 0) cntTotCredit++;
-                    if (totSales > 0) cntTotSales++;
-                }
+                const onlTag = (e.online || 0) > 0 ? '<span class="ledger-tag">ONL</span>' : '';
+                const qrCell = q > 0
+                    ? `${onlTag}<span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span>`
+                    : '<span class="ledger-dot">·</span>';
 
-                const remarksSpan = e.remarks ? `<br><span style="font-size:9px; color:#a0aec0; font-style:italic;">(${escapeHtml(e.remarks)})</span>` : '';
+                const othParts = [];
+                if ((e.pos || 0) > 0) othParts.push(`<span class="ledger-tag">POS</span>${e.pos.toLocaleString()}`);
+                if ((e.ips || 0) > 0) othParts.push(`<span class="ledger-tag">IPS</span>${e.ips.toLocaleString()}`);
+                if ((e.esewa || 0) > 0) othParts.push(`<span class="ledger-tag">eS</span>${e.esewa.toLocaleString()}`);
+                const otherCell = othParts.length ? othParts.join('<br>') : '<span class="ledger-dot">·</span>';
+
+                const ccParts = [];
+                if ((e.cheque || 0) > 0) ccParts.push(`<span class="ledger-tag">CHQ</span><span style="color:var(--ui-warn); font-weight:700;">${e.cheque.toLocaleString()}</span>`);
+                if ((e.credit || 0) > 0) ccParts.push(`<span class="ledger-tag">CR</span><span style="color:var(--ui-neg); font-weight:700;">${e.credit.toLocaleString()}</span>`);
+                const ccCell = ccParts.length ? ccParts.join('<br>') : '<span class="ledger-dot">·</span>';
+
+                const isOpen = String(openAccordionEntryId) === String(e.id);
                 const hasHist = Array.isArray(e.history) && e.history.length > 0;
-                const moveOpts = ['0','1','2','3','4','5'].map(c => `<option value="${c}" ${String(e.counterId)===c?'selected':''}>C${c}</option>`).join('');
 
                 tr.innerHTML = `
-                    <td style="padding:6px; font-weight:600; color:var(--ui-muted); text-align:center;">${snMap[e.id] || ''}</td>
-                    <td style="padding:6px; font-weight:600; color:var(--ui-info); white-space:nowrap;">
-                        <span style="cursor:pointer;" onclick="openCaptureSheet('${e.id}')">${e.timestamp}</span>
-                        <select class="row-move-sel" title="Move invoice to another counter" onclick="event.stopPropagation()" onchange="moveEntryCounter('${e.id}', this.value)">${moveOpts}</select>
-                        <button class="row-info-btn ${hasHist ? 'has-log' : ''}" title="View change history &amp; undo" onclick="event.stopPropagation(); openEntryHistoryModal('${e.id}')"><span class="material-icons" style="font-size:13px;">info</span></button>
-                        ${remarksSpan}
+                    <td class="col-sticky" style="cursor:pointer;" onclick="openCaptureSheet('${e.id}')">
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <span style="font-size:10px; color:var(--ui-muted); font-weight:700;">#${snMap[e.id] || ''}</span>
+                            <span style="font-weight:700; color:var(--ui-info);">${escapeHtml(shortTime)}</span>
+                        </div>
+                        ${noteHtml}
                     </td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cash || ''}" onchange="updateActiveEntryField('${e.id}', 'cash', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.qr || ''}" onchange="updateActiveEntryField('${e.id}', 'qr', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.pos || ''}" onchange="updateActiveEntryField('${e.id}', 'pos', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.ips || ''}" onchange="updateActiveEntryField('${e.id}', 'ips', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.esewa || ''}" onchange="updateActiveEntryField('${e.id}', 'esewa', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.online || ''}" onchange="updateActiveEntryField('${e.id}', 'online', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:6px; text-align:right; color:var(--ui-pos); font-weight:700;" class="tot-cash-cell">${totCash.toLocaleString()}</td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.cheque || ''}" onchange="updateActiveEntryField('${e.id}', 'cheque', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:4px; text-align:right;"><input type="number" class="ledger-cell-input" value="${e.credit || ''}" onchange="updateActiveEntryField('${e.id}', 'credit', this.value)" placeholder="0" inputmode="decimal"></td>
-                    <td style="padding:6px; text-align:right; color:var(--ui-neg); font-weight:700;" class="tot-credit-cell">${totCredit.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right; font-weight:700;" class="tot-sales-cell">${totSales.toLocaleString()}</td>
+                    <td style="text-align:right;">${cashCell}</td>
+                    <td style="text-align:right;">${qrCell}</td>
+                    <td style="text-align:right;">${otherCell}</td>
+                    <td style="text-align:right;">${ccCell}</td>
+                    <td style="text-align:right; font-weight:800; color:var(--ui-text);">${tot.toLocaleString()}</td>
+                    <td style="text-align:right;">
+                        <button class="row-info-btn ${isOpen ? 'has-log' : ''}" onclick="toggleLedgerAccordion('${cid}', '${e.id}')" title="${isOpen ? 'Close edit' : 'Edit amounts or move counter'}">
+                            <span class="material-icons" style="font-size:13px;">${isOpen ? 'close' : 'edit'}</span>
+                        </button>
+                        <button class="row-info-btn ${hasHist ? 'has-log' : ''}" onclick="openEntryHistoryModal('${e.id}')" title="Change history &amp; undo">
+                            <span class="material-icons" style="font-size:13px;">info</span>
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
-            });
 
-            // Update column headers with fill counts
-            const table = tbody.closest('table');
-            const headerRow = table ? table.querySelector('thead tr') : null;
-            if (headerRow) {
-                const thSn = headerRow.querySelector('.th-sn'); if (thSn) thSn.innerHTML = `S.N (${activeEntries.length}) ⇅`;
-                const thTime = headerRow.querySelector('.th-time'); if (thTime) thTime.innerHTML = `B.N (Time) ⇅`;
-                const thCash = headerRow.querySelector('.th-cash'); if (thCash) thCash.innerHTML = `C (${cntC}) ⇅`;
-                const thQr = headerRow.querySelector('.th-qr'); if (thQr) thQr.innerHTML = `Q (${cntQ}) ⇅`;
-                const thPos = headerRow.querySelector('.th-pos'); if (thPos) thPos.innerHTML = `POS (${cntPos}) ⇅`;
-                const thIps = headerRow.querySelector('.th-ips'); if (thIps) thIps.innerHTML = `IPS (${cntIps}) ⇅`;
-                const thEsewa = headerRow.querySelector('.th-esewa'); if (thEsewa) thEsewa.innerHTML = `Esewa (${cntEsewa}) ⇅`;
-                const thOnline = headerRow.querySelector('.th-online'); if (thOnline) thOnline.innerHTML = `Online (${cntOnline}) ⇅`;
-                const thTotCash = headerRow.querySelector('.th-totcash'); if (thTotCash) thTotCash.innerHTML = `Tot Cash (${cntTotCash}) ⇅`;
-                const thCheque = headerRow.querySelector('.th-cheque'); if (thCheque) thCheque.innerHTML = `Cheque (${cntCheque}) ⇅`;
-                const thCredit = headerRow.querySelector('.th-credit'); if (thCredit) thCredit.innerHTML = `Credit (${cntCredit}) ⇅`;
-                const thTotCredit = headerRow.querySelector('.th-totcredit'); if (thTotCredit) thTotCredit.innerHTML = `Tot Credit (${cntTotCredit}) ⇅`;
-                const thTotSales = headerRow.querySelector('.th-totsales'); if (thTotSales) thTotSales.innerHTML = `Tot Sales (${cntTotSales}) ⇅`;
-            }
+                if (isOpen) {
+                    const accTr = document.createElement('tr');
+                    accTr.className = 'ledger-acc-row';
+                    const moveOpts = ['0','1','2','3','4','5'].map(cOpt => `<option value="${cOpt}" ${String(e.counterId) === cOpt ? 'selected' : ''}>Counter ${cOpt}${cOpt === '0' ? ' (Coll)' : ''}</option>`).join('');
+                    accTr.innerHTML = `
+                        <td colspan="7">
+                            <div class="ledger-acc-grid">
+                                <div class="ledger-acc-field"><label>Cash</label><input type="number" id="acc-in-${e.id}-cash" value="${e.cash || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>QR</label><input type="number" id="acc-in-${e.id}-qr" value="${e.qr || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>Online QR</label><input type="number" id="acc-in-${e.id}-online" value="${e.online || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>POS</label><input type="number" id="acc-in-${e.id}-pos" value="${e.pos || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>IPS / EBL</label><input type="number" id="acc-in-${e.id}-ips" value="${e.ips || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>eSewa</label><input type="number" id="acc-in-${e.id}-esewa" value="${e.esewa || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>Cheque</label><input type="number" id="acc-in-${e.id}-cheque" value="${e.cheque || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>Credit</label><input type="number" id="acc-in-${e.id}-credit" value="${e.credit || ''}" placeholder="0" inputmode="decimal"></div>
+                                <div class="ledger-acc-field"><label>Move Counter</label><select id="acc-move-${e.id}">${moveOpts}</select></div>
+                            </div>
+                            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+                                <button class="glass-btn" onclick="toggleLedgerAccordion('${cid}', '${e.id}')" style="padding:6px 12px !important; font-size:11.5px !important;">Cancel</button>
+                                <button class="glass-btn-primary" onclick="saveLedgerAccordion('${cid}', '${e.id}')" style="padding:6px 14px !important; font-size:11.5px !important;">Save Changes</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(accTr);
+                }
+            });
 
             const tfoot = document.getElementById(`tfoot-acc-active-${cid}`);
             if (tfoot) {
                 tfoot.innerHTML = `
-                    <td style="padding:6px; font-weight:800; color:#9ca3af; text-align:center;">${activeEntries.length}</td>
-                    <td style="padding:6px; font-weight:800; color:#9ca3af;">TOTAL</td>
-                    <td style="padding:6px; text-align:right;">${sumC.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumQ.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumPos.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumIps.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumEsewa.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumOnline.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right; color:#10b981; font-weight:800;">${sumTotCash.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumCheque.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right;">${sumCredit.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right; color:#ef4444; font-weight:800;">${sumTotCredit.toLocaleString()}</td>
-                    <td style="padding:6px; text-align:right; font-weight:800;">${sumTotSales.toLocaleString()}</td>
+                    <td class="col-sticky" style="color:var(--ui-muted);">${activeEntries.length} BILLS</td>
+                    <td style="text-align:right; color:var(--ui-pos);">${sumCash.toLocaleString()}</td>
+                    <td style="text-align:right; color:var(--ui-info);">${sumQr.toLocaleString()}</td>
+                    <td style="text-align:right;">${sumOther.toLocaleString()}</td>
+                    <td style="text-align:right; color:var(--ui-neg);">${sumChqCr.toLocaleString()}</td>
+                    <td style="text-align:right;">${sumTotal.toLocaleString()}</td>
+                    <td></td>
                 `;
             }
         }
@@ -6083,57 +6335,74 @@
             });
 
             Object.keys(groups).sort().forEach(cid => {
-                // Sticky section wrapper (iPhone Contacts / Frozen Sheet style)
+                const list = groups[cid];
+                const nonVoid = list.filter(e => !e.isVoid);
+                let cCash = 0, cQr = 0, cOther = 0, cTotal = 0;
+                let nCash = 0, nQr = 0, nOther = 0;
+                nonVoid.forEach(e => {
+                    const ca = e.cash || 0;
+                    const qr = (e.qr || 0) + (e.online || 0);
+                    const ot = (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.cheque || 0) + (e.credit || 0);
+                    cCash += ca; cQr += qr; cOther += ot; cTotal += (ca + qr + ot);
+                    if (ca > 0) nCash++;
+                    if (qr > 0) nQr++;
+                    if (ot > 0) nOther++;
+                });
+
+                const activeFilter = counterLedgerFilters[cid] || 'all';
+                const isCollapsed = !!counterCollapsedState[cid];
+
+                // Sticky collapsible section wrapper (uniform page scroll, zero inner scroll trap)
                 const sec = document.createElement('section');
-                sec.className = 'sticky-section';
+                sec.className = 'sticky-section' + (isCollapsed ? ' collapsed' : '');
+                sec.id = `active-sec-${cid}`;
 
                 const headerWrapper = document.createElement('div');
                 headerWrapper.className = 'sticky-sec-bar';
-
-                const groupTitle = document.createElement('div');
-                groupTitle.className = 'counter-group-title';
-                groupTitle.style.margin = '0';
-                groupTitle.innerText = cid === '0' ? 'Counter 0 · Collections Active' : `Counter ${cid} Active`;
-
-                const enterBtn = document.createElement('button');
-                enterBtn.className = 'glass-btn';
-                enterBtn.innerHTML = '<span class="material-icons" style="font-size:14px;">open_in_new</span> Enter Portal';
-                enterBtn.onclick = () => adminEnterWorkspace(cid);
-
-                headerWrapper.appendChild(groupTitle);
-                headerWrapper.appendChild(enterBtn);
+                const titleText = cid === '0' ? 'Counter 0 · Collections' : `Counter ${cid} Active`;
+                headerWrapper.innerHTML = `
+                    <div class="sec-bar-top">
+                        <div class="sec-bar-toggle" onclick="toggleCounterSection('${cid}')" title="Tap to collapse or expand">
+                            <span class="material-icons sec-bar-chevron">expand_more</span>
+                            <div style="min-width:0;">
+                                <div class="counter-group-title" style="margin:0; font-size:13.5px;">${titleText}</div>
+                                <div style="font-size:11px; color:var(--ui-muted); font-variant-numeric:tabular-nums;">${nonVoid.length} bills · <strong style="color:var(--ui-text);">NPR ${cTotal.toLocaleString()}</strong></div>
+                            </div>
+                        </div>
+                        <button class="glass-btn" onclick="adminEnterWorkspace('${cid}')" style="padding:6px 10px !important; font-size:11.5px !important;">
+                            <span class="material-icons" style="font-size:14px;">open_in_new</span> Enter
+                        </button>
+                    </div>
+                    <div class="sec-bar-filters" id="sec-filters-${cid}">
+                        <button class="sec-filter-chip ${activeFilter === 'all' ? 'active' : ''}" data-mode="all" onclick="setCounterLedgerFilter('${cid}', 'all')">All (${list.length})</button>
+                        <button class="sec-filter-chip ${activeFilter === 'cash' ? 'active' : ''}" data-mode="cash" onclick="setCounterLedgerFilter('${cid}', 'cash')" style="color:var(--ui-pos);">Cash ${nCash} · ${cCash.toLocaleString()}</button>
+                        <button class="sec-filter-chip ${activeFilter === 'qr' ? 'active' : ''}" data-mode="qr" onclick="setCounterLedgerFilter('${cid}', 'qr')" style="color:var(--ui-info);">QR ${nQr} · ${cQr.toLocaleString()}</button>
+                        <button class="sec-filter-chip ${activeFilter === 'other' ? 'active' : ''}" data-mode="other" onclick="setCounterLedgerFilter('${cid}', 'other')">Other ${nOther} · ${cOther.toLocaleString()}</button>
+                    </div>
+                `;
                 sec.appendChild(headerWrapper);
 
-                // Clean frosted table shell with frozen thead
+                // Clean frosted 6-lane vertical table shell (uniform page scroll, sticky left #/Time on narrow phones)
                 const tableWrap = document.createElement('div');
                 tableWrap.className = 'table-shell';
-                tableWrap.style.marginBottom = '10px';
+                tableWrap.style.marginBottom = '8px';
 
                 const table = document.createElement('table');
-                table.className = 'eod-table';
-                table.style.width = '100%';
-                table.style.fontSize = '11.5px';
-
+                table.className = 'ledger-v6';
                 table.innerHTML = `
                     <thead>
                         <tr>
-                            <th class="th-sn" style="text-align:center; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'sn')">S.N ⇅</th>
-                            <th class="th-time" style="cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')">B.N (Time) ⇅</th>
-                            <th class="th-cash" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">C ⇅</th>
-                            <th class="th-qr" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">Q ⇅</th>
-                            <th class="th-pos" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'pos')">POS ⇅</th>
-                            <th class="th-ips" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'ips')">IPS ⇅</th>
-                            <th class="th-esewa" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'esewa')">Esewa ⇅</th>
-                            <th class="th-online" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'online')">Online ⇅</th>
-                            <th class="th-totcash" style="text-align:right; color:var(--ui-pos); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCash')">Tot Cash ⇅</th>
-                            <th class="th-cheque" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cheque')">Cheque ⇅</th>
-                            <th class="th-credit" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'credit')">Credit ⇅</th>
-                            <th class="th-totcredit" style="text-align:right; color:var(--ui-neg); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totCredit')">Tot Credit ⇅</th>
-                            <th class="th-totsales" style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Tot Sales ⇅</th>
+                            <th class="col-sticky" style="text-align:left; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'time')"># / Time ⇅</th>
+                            <th style="text-align:right; color:var(--ui-pos); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'cash')">Cash ⇅</th>
+                            <th style="text-align:right; color:var(--ui-info); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'qr')">QR ⇅</th>
+                            <th style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'other')">Other ⇅</th>
+                            <th style="text-align:right; color:var(--ui-neg); cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'chqcr')">Chq/Cr ⇅</th>
+                            <th style="text-align:right; cursor:pointer;" onclick="sortActiveSessionTable('${cid}', 'totSales')">Total ⇅</th>
+                            <th style="text-align:right; width:56px;"></th>
                         </tr>
                     </thead>
                     <tbody class="active-sess-tbody-${cid}"></tbody>
-                    <tfoot style="font-weight: 800;">
+                    <tfoot>
                         <tr id="tfoot-acc-active-${cid}"></tr>
                     </tfoot>
                 `;
@@ -6141,9 +6410,11 @@
                 sec.appendChild(tableWrap);
                 container.appendChild(sec);
 
-                // Initial render: sort by time newest first
-                activeSessionTableSortStates[cid] = { column: 'time', desc: true };
-                sortActiveSessionTable(cid, 'time', true);
+                // Initial render: newest first
+                if (!activeSessionTableSortStates[cid]) {
+                    activeSessionTableSortStates[cid] = { column: 'time', desc: true };
+                }
+                sortActiveSessionTable(cid, activeSessionTableSortStates[cid].column, activeSessionTableSortStates[cid].desc, true);
             });
         }
 
@@ -7984,36 +8255,54 @@
                 }
             } else {
                 thead.innerHTML = `<tr>
-                    <th style="width:42px; text-align:center;">S.N</th>
+                    <th class="col-sticky" style="text-align:left;"># / Time</th>
                     ${ctrCol}
-                    <th>Time &amp; Details</th>
                     <th style="text-align:right; color:var(--ui-pos);">Cash</th>
                     <th style="text-align:right; color:var(--ui-info);">QR</th>
                     <th style="text-align:right;">Other</th>
-                    <th style="text-align:right; color:var(--ui-neg);">Credit</th>
+                    <th style="text-align:right; color:var(--ui-neg);">Chq/Cr</th>
                     <th style="text-align:right;">Total</th>
                 </tr>`;
-                let totCash = 0, totQr = 0, totOther = 0, totCredit = 0, grandTotal = 0;
+                let totCash = 0, totQr = 0, totOther = 0, totCc = 0, grandTotal = 0;
                 tbody.innerHTML = scoped.length === 0
-                    ? `<tr><td colspan="${isCounter ? 7 : 8}" style="text-align:center; padding:32px; color:var(--ui-muted);">No invoices in this session yet.</td></tr>`
+                    ? `<tr><td colspan="${isCounter ? 6 : 7}" style="text-align:center; padding:32px; color:var(--ui-muted);">No invoices in this session yet.</td></tr>`
                     : scoped.map((e, idx) => {
                         const c = e.cash || 0;
                         const q = (e.qr || 0) + (e.online || 0);
-                        const oth = (e.pos || 0) + (e.ips || 0) + (e.esewa || 0) + (e.cheque || 0);
-                        const cr = e.credit || 0;
-                        const rowTot = c + q + oth + cr;
-                        totCash += c; totQr += q; totOther += oth; totCredit += cr; grandTotal += rowTot;
-                        const detail = [e.time || '', e.customerName || '', e.remarks || ''].filter(Boolean).join(' · ');
+                        const oth = (e.pos || 0) + (e.ips || 0) + (e.esewa || 0);
+                        const cc = (e.cheque || 0) + (e.credit || 0);
+                        const rowTot = c + q + oth + cc;
+                        totCash += c; totQr += q; totOther += oth; totCc += cc; grandTotal += rowTot;
+
+                        const shortTime = (e.timestamp || '').split(' ')[0] || e.time || '—';
+                        const noteTxt = e.customerName || e.remarks || '';
+                        const noteHtml = noteTxt ? `<div style="font-size:10px; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; max-width:92px;">${esc(noteTxt)}</div>` : '';
                         const ctrTd = isCounter ? '' : `<td style="text-align:center; font-weight:700;">C${esc(e.counterId)}</td>`;
+
+                        const onlTag = (e.online || 0) > 0 ? '<span class="ledger-tag">ONL</span>' : '';
+                        const othParts = [];
+                        if ((e.pos || 0) > 0) othParts.push(`<span class="ledger-tag">POS</span>${e.pos.toLocaleString()}`);
+                        if ((e.ips || 0) > 0) othParts.push(`<span class="ledger-tag">IPS</span>${e.ips.toLocaleString()}`);
+                        if ((e.esewa || 0) > 0) othParts.push(`<span class="ledger-tag">eS</span>${e.esewa.toLocaleString()}`);
+
+                        const ccParts = [];
+                        if ((e.cheque || 0) > 0) ccParts.push(`<span class="ledger-tag">CHQ</span><span style="color:var(--ui-warn); font-weight:700;">${e.cheque.toLocaleString()}</span>`);
+                        if ((e.credit || 0) > 0) ccParts.push(`<span class="ledger-tag">CR</span><span style="color:var(--ui-neg); font-weight:700;">${e.credit.toLocaleString()}</span>`);
+
                         return `<tr>
-                            <td style="text-align:center; color:var(--ui-muted);">${idx + 1}</td>
+                            <td class="col-sticky">
+                                <div style="display:flex; align-items:center; gap:5px;">
+                                    <span style="font-size:10px; color:var(--ui-muted); font-weight:700;">#${idx + 1}</span>
+                                    <span style="font-weight:700;">${esc(shortTime)}</span>
+                                </div>
+                                ${noteHtml}
+                            </td>
                             ${ctrTd}
-                            <td>${esc(detail || 'Entry')}</td>
-                            <td style="text-align:right; color:var(--ui-pos); font-weight:${c ? 700 : 400};">${c ? c.toLocaleString() : '—'}</td>
-                            <td style="text-align:right; color:var(--ui-info); font-weight:${q ? 700 : 400};">${q ? q.toLocaleString() : '—'}</td>
-                            <td style="text-align:right;">${oth ? oth.toLocaleString() : '—'}</td>
-                            <td style="text-align:right; color:var(--ui-neg);">${cr ? cr.toLocaleString() : '—'}</td>
-                            <td style="text-align:right; font-weight:700;">${rowTot.toLocaleString()}</td>
+                            <td style="text-align:right;">${c ? `<span style="color:var(--ui-pos); font-weight:700;">${c.toLocaleString()}</span>` : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right;">${q ? `${onlTag}<span style="color:var(--ui-info); font-weight:700;">${q.toLocaleString()}</span>` : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right;">${othParts.length ? othParts.join('<br>') : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right;">${ccParts.length ? ccParts.join('<br>') : '<span class="ledger-dot">·</span>'}</td>
+                            <td style="text-align:right; font-weight:800;">${rowTot.toLocaleString()}</td>
                         </tr>`;
                     }).join('');
                 if (countEl) {
