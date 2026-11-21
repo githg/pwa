@@ -3190,6 +3190,12 @@
                     </div>
                 </div>
             </div>
+            <button class="glass-btn" id="admin-session-badge" onclick="promptResetOpeningCash()"
+                title="Today's session date, opening cash &amp; opened time (tap to edit)"
+                style="padding:6px 10px !important; font-size:11.5px !important; gap:6px; max-width:46vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                <span style="width:7px; height:7px; border-radius:50%; background:var(--ui-pos); box-shadow:0 0 6px var(--ui-pos); flex-shrink:0;"></span>
+                <span id="admin-session-badge-text" style="font-weight:700; font-variant-numeric:tabular-nums;">Today · Op Rs 0</span>
+            </button>
             <div style="display:flex; gap:6px; align-items:center;">
                 <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
                     <span class="material-icons" style="font-size:15px;">undo</span> <span id="admin-undo-cnt">Undo</span>
@@ -3239,8 +3245,19 @@
                 <!-- EOD Archive Date Picker & Reconciler -->
                 <div class="glass-card"
                     style="display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
-                    <div style="font-size: 11px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">
-                        Reconciliation & EOD Archive Viewer</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">
+                            Reconciliation &amp; EOD Archive Viewer</div>
+                        <div id="archived-date-led" class="kpi-badge" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800;">
+                            <span style="width:8px; height:8px; border-radius:50%; background:#9ca3af;"></span> Select a date
+                        </div>
+                    </div>
+
+                    <!-- Auto-detected Unclosed Past Sessions (Red LED quick-jump pills) -->
+                    <div id="archived-unclosed-strip" style="display:none; flex-wrap:wrap; gap:6px; align-items:center; padding:8px 10px; border-radius:10px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.32);"></div>
+
+                    <!-- Counter Access Control while closing/reviewing older days -->
+                    <div id="archived-counter-access-bar" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:8px 10px; border-radius:10px; background:var(--ui-card-inner); border:1px solid var(--ui-border);"></div>
 
                     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                         <!-- Double Calendar View B.S. & A.D. -->
@@ -7001,7 +7018,8 @@
             let grandTotalIn = 0;
             let grandTotalCredit = 0;
 
-            const allCounterEntries = entries.filter(e => String(e.counterId) === String(activeCounterId) && e.sessionStatus !== 'closed');
+            const todayStr = getLocalTodayStr();
+            const allCounterEntries = entries.filter(e => String(e.counterId) === String(activeCounterId) && e.date === todayStr && e.sessionStatus !== 'closed');
             const isCollection = (activeCounterId === '0');
 
             // Permanent chronological S.N map
@@ -7666,7 +7684,8 @@
             const hdr = document.getElementById(`sticky-col-hdr-${cid}`);
             if (!hdr) return;
             const totalPx = hdr.getBoundingClientRect().width || 360;
-            const allCounterEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
+            const todayStr = getLocalTodayStr();
+            const allCounterEntries = entries.filter(e => e.date === todayStr && e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
             const { widths } = getCounterColumns(cid, allCounterEntries);
             const cur = widths.slice();
             const startX = ev.clientX;
@@ -7710,7 +7729,8 @@
             const tbody = document.querySelector(`.active-sess-tbody-${cid}`);
             if (!tbody) return;
 
-            const allCounterEntries = entries.filter(e => e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
+            const todayStr = getLocalTodayStr();
+            const allCounterEntries = entries.filter(e => e.date === todayStr && e.sessionStatus !== 'closed' && String(e.counterId) === String(cid));
             const chronological = allCounterEntries.slice().sort(compareEntriesChrono);
             const snMap = {};
             chronological.forEach((e, idx) => { snMap[String(e.id)] = idx + 1; });
@@ -7932,10 +7952,12 @@
             const container = document.getElementById('admin-active-content');
             container.innerHTML = '';
 
-            // Always keep persistent top-right Access Control popover & 5/6 badge up to date
+            // Always keep persistent top-right Access Control popover & Today's Session Badge up to date
             renderAccessPopover();
+            renderTodaySessionBadge();
 
-            const activeEntries = entries.filter(e => e.sessionStatus !== 'closed');
+            const todayStr = getLocalTodayStr();
+            const activeEntries = entries.filter(e => e.date === todayStr && e.sessionStatus !== 'closed');
 
             // 1-Row Live All-Modes Summary Strip right at the top (zero wasted space!)
             let gCash = 0, gQr = 0, gOther = 0, gChqCr = 0, gTot = 0;
@@ -8392,15 +8414,19 @@
 
         function submitOpeningCash() {
             try {
-                const todayKey = 'adminOpeningCash_' + getLocalTodayStr();
+                const todayStr = getLocalTodayStr();
+                const todayKey = 'adminOpeningCash_' + todayStr;
                 const val = parseFloat(document.getElementById('inp-opening-cash').value);
                 if (isNaN(val) || val < 0) {
                     showMsg("Please enter a valid opening cash amount.");
                     return;
                 }
+                const openedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
                 localStorage.setItem(todayKey, val);
+                localStorage.setItem('adminOpeningCashMeta_' + todayStr, JSON.stringify({ amount: val, openedAt, date: todayStr }));
                 localStorage.setItem('adminOpeningCash', val);
                 document.getElementById('opening-cash-modal').classList.remove('active');
+                renderTodaySessionBadge();
                 renderAdminPortal();
 
                 // Switch view
@@ -9436,8 +9462,92 @@
             }
         }
 
+        function getUnclosedPastDates() {
+            const todayStr = getLocalTodayStr();
+            const map = {};
+            entries.forEach(e => {
+                if (!e || !e.date || e.date >= todayStr || e.sessionStatus === 'closed') return;
+                map[e.date] = (map[e.date] || 0) + 1;
+            });
+            return Object.keys(map).sort().reverse().map(date => ({ date, count: map[date] }));
+        }
+
+        function renderTodaySessionBadge() {
+            const txtEl = document.getElementById('admin-session-badge-text');
+            if (!txtEl) return;
+            const todayStr = getLocalTodayStr();
+            const rawAmt = localStorage.getItem('adminOpeningCash_' + todayStr);
+            const amt = rawAmt !== null ? (parseFloat(rawAmt) || 0) : 0;
+            let openedAt = '';
+            try {
+                const meta = JSON.parse(localStorage.getItem('adminOpeningCashMeta_' + todayStr) || 'null');
+                if (meta && meta.openedAt) openedAt = meta.openedAt;
+            } catch (e) {}
+            const shortDate = todayStr.slice(5);
+            const unclosed = getUnclosedPastDates();
+            const warnSuffix = unclosed.length > 0 ? ` · 🔴${unclosed.length}` : '';
+            txtEl.innerText = `${shortDate} · Op Rs ${amt.toLocaleString()}${openedAt ? ' · ' + openedAt : ''}${warnSuffix}`;
+        }
+
+        function jumpToArchivedDate(adDate) {
+            const picker = document.getElementById('eod-select-date');
+            if (picker) picker.value = adDate;
+            handleEodDateChange();
+            executeArchiveSearch();
+        }
+
+        function renderArchivedDayControls(adVal) {
+            const todayStr = getLocalTodayStr();
+
+            // 1. Red/Green LED indicator for selected date
+            const ledEl = document.getElementById('archived-date-led');
+            if (ledEl) {
+                if (!adVal) {
+                    ledEl.innerHTML = `<span style="width:8px; height:8px; border-radius:50%; background:#9ca3af;"></span> Select a date`;
+                } else {
+                    const dayEntries = entries.filter(e => e.date === adVal);
+                    const unclosedCnt = dayEntries.filter(e => e.sessionStatus !== 'closed').length;
+                    const hasClosure = historicalClosings.some(c => c.date === adVal);
+                    if (unclosedCnt > 0) {
+                        ledEl.innerHTML = `<span style="width:9px; height:9px; border-radius:50%; background:#ef4444; box-shadow:0 0 8px #ef4444;"></span> <span style="color:#ef4444;">UNCLOSED · ${unclosedCnt} bills</span>`;
+                    } else if (hasClosure || dayEntries.length > 0) {
+                        ledEl.innerHTML = `<span style="width:9px; height:9px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></span> <span style="color:#10b981;">CLOSED / RECONCILED</span>`;
+                    } else {
+                        ledEl.innerHTML = `<span style="width:8px; height:8px; border-radius:50%; background:#64748b;"></span> <span style="color:var(--ui-muted);">No records</span>`;
+                    }
+                }
+            }
+
+            // 2. Unclosed Past Days quick-jump strip (only appears if any past day has unclosed entries)
+            const stripEl = document.getElementById('archived-unclosed-strip');
+            if (stripEl) {
+                const unclosedDays = getUnclosedPastDates();
+                if (unclosedDays.length === 0) {
+                    stripEl.style.display = 'none';
+                } else {
+                    stripEl.style.display = 'flex';
+                    stripEl.innerHTML = `<span style="font-size:11px; font-weight:800; color:#ef4444; text-transform:uppercase;">⚠ Unclosed Past Days:</span>` +
+                        unclosedDays.map(d => `<button class="sec-filter-chip ${d.date === adVal ? 'active' : ''}" onclick="jumpToArchivedDate('${d.date}')" style="border-color:rgba(239,68,68,0.45); color:${d.date === adVal ? '#fff' : '#fca5a5'};">🔴 ${d.date} (${d.count})</button>`).join('');
+                }
+            }
+
+            // 3. Counter Access Control toggles right inside Archived Logs closing panel
+            const accBar = document.getElementById('archived-counter-access-bar');
+            if (accBar) {
+                const btns = [];
+                for (let i = 0; i <= 5; i++) {
+                    const cid = String(i);
+                    const open = (counterPermissions[cid] !== false);
+                    const color = open ? '#10b981' : '#ef4444';
+                    btns.push(`<button class="sec-filter-chip" onclick="toggleCounterAccess('${cid}', ${open})" style="border-color:${color}; color:${color};" title="Tap to ${open ? 'lock' : 'unlock'} Counter ${cid} login">C${cid}: ${open ? 'ON' : 'OFF'}</button>`);
+                }
+                accBar.innerHTML = `<span style="font-size:10.5px; font-weight:800; color:var(--ui-muted); text-transform:uppercase;">Counter Access:</span>` + btns.join('');
+            }
+        }
+
         function handleEodDateChange() {
             const adVal = document.getElementById('eod-select-date').value;
+            renderArchivedDayControls(adVal);
             if (!adVal) return;
             const bsDate = convertAdToBs(adVal);
             if (bsDate) {
@@ -9833,14 +9943,15 @@
                 ? (selectedEodDate || getLocalTodayStr())
                 : getLocalTodayStr();
 
-            // Scope entries
+            // Scope entries strictly by business day (counters NEVER see historical/past-day entries)
+            const todayStr = getLocalTodayStr();
             let scoped = entries.filter(e => !e.isVoid);
             if (isCounter) {
-                scoped = scoped.filter(e => String(e.counterId) === String(activeCounterId) && e.sessionStatus !== 'closed');
+                scoped = scoped.filter(e => String(e.counterId) === String(activeCounterId) && e.date === todayStr && e.sessionStatus !== 'closed');
             } else if (activeAdminTab === 'eod' || activeAdminTab === 'archived') {
                 scoped = scoped.filter(e => e.date === dateKey);
             } else {
-                scoped = scoped.filter(e => e.sessionStatus !== 'closed');
+                scoped = scoped.filter(e => e.date === todayStr && e.sessionStatus !== 'closed');
             }
 
             // Oldest-to-newest order so S.N matches chronological invoice tally
