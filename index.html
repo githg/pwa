@@ -4317,6 +4317,19 @@
         </div>
     </div>
 
+    <!-- Biometric Role Picker Modal (shown when multiple roles exist on one phone) -->
+    <div class="modal-overlay" id="bio-role-modal">
+        <div class="modal-card" style="text-align: center;">
+            <div style="font-size: 17px; font-weight: 800; margin-bottom: 6px;">Select Login Profile</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Multiple passkeys are saved on this device. Choose which role to unlock:</div>
+            <div id="bio-role-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;"></div>
+            <button class="btn-cancel" style="width:100%; margin-bottom:8px; color:#ef4444;"
+                onclick="clearLocalBiometrics()">Reset / Clear Stale Keys on This Phone</button>
+            <button class="btn-cancel" style="width:100%;"
+                onclick="document.getElementById('bio-role-modal').classList.remove('active')">Cancel</button>
+        </div>
+    </div>
+
     <!-- Closing Modal -->
     <div class="modal-overlay" id="close-modal">
         <div class="modal-card">
@@ -5763,7 +5776,8 @@
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
 
-            const userIdBuffer = new TextEncoder().encode(userId + "_" + userType);
+            // Unique user.id per registration prevents Android/Chrome from reusing stale OS passkeys
+            const userIdBuffer = new TextEncoder().encode(`${userType}_${userId}_${Date.now()}`);
 
             const publicKeyCredentialCreationOptions = {
                 challenge: challenge,
@@ -5776,9 +5790,14 @@
                     name: `${userType.toUpperCase()} ${userId}`,
                     displayName: `${userType.toUpperCase()} ${userId}`
                 },
-                pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                pubKeyCredParams: [
+                    { type: "public-key", alg: -7 },
+                    { type: "public-key", alg: -257 }
+                ],
                 authenticatorSelection: {
                     authenticatorAttachment: "platform",
+                    residentKey: "discouraged",
+                    requireResidentKey: false,
                     userVerification: "required"
                 },
                 timeout: 60000,
@@ -5822,20 +5841,51 @@
             }
         }
 
-        async function loginWithBiometrics() {
+        function getRegisteredBiometricsList() {
+            const list = [];
+            for (let i = 1; i <= 2; i++) {
+                const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
+                if (cred) list.push({ targetId: i.toString(), type: 'admin', credId: cred });
+            }
+            for (let i = 0; i <= 5; i++) {
+                const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
+                if (cred) list.push({ targetId: i.toString(), type: 'counter', credId: cred });
+            }
+            return list;
+        }
+
+        function clearLocalBiometrics() {
+            const m = document.getElementById('bio-role-modal');
+            if (m) m.classList.remove('active');
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith('biometric_cred_')) localStorage.removeItem(k);
+            });
+            showMsg("Local passkeys cleared on this phone.\n\nRe-register your role now (e.g. 1111= for Admin 1, or 2..= for Counter 2).");
+        }
+
+        function openBioRolePicker(credentialsList) {
+            const modal = document.getElementById('bio-role-modal');
+            const listEl = document.getElementById('bio-role-list');
+            if (!modal || !listEl) {
+                loginWithBiometrics(credentialsList[0]);
+                return;
+            }
+            listEl.innerHTML = credentialsList.map(c => {
+                const lbl = c.type === 'admin' ? `🛡 ADMIN ${c.targetId}` : (c.targetId === '0' ? '💰 Counter 0 (Collections)' : `📱 COUNTER ${c.targetId}`);
+                return `<button class="btn-confirm" style="width:100%; padding:12px;" onclick="document.getElementById('bio-role-modal').classList.remove('active'); loginWithBiometrics({ type: '${c.type}', targetId: '${c.targetId}' });">${lbl}</button>`;
+            }).join('');
+            modal.classList.add('active');
+        }
+
+        async function loginWithBiometrics(onlyTarget = null) {
             if (!window.PublicKeyCredential) {
                 showMsg("Biometric authentication is not supported on this browser or device.\n\nNote: Biometrics require a secure HTTPS connection.");
                 return;
             }
 
-            const credentialsList = [];
-            for (let i = 0; i <= 5; i++) {
-                const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
-                if (cred) credentialsList.push({ targetId: i.toString(), type: 'counter', credId: cred });
-            }
-            for (let i = 1; i <= 2; i++) {
-                const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
-                if (cred) credentialsList.push({ targetId: i.toString(), type: 'admin', credId: cred });
+            let credentialsList = getRegisteredBiometricsList();
+            if (onlyTarget && onlyTarget.type && onlyTarget.targetId != null) {
+                credentialsList = credentialsList.filter(c => c.type === onlyTarget.type && String(c.targetId) === String(onlyTarget.targetId));
             }
 
             if (credentialsList.length === 0) {
@@ -5843,16 +5893,21 @@
                 return;
             }
 
+            // If multiple roles exist on this phone and user typed generic "..=", let them pick exact role first
+            if (!onlyTarget && credentialsList.length > 1) {
+                openBioRolePicker(credentialsList);
+                return;
+            }
+
+            const targetCred = credentialsList[0];
             const challenge = new Uint8Array(32);
             window.crypto.getRandomValues(challenge);
 
-            const allowCredentials = credentialsList.map(c => {
-                const raw = Uint8Array.from(atob(c.credId), char => char.charCodeAt(0));
-                return {
-                    id: raw,
-                    type: "public-key"
-                };
-            });
+            const allowCredentials = [{
+                id: Uint8Array.from(atob(targetCred.credId), char => char.charCodeAt(0)),
+                type: "public-key",
+                transports: ["internal"]
+            }];
 
             const publicKeyCredentialRequestOptions = {
                 challenge: challenge,
@@ -5863,27 +5918,24 @@
             };
 
             try {
-                showToast("Scanning biometrics...");
+                showToast(`Scanning fingerprint for ${targetCred.type.toUpperCase()} ${targetCred.targetId}...`);
                 const assertion = await navigator.credentials.get({
                     publicKey: publicKeyCredentialRequestOptions
                 });
 
                 const rawId = btoa(String.fromCharCode.apply(null, new Uint8Array(assertion.rawId)));
-                const matched = credentialsList.find(c => c.credId === rawId);
-
-                if (matched) {
-                    // Restore/Set the hardware-bound device ID derived from the authenticated biometric credential
+                if (rawId === targetCred.credId) {
                     const bioDevId = 'dev_bio_' + rawId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 24);
                     localStorage.setItem('deviceId', bioDevId);
 
-                    showToast(`Verifying ${matched.type.toUpperCase()} ${matched.targetId}...`);
-                    await executeBiometricLogin(matched.targetId, matched.type);
+                    showToast(`Verifying ${targetCred.type.toUpperCase()} ${targetCred.targetId}...`);
+                    await executeBiometricLogin(targetCred.targetId, targetCred.type);
                 } else {
-                    showMsg("Scanned biometrics did not match any registered user on this device.");
+                    showMsg(`Passkey mismatch for ${targetCred.type.toUpperCase()} ${targetCred.targetId}.\n\nAn older OS passkey was returned. Tap "..=" → "Reset / Clear Stale Keys" and re-register.`);
                 }
             } catch (err) {
                 console.error("Biometric authentication failed:", err);
-                showMsg("Biometric scan cancelled or failed. Please log in using manual passcodes.");
+                showMsg(`Biometric scan failed for ${targetCred.type.toUpperCase()} ${targetCred.targetId}.\n\n${err && err.message ? err.message : 'Cancelled or stale passkey.'}`);
             }
         }
 
@@ -6173,45 +6225,39 @@
                     return;
                 }
 
-                // Admin Passcodes: For Biometrics Registration only
+                // Admin Passcodes: Register if new, or targeted login strictly as that Admin if already registered
                 if (currentSequence === '1111' || currentSequence === '2222') {
                     let adminId = currentSequence === '1111' ? '1' : '2';
                     const hasBiometrics = localStorage.getItem(`biometric_cred_admin_${adminId}`);
+                    display.innerText = "";
+                    currentSequence = "";
 
                     if (hasBiometrics) {
-                        showMsg(`🔒 Biometrics already registered for Admin ${adminId} on this device.\n\nPlease log in using ..=`);
-                        display.innerText = "";
-                        currentSequence = "";
+                        loginWithBiometrics({ type: 'admin', targetId: adminId });
                         return;
                     }
 
-                    // Trigger biometrics signup
                     registerBiometrics(adminId, 'admin').then(() => {
                         lockApp();
-                        display.innerText = "";
-                        currentSequence = "";
                     });
                     return;
                 }
 
-                // Cashier Passcodes: For Biometrics Registration only (double-dot)
+                // Cashier Passcodes: Register if new, or targeted login strictly as that Counter if already registered
                 let match = currentSequence.match(/^([0-5])\.\.$/);
                 if (match) {
                     let counterId = match[1];
                     const hasBiometrics = localStorage.getItem(`biometric_cred_counter_${counterId}`);
+                    display.innerText = "";
+                    currentSequence = "";
 
                     if (hasBiometrics) {
-                        showMsg(`🔒 Biometrics already registered for Counter ${counterId} on this device.\n\nPlease log in using ..=`);
-                        display.innerText = "";
-                        currentSequence = "";
+                        loginWithBiometrics({ type: 'counter', targetId: counterId });
                         return;
                     }
 
-                    // Trigger biometrics signup
                     registerBiometrics(counterId, 'counter').then(() => {
                         lockApp();
-                        display.innerText = "";
-                        currentSequence = "";
                     });
                     return;
                 }
@@ -6284,7 +6330,7 @@
             isReadOnly = false;
 
             // Close all secondary modals & overlays on lock/kick
-            ['msg-modal', 'close-modal', 'delete-confirm-modal', 'opening-cash-modal'].forEach(id => {
+            ['msg-modal', 'bio-role-modal', 'close-modal', 'delete-confirm-modal', 'opening-cash-modal'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.remove('active');
             });
