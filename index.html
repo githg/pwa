@@ -3042,8 +3042,10 @@
                 <button class="sec-filter-chip active" data-cmode="split" onclick="setCounterSheetFilter('split')">Cash | QR</button>
                 <button class="sec-filter-chip" data-cmode="other" onclick="setCounterSheetFilter('other')">Other Modes</button>
                 <button class="sec-filter-chip" data-cmode="flagged" onclick="setCounterSheetFilter('flagged')" style="color:var(--ui-neg);">⚠ Flagged</button>
+                <button class="sec-filter-chip" id="btn-counter-past-sessions" onclick="toggleCounterPastBar()" style="display:none; border-color:rgba(245,158,11,0.55); color:var(--ui-warn);" title="Open Admin-unlocked past session">📂 Past</button>
                 <button class="sec-filter-chip" onclick="openIsolatedLedger('all', 'counter')" style="margin-left:auto;" title="Open full tabular ledger">📊 Table</button>
             </div>
+            <div id="counter-past-sessions-bar" style="display:none; gap:6px; flex-wrap:wrap; padding:6px 14px; background:rgba(245,158,11,0.1); border-bottom:1px solid rgba(245,158,11,0.28); align-items:center;"></div>
 
             <div class="list-container" id="entries-list"></div>
 
@@ -3191,10 +3193,10 @@
                 </div>
             </div>
             <button class="glass-btn" id="admin-session-badge" onclick="promptResetOpeningCash()"
-                title="Today's session date, opening cash &amp; opened time (tap to edit)"
-                style="padding:6px 10px !important; font-size:11.5px !important; gap:6px; max-width:46vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                <span style="width:7px; height:7px; border-radius:50%; background:var(--ui-pos); box-shadow:0 0 6px var(--ui-pos); flex-shrink:0;"></span>
-                <span id="admin-session-badge-text" style="font-weight:700; font-variant-numeric:tabular-nums;">Today · Op Rs 0</span>
+                title="Today's session (tap to view/edit Opening Cash)"
+                style="padding:5px 9px !important; font-size:11.5px !important; gap:5px; flex-shrink:0;">
+                <span id="admin-session-badge-dot" style="width:7px; height:7px; border-radius:50%; background:var(--ui-pos); box-shadow:0 0 6px var(--ui-pos); flex-shrink:0;"></span>
+                <span id="admin-session-badge-text" style="font-weight:800; font-variant-numeric:tabular-nums;">Today</span>
             </button>
             <div style="display:flex; gap:6px; align-items:center;">
                 <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
@@ -6359,6 +6361,7 @@
             isAdmin = false;
             activeAdminId = null;
             activeCounterId = null;
+            counterViewingDate = null;
             localStorage.removeItem('activeSessionCounter');
 
             document.getElementById('btn-admin-exit').style.opacity = '0';
@@ -7011,6 +7014,28 @@
             openCaptureSheet(list[nextIdx].id, isReadOnly);
         }
 
+        let counterViewingDate = null; // null = Today; or 'YYYY-MM-DD' if viewing an Admin-unlocked past session
+
+        function getUnlockedPastDatesForCounter(cid) {
+            const pastMap = (counterPermissions && counterPermissions._pastAccess) || {};
+            const todayStr = getLocalTodayStr();
+            return Object.keys(pastMap)
+                .filter(d => d < todayStr && pastMap[d] && pastMap[d][String(cid)] === true)
+                .sort()
+                .reverse();
+        }
+
+        function toggleCounterPastBar() {
+            const bar = document.getElementById('counter-past-sessions-bar');
+            if (!bar) return;
+            bar.style.display = (bar.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function selectCounterViewingDate(dateStr) {
+            counterViewingDate = dateStr || null;
+            renderList();
+        }
+
         function renderList() {
             const container = document.getElementById('entries-list');
             container.innerHTML = '';
@@ -7019,7 +7044,36 @@
             let grandTotalCredit = 0;
 
             const todayStr = getLocalTodayStr();
-            const allCounterEntries = entries.filter(e => String(e.counterId) === String(activeCounterId) && e.date === todayStr && e.sessionStatus !== 'closed');
+            const unlockedPast = activeCounterId != null ? getUnlockedPastDatesForCounter(activeCounterId) : [];
+            if (counterViewingDate && !unlockedPast.includes(counterViewingDate)) {
+                counterViewingDate = null; // Admin revoked past-day access -> snap back to Today
+            }
+
+            // Update Past Sessions button & bar on Counter screen (hidden unless Admin unlocks a past day for this counter)
+            const pastBtn = document.getElementById('btn-counter-past-sessions');
+            const pastBar = document.getElementById('counter-past-sessions-bar');
+            if (pastBtn) {
+                if (unlockedPast.length > 0) {
+                    pastBtn.style.display = 'inline-flex';
+                    pastBtn.innerText = counterViewingDate ? `📂 ${counterViewingDate.slice(5)}` : `📂 Past (${unlockedPast.length})`;
+                    pastBtn.classList.toggle('active', !!counterViewingDate);
+                } else {
+                    pastBtn.style.display = 'none';
+                    if (pastBar) pastBar.style.display = 'none';
+                }
+            }
+            if (pastBar && unlockedPast.length > 0) {
+                pastBar.innerHTML = `<span style="font-size:10.5px; font-weight:800; color:var(--ui-warn);">SESSION:</span>` +
+                    `<button class="sec-filter-chip ${!counterViewingDate ? 'active' : ''}" onclick="selectCounterViewingDate(null)">Today (${todayStr.slice(5)})</button>` +
+                    unlockedPast.map(d => `<button class="sec-filter-chip ${counterViewingDate === d ? 'active' : ''}" onclick="selectCounterViewingDate('${d}')">📂 ${d}</button>`).join('');
+            }
+
+            const targetDate = counterViewingDate || todayStr;
+            const allCounterEntries = entries.filter(e =>
+                String(e.counterId) === String(activeCounterId) &&
+                e.date === targetDate &&
+                (counterViewingDate ? true : e.sessionStatus !== 'closed')
+            );
             const isCollection = (activeCounterId === '0');
 
             // Permanent chronological S.N map
@@ -9474,6 +9528,8 @@
 
         function renderTodaySessionBadge() {
             const txtEl = document.getElementById('admin-session-badge-text');
+            const dotEl = document.getElementById('admin-session-badge-dot');
+            const btnEl = document.getElementById('admin-session-badge');
             if (!txtEl) return;
             const todayStr = getLocalTodayStr();
             const rawAmt = localStorage.getItem('adminOpeningCash_' + todayStr);
@@ -9485,8 +9541,35 @@
             } catch (e) {}
             const shortDate = todayStr.slice(5);
             const unclosed = getUnclosedPastDates();
-            const warnSuffix = unclosed.length > 0 ? ` · 🔴${unclosed.length}` : '';
-            txtEl.innerText = `${shortDate} · Op Rs ${amt.toLocaleString()}${openedAt ? ' · ' + openedAt : ''}${warnSuffix}`;
+            txtEl.innerText = unclosed.length > 0 ? `${shortDate} · ${unclosed.length}` : shortDate;
+            if (dotEl) {
+                const isRed = unclosed.length > 0;
+                dotEl.style.background = isRed ? '#ef4444' : 'var(--ui-pos)';
+                dotEl.style.boxShadow = isRed ? '0 0 7px #ef4444' : '0 0 6px var(--ui-pos)';
+            }
+            if (btnEl) {
+                btnEl.title = `Today ${todayStr} · Opening Cash: Rs ${amt.toLocaleString()}${openedAt ? ' (opened ' + openedAt + ')' : ''}${unclosed.length ? ' · ' + unclosed.length + ' unclosed past day(s) in Archived Logs' : ''} — Tap to edit Opening Cash`;
+            }
+        }
+
+        async function togglePastDayCounterAccess(dateStr, counterId, currentOpen) {
+            if (!dateStr) return;
+            const nextState = !currentOpen;
+            if (!counterPermissions._pastAccess) counterPermissions._pastAccess = {};
+            if (!counterPermissions._pastAccess[dateStr]) counterPermissions._pastAccess[dateStr] = {};
+            if (nextState) counterPermissions._pastAccess[dateStr][String(counterId)] = true;
+            else delete counterPermissions._pastAccess[dateStr][String(counterId)];
+            renderArchivedDayControls(dateStr);
+            try {
+                const updatedMap = await callGas('SET_PAST_ACCESS', { date: dateStr, counterId: String(counterId), enabled: nextState });
+                if (updatedMap && typeof updatedMap === 'object') {
+                    counterPermissions._pastAccess = updatedMap;
+                }
+                showToast(`Past day ${dateStr} · Counter ${counterId} ${nextState ? 'OPENED' : 'LOCKED'}`);
+                renderArchivedDayControls(dateStr);
+            } catch (e) {
+                showToast(`Past day access updated locally (${e.message || 'offline'})`);
+            }
         }
 
         function jumpToArchivedDate(adDate) {
@@ -9531,17 +9614,23 @@
                 }
             }
 
-            // 3. Counter Access Control toggles right inside Archived Logs closing panel
+            // 3. Past-Session-ONLY Counter Access toggles (strictly isolated from Today's live counter permissions!)
             const accBar = document.getElementById('archived-counter-access-bar');
             if (accBar) {
-                const btns = [];
-                for (let i = 0; i <= 5; i++) {
-                    const cid = String(i);
-                    const open = (counterPermissions[cid] !== false);
-                    const color = open ? '#10b981' : '#ef4444';
-                    btns.push(`<button class="sec-filter-chip" onclick="toggleCounterAccess('${cid}', ${open})" style="border-color:${color}; color:${color};" title="Tap to ${open ? 'lock' : 'unlock'} Counter ${cid} login">C${cid}: ${open ? 'ON' : 'OFF'}</button>`);
+                if (!adVal || adVal >= todayStr) {
+                    accBar.style.display = 'none';
+                } else {
+                    accBar.style.display = 'flex';
+                    const pastDayMap = (counterPermissions && counterPermissions._pastAccess && counterPermissions._pastAccess[adVal]) || {};
+                    const btns = [];
+                    for (let i = 0; i <= 5; i++) {
+                        const cid = String(i);
+                        const open = (pastDayMap[cid] === true);
+                        const color = open ? '#10b981' : '#94a3b8';
+                        btns.push(`<button class="sec-filter-chip" onclick="togglePastDayCounterAccess('${adVal}', '${cid}', ${open})" style="border-color:${color}; color:${color};" title="Grant/revoke Counter ${cid} access to ${adVal} ONLY (does not affect Today)">C${cid}: ${open ? 'ON' : 'OFF'}</button>`);
+                    }
+                    accBar.innerHTML = `<span style="font-size:10.5px; font-weight:800; color:var(--ui-muted); text-transform:uppercase;">${adVal} Counter Access:</span>` + btns.join('');
                 }
-                accBar.innerHTML = `<span style="font-size:10.5px; font-weight:800; color:var(--ui-muted); text-transform:uppercase;">Counter Access:</span>` + btns.join('');
             }
         }
 
@@ -9947,7 +10036,8 @@
             const todayStr = getLocalTodayStr();
             let scoped = entries.filter(e => !e.isVoid);
             if (isCounter) {
-                scoped = scoped.filter(e => String(e.counterId) === String(activeCounterId) && e.date === todayStr && e.sessionStatus !== 'closed');
+                const targetD = counterViewingDate || todayStr;
+                scoped = scoped.filter(e => String(e.counterId) === String(activeCounterId) && e.date === targetD && (counterViewingDate ? true : e.sessionStatus !== 'closed'));
             } else if (activeAdminTab === 'eod' || activeAdminTab === 'archived') {
                 scoped = scoped.filter(e => e.date === dateKey);
             } else {
