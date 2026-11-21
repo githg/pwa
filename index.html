@@ -3137,1138 +3137,7 @@
         </div>
     </div>
 
-    <!-- Admin Panel Workspace -->
-    <div id="view-admin" class="app-view">
-        <div class="admin-header">
-            <div class="admin-menu-wrap">
-                <button class="glass-btn" id="btn-admin-back" onclick="switchAdminTab('active')" style="display:none; padding:8px 10px !important;" title="Back to Active Sessions">
-                    <span class="material-icons" style="font-size:17px;">arrow_back</span>
-                </button>
-                <button class="glass-btn" id="btn-admin-menu" onclick="toggleAdminMenu(event)" style="padding:8px 13px !important;">
-                    <span class="material-icons" style="font-size:18px;">menu</span>
-                    <span id="admin-active-tab-label" style="font-weight:700;">Active Sessions</span>
-                    <span class="material-icons" style="font-size:16px; opacity:0.65;">expand_more</span>
-                </button>
-                <span id="admin-title" style="display:none;">Admin Portal</span>
-
-                <div class="admin-menu-drawer" id="admin-menu-drawer">
-                    <div class="admin-tab active" onclick="switchAdminTab('active')">
-                        <span class="material-icons" style="font-size:16px;">sensors</span> Active Sessions
-                    </div>
-                    <div class="admin-tab" onclick="switchAdminTab('archived')">
-                        <span class="material-icons" style="font-size:16px;">inventory_2</span> Archived Logs
-                    </div>
-                    <div class="admin-tab" onclick="switchAdminTab('eod')">
-                        <span class="material-icons" style="font-size:16px;">fact_check</span> EOD Closing
-                    </div>
-                    <div class="admin-tab" onclick="switchAdminTab('reports')">
-                        <span class="material-icons" style="font-size:16px;">today</span> Daily Report
-                    </div>
-                    <div class="admin-tab" onclick="switchAdminTab('analytics')">
-                        <span class="material-icons" style="font-size:16px;">insights</span> Analytics & History
-                    </div>
-                    <div class="admin-tab" onclick="switchAdminTab('cheques')">
-                        <span class="material-icons" style="font-size:16px;">account_balance</span> Cheques Master
-                    </div>
-                    <div class="admin-tab" onclick="switchAdminTab('credits')">
-                        <span class="material-icons" style="font-size:16px;">credit_score</span> Credits Master
-                    </div>
-                    <div class="admin-tab" id="tab-admin-devices" onclick="switchAdminTab('devices')">
-                        <span class="material-icons" style="font-size:16px;">devices</span> Devices &amp; Access
-                    </div>
-                    <div style="height:1px; background:var(--ui-border); margin:4px 6px;"></div>
-                    <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('cash', 'admin');">
-                        <span class="material-icons" style="font-size:16px; color:var(--ui-pos);">payments</span> Cash-Only List
-                    </div>
-                    <div class="admin-tab" onclick="closeAdminMenu(); openIsolatedLedger('qr', 'admin');">
-                        <span class="material-icons" style="font-size:16px; color:var(--ui-info);">qr_code_2</span> QR-Only List
-                    </div>
-                    <div style="height:1px; background:var(--ui-border); margin:4px 6px;"></div>
-                    <div class="admin-tab" id="btn-theme-toggle" onclick="toggleTheme()">
-                        <span class="material-icons" style="font-size:16px;">light_mode</span> <span id="theme-toggle-label">Light</span> Theme
-                    </div>
-                    <div class="admin-tab" id="btn-kot-toggle" onclick="toggleKotPushAddon()">
-                        <span class="material-icons" style="font-size:16px;">point_of_sale</span> <span id="kot-toggle-label">KOT Push: OFF</span>
-                    </div>
-                </div>
-            </div>
-            <button class="glass-btn" id="admin-session-badge" onclick="promptResetOpeningCash()"
-                title="Today's session (tap to view/edit Opening Cash)"
-                style="padding:5px 9px !important; font-size:11.5px !important; gap:5px; flex-shrink:0;">
-                <span id="admin-session-badge-dot" style="width:7px; height:7px; border-radius:50%; background:var(--ui-pos); box-shadow:0 0 6px var(--ui-pos); flex-shrink:0;"></span>
-                <span id="admin-session-badge-text" style="font-weight:800; font-variant-numeric:tabular-nums;">Today</span>
-            </button>
-            <div style="display:flex; gap:6px; align-items:center;">
-                <button class="glass-btn" id="btn-admin-undo" onclick="performAdminUndo()" style="display:none; color:var(--ui-warn) !important;" title="Undo last change">
-                    <span class="material-icons" style="font-size:15px;">undo</span> <span id="admin-undo-cnt">Undo</span>
-                </button>
-                <div class="access-popover-wrap">
-                    <button class="glass-btn" id="btn-access-popover" onclick="toggleAccessPopover(event)" title="Counter Login Access Control (stays open until closed)" style="padding:7px 10px !important;">
-                        <span class="material-icons" style="font-size:15px; color:var(--ui-pos);">key</span>
-                        <span id="access-open-ratio" style="font-weight:800; font-variant-numeric:tabular-nums;">6/6</span>
-                    </button>
-                    <div class="access-popover-drawer" id="access-popover-drawer">
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:6px; border-bottom:1px solid var(--ui-border);">
-                            <span style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--ui-text);">Counter Access Control</span>
-                            <button class="glass-btn" onclick="closeAccessPopover()" style="padding:4px 8px !important; font-size:11px !important;" title="Close Access Panel">✕</button>
-                        </div>
-                        <div id="access-popover-list" style="display:flex; flex-direction:column; gap:7px;"></div>
-                    </div>
-                </div>
-                <button class="glass-btn" onclick="lockApp()" title="Lock App"><span class="material-icons"
-                        style="font-size:15px;">lock</span> <span class="hide-xs">Lock</span></button>
-            </div>
-        </div>
-        <div id="view-only-banner" style="display:none; width:100%; max-width:1280px; margin:0 auto 10px; padding:8px 14px; border-radius:10px; background:rgba(245, 158, 11, 0.16); border:1px solid rgba(245, 158, 11, 0.4); color:var(--ui-warn); font-size:12px; font-weight:700; text-align:center; box-sizing:border-box;">
-            👁 VIEW-ONLY GUEST SESSION
-        </div>
-        <div class="admin-content" id="admin-active-content" style="flex-direction: column; gap: 14px; width: 100%;">
-            <!-- Quick Counter Selection Bar for Admins -->
-            <div class="glass-card" style="padding: 14px 16px !important;">
-                <div class="section-kicker" style="margin-bottom: 10px;">
-                    <span>Quick Counter Dock</span>
-                    <span class="kpi-badge">6 Counters</span>
-                </div>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="glass-btn" onclick="adminEnterWorkspace('0')">C0 · Collections</button>
-                    <button class="glass-btn" onclick="adminEnterWorkspace('1')">Counter 1</button>
-                    <button class="glass-btn" onclick="adminEnterWorkspace('2')">Counter 2</button>
-                    <button class="glass-btn" onclick="adminEnterWorkspace('3')">Counter 3</button>
-                    <button class="glass-btn" onclick="adminEnterWorkspace('4')">Counter 4</button>
-                    <button class="glass-btn" onclick="adminEnterWorkspace('5')">Counter 5</button>
-                </div>
-            </div>
-            <!-- Active counter groups will load here -->
-        </div>
-        <div class="admin-content" id="admin-archived-content"
-            style="display: none; flex-direction: column; gap: 12px; width: 100%;">
-
-            <div id="admin-archived-main-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                <!-- EOD Archive Date Picker & Reconciler -->
-                <div class="glass-card"
-                    style="display: flex; flex-direction: column; gap: 12px; width: 100%; box-sizing: border-box;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                        <div style="font-size: 11px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">
-                            Reconciliation &amp; EOD Archive Viewer</div>
-                        <div id="archived-date-led" class="kpi-badge" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800;">
-                            <span style="width:8px; height:8px; border-radius:50%; background:#9ca3af;"></span> Select a date
-                        </div>
-                    </div>
-
-                    <!-- Auto-detected Unclosed Past Sessions (Red LED quick-jump pills) -->
-                    <div id="archived-unclosed-strip" style="display:none; flex-wrap:wrap; gap:6px; align-items:center; padding:8px 10px; border-radius:10px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.32);"></div>
-
-                    <!-- Counter Access Control while closing/reviewing older days -->
-                    <div id="archived-counter-access-bar" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:8px 10px; border-radius:10px; background:var(--ui-card-inner); border:1px solid var(--ui-border);"></div>
-
-                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                        <!-- Double Calendar View B.S. & A.D. -->
-                        <div class="glass-subcard"
-                            style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px !important; flex-wrap: wrap;">
-                            <span class="material-icons" style="font-size:16px; color:var(--ui-neg);">calendar_month</span>
-                            <span style="font-size:12px; font-weight:700; color:var(--ui-muted);">BS Date:</span>
-                            <div style="display: inline-flex; align-items: center; gap: 4px;">
-                                <select id="bs-year" onchange="handleBsSelectChange()"
-                                    style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
-                                <select id="bs-month" onchange="handleBsSelectChange()"
-                                    style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
-                                <select id="bs-day" onchange="handleBsSelectChange()"
-                                    style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none;"></select>
-                            </div>
-                            <span style="font-size:12px; font-weight:700; color:#9ca3af; margin-left:8px;">AD
-                                Date:</span>
-                            <input type="date" id="eod-select-date" onchange="handleEodDateChange()"
-                                style="background:#111827; color:#fff; border:1px solid #374151; border-radius:4px; padding:2px 6px; font-size:12px; font-weight:700; outline:none; font-family:inherit;">
-                        </div>
-                        <button onclick="executeArchiveSearch()"
-                            style="background:#10b981; color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; box-shadow: 0 4px 10px rgba(16,185,129,0.2);">
-                            <span class="material-icons" style="font-size:14px;">search</span> SEARCH
-                        </button>
-                        <button onclick="forceSync()" id="btn-force-sync-top"
-                            style="background:#3b82f6; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">☁️
-                            Sync Latest Data</button>
-                    </div>
-
-                    <!-- Archived Counters Investigation Ledger Accordion Container -->
-                    <div id="archived-counters-accordion-container"
-                        style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;"></div>
-
-                    <!-- Load EOD Report button -->
-                    <button onclick="loadDayEodReport()" id="btn-load-day-eod"
-                        style="background:#10b981; color:#fff; border:none; padding:10px 16px; border-radius:8px; width:100%; font-size:12px; font-weight:700; cursor:pointer; margin-top:8px; display:block;">📊
-                        LOAD THAT DAY'S EOD</button>
-
-                    <!-- Expandable Historical EOD Container -->
-                    <div id="archived-eod-reconciler-wrap"
-                        style="display:none; flex-direction:column; gap:16px; border-top: 1px solid #374151; padding-top:16px; width: 100%;">
-                        <!-- Sales Summary Dashboard Widgets -->
-                        <div class="bento-3col" style="margin-bottom: 14px;">
-                            <div class="glass-subcard" style="text-align: center;">
-                                <div style="font-size: 10px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Total Sales</div>
-                                <div style="font-size: 16px; font-weight: 800; color: var(--ui-text); margin-top: 4px; font-variant-numeric: tabular-nums;" id="archived-summary-total-sales">NPR 0</div>
-                            </div>
-                            <div class="glass-subcard" style="text-align: center;">
-                                <div style="font-size: 10px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Total Cash (C)</div>
-                                <div style="font-size: 16px; font-weight: 800; color: var(--ui-pos); margin-top: 4px; font-variant-numeric: tabular-nums;" id="archived-summary-cash-sales">NPR 0</div>
-                            </div>
-                            <div class="glass-subcard" style="text-align: center;">
-                                <div style="font-size: 10px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Total QR/Bank</div>
-                                <div style="font-size: 16px; font-weight: 800; color: var(--ui-info); margin-top: 4px; font-variant-numeric: tabular-nums;" id="archived-summary-other-sales">NPR 0</div>
-                            </div>
-                        </div>
-
-                        <!-- Historical Banner Alert -->
-                        <div id="archived-historical-banner"
-                            style="display: none; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 800; text-align: center; color: #fff; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
-                        </div>
-
-                        <!-- Daily Reconciliation Header -->
-                        <div
-                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                            <div
-                                style="font-size: 14px; font-weight: 700; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px;">
-                                Reconciliation Ledger</div>
-                            <div style="font-size:12px; color:#9ca3af; font-weight:600; cursor:pointer;"
-                                id="archived-opening-cash-display" onclick="promptResetOpeningCash()">Opening Cash: NPR
-                                0</div>
-                        </div>
-
-                        <div style="overflow-x: auto; margin-bottom: 24px;">
-                            <table class="eod-table"
-                                style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; color: #f3f4f6;">
-                                <thead>
-                                    <tr style="border-bottom: 2px solid #374151; color: #9ca3af; font-weight: 700;">
-                                        <th style="padding: 8px;">Particulars</th>
-                                        <th style="padding: 8px; text-align: right; width: 120px;">IN (Expected)</th>
-                                        <th style="padding: 8px; text-align: right; width: 140px;">OUT (Actual)</th>
-                                        <th style="padding: 8px; text-align: right; width: 150px;">Variance</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="archived-daily-table-body"></tbody>
-                            </table>
-                        </div>
-
-                        <!-- Physical Cash Denomination Breakdown -->
-                        <div
-                            style="background: #111827; padding: 16px; border-radius: 12px; border: 1px solid #374151;">
-                            <div
-                                style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px; border-bottom: 1px solid #374151; padding-bottom: 6px;">
-                                💵 Cash Denomination Breakdown
-                            </div>
-                            <div
-                                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">INR
-                                        (x1.6)</label><input type="number" id="archived-denom-ic500"
-                                        class="input-field eod-input" value="0" oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR
-                                        1000</label><input type="number" id="archived-denom-1000"
-                                        class="input-field eod-input" value="0" oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR
-                                        500</label><input type="number" id="archived-denom-500"
-                                        class="input-field eod-input" value="0" oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR
-                                        100</label><input type="number" id="archived-denom-100"
-                                        class="input-field eod-input" value="0" oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 50</label><input
-                                        type="number" id="archived-denom-50" class="input-field eod-input" value="0"
-                                        oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 20</label><input
-                                        type="number" id="archived-denom-20" class="input-field eod-input" value="0"
-                                        oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 10</label><input
-                                        type="number" id="archived-denom-10" class="input-field eod-input" value="0"
-                                        oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                                <div><label style="font-size:10px; color:#9ca3af; font-weight:700;">NPR 5</label><input
-                                        type="number" id="archived-denom-5" class="input-field eod-input" value="0"
-                                        oninput="calculateDenominations()"
-                                        style="background:#1f2937; color:#fff; border:1px solid #374151; padding:8px; border-radius:6px; font-size:12px; width:100%; box-sizing:border-box; margin-top:4px;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cash Split Summary Widgets -->
-                        <div class="glass-subcard"
-                            style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
-                            <div>
-                                <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">
-                                    Take Home (INR + 1000 + 500)</div>
-                                <div style="font-size: 16px; font-weight:800; color:var(--ui-pos); margin-top:4px;"
-                                    id="archived-split-take-home">NPR 0</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">
-                                    Tomorrow's Change (100 to 5)</div>
-                                <div style="font-size: 16px; font-weight:800; color:#f59e0b; margin-top:4px;"
-                                    id="archived-split-change">NPR 0</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 10px; font-weight:700; color:#9ca3af; text-transform:uppercase;">
-                                    Total Physical Cash</div>
-                                <div style="font-size: 16px; font-weight:800; color:#fff; margin-top:4px;"
-                                    id="archived-split-total-cash">NPR 0</div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons for past unclosed closing -->
-                        <div style="display: flex; gap: 8px; width: 100%; margin-top: 16px;"
-                            id="archived-btn-eod-actions">
-                            <button onclick="submitDailyEod()" id="archived-btn-submit-eod"
-                                style="background:#10b981; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 2; text-transform:uppercase; box-shadow:0 4px 12px rgba(16,185,129,0.3);">Submit
-                                & Lock Daily EOD</button>
-                            <button onclick="closeEodLater()" id="archived-btn-close-later-eod"
-                                style="background:#4b5563; color:#fff; border:none; padding:12px; border-radius:8px; font-size:13px; font-weight:800; cursor:pointer; flex: 1; text-transform:uppercase; box-shadow:0 4px 12px rgba(75,85,99,0.3);">Close
-                                Later</button>
-                        </div>
-
-                        <!-- Historical Counter Sessions Section -->
-                        <div id="archived-historical-eod-sessions"
-                            style="display: none; flex-direction: column; gap: 16px; margin-top: 24px; border-top: 1px solid #374151; padding-top: 20px; width: 100%;">
-                            <div
-                                style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #9ca3af; border-left: 3px solid var(--primary); padding-left: 8px; margin-bottom: 8px;">
-                                Counter Sessions & Entries for this Day</div>
-                            <div id="archived-historical-eod-sessions-content"
-                                style="display: flex; flex-direction: column; gap: 16px; width: 100%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- EOD Closing Tab Content -->
-        <div class="admin-content" id="admin-eod-content"
-            style="display: none; flex-direction: column; gap: 16px; width: 100%; box-sizing: border-box;">
-            <!-- 4-up EOD Summary Strip: Total Sales, Isolated Cash Widget, Isolated QR Widget, Other Modes Breakdown -->
-            <div class="bento-kpi-grid">
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Total Sales</span><span class="kpi-badge" id="eod-bill-count">0 BILLS</span></div>
-                    <div class="kpi-value" style="font-size:21px;" id="summary-total-sales">NPR 0</div>
-                    <div style="font-size:11px; color:var(--ui-muted);">All counters & collections</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important; cursor:pointer;" onclick="openIsolatedLedger('cash', 'admin')" title="Tap to view isolated Cash-only list">
-                    <div class="kpi-label"><span>Total Cash</span><span class="kpi-badge" style="color:var(--ui-pos);">CASH LIST →</span></div>
-                    <div class="kpi-value" style="font-size:21px; color: var(--ui-pos);" id="summary-cash-sales">NPR 0</div>
-                    <div style="font-size:11px; color:var(--ui-muted);" id="eod-cash-count-lbl">0 cash entries</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important; cursor:pointer;" onclick="openIsolatedLedger('qr', 'admin')" title="Tap to view isolated QR-only list">
-                    <div class="kpi-label"><span>Total QR</span><span class="kpi-badge" style="color:var(--ui-info);">QR LIST →</span></div>
-                    <div class="kpi-value" style="font-size:21px; color: var(--ui-info);" id="summary-other-sales">NPR 0</div>
-                    <div style="font-size:11px; color:var(--ui-muted);" id="eod-qr-count-lbl">0 QR entries</div>
-                </div>
-                <div class="kpi-tile" style="padding:13px 16px !important; gap:6px;">
-                    <div class="kpi-label"><span>Other Modes</span><span class="kpi-badge">BREAKDOWN</span></div>
-                    <div style="display:flex; flex-direction:column; gap:5px; font-size:11.5px; font-variant-numeric:tabular-nums;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color:var(--ui-muted);">IPS / EBL</span>
-                            <span style="font-weight:700; color:var(--ui-text);" id="eod-brk-ips">NPR 0</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color:var(--ui-muted);">POS + eSewa</span>
-                            <span style="font-weight:700; color:var(--ui-text);" id="eod-brk-pose">NPR 0</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color:var(--ui-muted);">Cheque + Credit</span>
-                            <span style="font-weight:700; color:var(--ui-neg);" id="eod-brk-cc">NPR 0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Historical Banner Alert -->
-            <div id="historical-banner"
-                style="display: none; padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; text-align: center; color: #fff; text-transform: uppercase; letter-spacing: 0.05em;">
-            </div>
-
-            <!-- Daily Reconciliation Card -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:14px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                        <div class="counter-group-title" style="margin:0;">Daily Reconciliation</div>
-                        <div class="glass-subcard" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px !important; border-radius:9px !important;">
-                            <span class="material-icons" style="font-size:15px; color:var(--ui-info);">today</span>
-                            <span id="today-eod-date-label" style="font-size:12px; font-weight:700; color:var(--ui-text);"></span>
-                        </div>
-                        <button onclick="forceSync()" id="btn-sync-today-eod" class="glass-btn" style="padding:6px 12px !important;">
-                            <span class="material-icons" style="font-size:14px;">sync</span> Sync
-                        </button>
-                    </div>
-                    <button type="button" class="glass-btn" id="opening-cash-display" onclick="promptResetOpeningCash()" title="Tap to edit Opening Cash">
-                        Opening Cash: NPR 0
-                    </button>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table class="eod-table" style="width: 100%; font-size: 12.5px;">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left; width: 38%;">Particulars</th>
-                                <th style="text-align: right; width: 20%;">IN</th>
-                                <th style="text-align: right; width: 24%;">OUT</th>
-                                <th style="text-align: right; width: 18%;">Var</th>
-                            </tr>
-                        </thead>
-                        <tbody id="daily-table-body">
-                            <!-- Dynamic reconciliation rows go here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Counters Investigation Ledger Card -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
-                <div class="section-kicker" style="margin-bottom:0;">
-                    <span>Counters Investigation Ledger</span>
-                    <span class="kpi-badge">BY COUNTER</span>
-                </div>
-                <div id="counters-accordion-container" style="display: flex; flex-direction: column; gap: 8px;">
-                    <!-- Dynamic Accordions go here -->
-                </div>
-            </div>
-
-            <!-- Cash Denomination & Split Card -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:14px;">
-                <div class="section-kicker" style="margin-bottom:0;">
-                    <span>Physical Cash Denomination & Split</span>
-                    <span class="kpi-badge">COUNT</span>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">1000 (x1000)</label>
-                        <input type="number" id="denom-1000" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">500 (x500)</label>
-                        <input type="number" id="denom-500" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">100 (x100)</label>
-                        <input type="number" id="denom-100" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">50 (x50)</label>
-                        <input type="number" id="denom-50" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">20 (x20)</label>
-                        <input type="number" id="denom-20" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">10 (x10)</label>
-                        <input type="number" id="denom-10" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">5 (x5)</label>
-                        <input type="number" id="denom-5" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">INR (x1.6)</label>
-                        <input type="number" id="denom-ic500" class="input-field eod-input" value="0"
-                            oninput="calculateDenominations()" style="text-align:center;" min="0" placeholder="Amount">
-                    </div>
-                </div>
-
-                <div class="glass-subcard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
-                    <div>
-                        <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Take Home (INR + 1000 + 500)</div>
-                        <div style="font-size: 18px; font-weight:800; color:var(--ui-pos); margin-top:4px; font-variant-numeric:tabular-nums;" id="split-take-home">NPR 0</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Tomorrow's Change (100 to 5)</div>
-                        <div style="font-size: 18px; font-weight:800; color:var(--ui-warn); margin-top:4px; font-variant-numeric:tabular-nums;" id="split-change">NPR 0</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 10px; font-weight:700; color:var(--ui-muted); text-transform:uppercase;">Total Physical Cash</div>
-                        <div style="font-size: 18px; font-weight:800; color:var(--ui-text); margin-top:4px; font-variant-numeric:tabular-nums;" id="split-total-cash">NPR 0</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 10px; width: 100%; flex-wrap: wrap;">
-                    <button onclick="submitDailyEod()" id="btn-submit-eod" class="glass-btn-primary" style="flex: 2; min-width: 200px;">
-                        <span class="material-icons" style="font-size:16px;">lock</span> Submit & Lock Daily EOD
-                    </button>
-                    <button onclick="closeEodLater()" id="btn-close-later-eod" class="glass-btn" style="flex: 1; min-width: 120px;">
-                        Close Later
-                    </button>
-                </div>
-            </div>
-
-            <!-- Historical Counter Sessions Section -->
-            <div id="historical-eod-sessions" class="glass-card"
-                style="display: none; flex-direction: column; gap: 14px; width: 100%;">
-                <div class="counter-group-title" style="margin:0;">Counter Sessions & Entries for this Day</div>
-                <div id="historical-eod-sessions-content"
-                    style="display: flex; flex-direction: column; gap: 14px; width: 100%;"></div>
-            </div>
-        </div>
-
-        <div class="admin-content" id="admin-reports-content"
-            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 30px;">
-            <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 14px 18px !important;">
-                <div>
-                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ui-muted);">Analytics Overview</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--ui-text); margin-top: 2px;">Daily Performance</div>
-                </div>
-                <input type="date" id="reports-date" style="padding: 8px 12px; font-size: 12.5px; font-weight: 600;"
-                    onchange="renderAdminReports()">
-            </div>
-
-            <!-- 4-up Bento KPI Row -->
-            <div class="bento-kpi-grid">
-                <div class="kpi-tile">
-                    <div class="kpi-label"><span>Gross Sales</span><span class="kpi-badge">TODAY</span></div>
-                    <div id="rep-gross-sales" class="kpi-value">NPR 0</div>
-                    <svg id="rep-spark-sales" viewBox="0 0 140 30" style="width:100%; height:28px; overflow:visible;">
-                        <path d="M 0 24 L 140 24" fill="none" stroke="var(--ui-pos)" stroke-width="2" stroke-linecap="round" opacity="0.6" />
-                    </svg>
-                </div>
-                <div class="kpi-tile">
-                    <div class="kpi-label"><span>Net Cash Flow</span><span class="kpi-badge">CASH</span></div>
-                    <div id="rep-net-cash" class="kpi-value" style="color: var(--ui-pos);">NPR 0</div>
-                    <div style="font-size: 11px; color: var(--ui-muted);">Cash Sales + Coll − Opening</div>
-                </div>
-                <div class="kpi-tile">
-                    <div class="kpi-label"><span>Avg Tx Value</span><span class="kpi-badge">ATV</span></div>
-                    <div id="rep-atv" class="kpi-value">NPR 0</div>
-                    <div style="font-size: 11px; color: var(--ui-muted);">Mean bill across counters</div>
-                </div>
-                <div class="kpi-tile">
-                    <div class="kpi-label"><span>Void Count</span><span class="kpi-badge">RETURNS</span></div>
-                    <div id="rep-voids" class="kpi-value" style="color: var(--ui-neg);">0</div>
-                    <div style="font-size: 11px; color: var(--ui-muted);">Cancelled / returned bills</div>
-                </div>
-            </div>
-
-            <!-- 2-up Visual Analytics Row: Radial Donut + Vertical Pill Bar Chart -->
-            <div class="bento-2col">
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>Payment Mix</span>
-                        <span class="kpi-badge">SPLIT</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                        <div style="position: relative; width: 116px; height: 116px; flex-shrink: 0;">
-                            <svg viewBox="0 0 120 120" style="width:116px; height:116px; transform: rotate(-90deg);">
-                                <circle cx="60" cy="60" r="46" fill="none" stroke="var(--ui-pill-bg)" stroke-width="12" />
-                                <circle id="rep-donut-cash" cx="60" cy="60" r="46" fill="none" stroke="var(--ui-pos)" stroke-width="12" stroke-dasharray="0 289" stroke-linecap="round" />
-                                <circle id="rep-donut-digital" cx="60" cy="60" r="46" fill="none" stroke="var(--ui-info)" stroke-width="12" stroke-dasharray="0 289" stroke-dashoffset="0" stroke-linecap="round" />
-                                <circle id="rep-donut-deferred" cx="60" cy="60" r="46" fill="none" stroke="var(--ui-neg)" stroke-width="12" stroke-dasharray="0 289" stroke-dashoffset="0" stroke-linecap="round" />
-                            </svg>
-                            <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                                <span id="rep-donut-center" style="font-size: 17px; font-weight: 800; color: var(--ui-text); font-variant-numeric: tabular-nums;">0%</span>
-                                <span style="font-size: 9px; font-weight: 700; color: var(--ui-muted); text-transform: uppercase;">Cash</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 10px;">
-                            <div style="display: flex; height: 6px; border-radius: 99px; overflow: hidden; width: 100%; background: var(--ui-pill-bg);" id="rep-payment-bar">
-                                <div id="rep-bar-cash" style="background: var(--ui-pos); width: 0%;"></div>
-                                <div id="rep-bar-digital" style="background: var(--ui-info); width: 0%;"></div>
-                                <div id="rep-bar-deferred" style="background: var(--ui-neg); width: 0%;"></div>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
-                                <span style="color: var(--ui-muted);">● Cash</span>
-                                <span id="rep-pct-cash" style="color: var(--ui-pos); font-variant-numeric: tabular-nums;">0%</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
-                                <span style="color: var(--ui-muted);">● Digital (QR/POS/IPS)</span>
-                                <span id="rep-pct-digital" style="color: var(--ui-info); font-variant-numeric: tabular-nums;">0%</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600;">
-                                <span style="color: var(--ui-muted);">● Deferred (Chq/Credit)</span>
-                                <span id="rep-pct-deferred" style="color: var(--ui-neg); font-variant-numeric: tabular-nums;">0%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>Hourly Peak Activity</span>
-                        <span class="kpi-badge">VOLUME</span>
-                    </div>
-                    <div id="rep-heatmap" class="pill-chart-wrap"></div>
-                </div>
-            </div>
-
-            <!-- 2-up Bottom Row: Ranked Leaderboard + C&C Ledger -->
-            <div class="bento-2col">
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>Counter Leaderboard</span>
-                        <span class="kpi-badge">RANKED</span>
-                    </div>
-                    <div id="rep-leaderboard" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                </div>
-
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>C&C Ledger (Cheque & Credit)</span>
-                        <span class="kpi-badge">DEFERRED</span>
-                    </div>
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: left;">C#</th>
-                                    <th style="text-align: left;">Time</th>
-                                    <th style="text-align: right;">Cheque</th>
-                                    <th style="text-align: right;">Credit</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rep-cnc-ledger"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Historical Analytics & Multi-Filter Reports Tab -->
-        <div class="admin-content" id="admin-analytics-content"
-            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
-
-            <!-- Filters & Period Modulation Bar -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div>
-                        <div style="font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--ui-muted);">Historical Intelligence</div>
-                        <div style="font-size:16px; font-weight:800; color:var(--ui-text);">Multi-Period Analytics & Filters</div>
-                    </div>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button class="glass-btn ana-preset-btn" data-range="7" onclick="setAnalyticsPreset('7')">7D Weekly</button>
-                        <button class="glass-btn ana-preset-btn" data-range="30" onclick="setAnalyticsPreset('30')">30D Monthly</button>
-                        <button class="glass-btn ana-preset-btn" data-range="90" onclick="setAnalyticsPreset('90')">90D Quarter</button>
-                        <button class="glass-btn ana-preset-btn" data-range="all" onclick="setAnalyticsPreset('all')">All Time</button>
-                        <button class="glass-btn-primary" onclick="exportAnalyticsCsv()" style="padding:7px 12px !important; font-size:11.5px !important;">
-                            <span class="material-icons" style="font-size:14px;">download</span> CSV
-                        </button>
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap:10px; align-items:end;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">From Date</label>
-                        <input type="date" id="ana-from-date" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">To Date</label>
-                        <input type="date" id="ana-to-date" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Counter</label>
-                        <select id="ana-counter-filter" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
-                            <option value="all">All Counters (0–5)</option>
-                            <option value="sales">Sales Only (1–5)</option>
-                            <option value="0">Counter 0 (Collections)</option>
-                            <option value="1">Counter 1</option>
-                            <option value="2">Counter 2</option>
-                            <option value="3">Counter 3</option>
-                            <option value="4">Counter 4</option>
-                            <option value="5">Counter 5</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Payment Mode</label>
-                        <select id="ana-mode-filter" onchange="renderAdminAnalytics()" style="padding:7px 10px; font-size:12px; width:100%; box-sizing:border-box;">
-                            <option value="all">All Payment Modes</option>
-                            <option value="cash">Cash</option>
-                            <option value="qr">QR</option>
-                            <option value="ips">IPS / EBL</option>
-                            <option value="pos">POS</option>
-                            <option value="esewa">eSewa</option>
-                            <option value="online">Online</option>
-                            <option value="cheque">Cheque</option>
-                            <option value="credit">Credit</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4-up Compact KPI Row -->
-            <div class="bento-kpi-grid">
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Filtered Total</span><span class="kpi-badge" id="ana-days-badge">0D</span></div>
-                    <div class="kpi-value" style="font-size:22px;" id="ana-total-rev">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Daily Average</span><span class="kpi-badge">AVG/DAY</span></div>
-                    <div class="kpi-value" style="font-size:22px; color:var(--ui-pos);" id="ana-avg-day">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Transactions</span><span class="kpi-badge">BILLS</span></div>
-                    <div class="kpi-value" style="font-size:22px;" id="ana-tx-count">0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Peak Day</span><span class="kpi-badge">BEST</span></div>
-                    <div class="kpi-value" style="font-size:18px; color:var(--ui-info);" id="ana-peak-day">—</div>
-                </div>
-            </div>
-
-            <!-- Row 1: Daily Trend Chart + Payment Mode Pie/Donut -->
-            <div class="bento-2col">
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>Revenue Trend (By Date)</span>
-                        <span class="kpi-badge" id="ana-trend-meta">DAILY</span>
-                    </div>
-                    <div id="ana-trend-chart" class="pill-chart-wrap" style="height:165px;"></div>
-                </div>
-
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>Breakdown by Payment Mode</span>
-                        <span class="kpi-badge">8 MODES</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
-                        <svg id="ana-mode-donut" viewBox="0 0 120 120" style="width:124px; height:124px; flex-shrink:0; transform:rotate(-90deg);"></svg>
-                        <div id="ana-mode-legend" style="flex:1; min-width:150px; display:flex; flex-direction:column; gap:6px; font-size:11.5px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Row 2: By Day of Week + By Time of Day -->
-            <div class="bento-2col">
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>By Day of Week (Sun – Sat)</span>
-                        <span class="kpi-badge">WEEKLY PATTERN</span>
-                    </div>
-                    <div id="ana-weekday-chart" class="pill-chart-wrap" style="height:150px;"></div>
-                </div>
-
-                <div class="glass-card">
-                    <div class="section-kicker">
-                        <span>By Time of Day (Hourly)</span>
-                        <span class="kpi-badge">PEAK HOURS</span>
-                    </div>
-                    <div id="ana-hourly-chart" class="pill-chart-wrap" style="height:150px;"></div>
-                </div>
-            </div>
-
-            <!-- Row 3: Counter Breakdown Table -->
-            <div class="glass-card">
-                <div class="section-kicker">
-                    <span>Counter Performance Matrix</span>
-                    <span class="kpi-badge">SUMMARY</span>
-                </div>
-                <div style="overflow-x:auto;">
-                    <table style="width:100%; font-size:12px;">
-                        <thead>
-                            <tr>
-                                <th style="text-align:left;">Counter</th>
-                                <th style="text-align:right;">Bills</th>
-                                <th style="text-align:right;">Cash</th>
-                                <th style="text-align:right;">Digital</th>
-                                <th style="text-align:right;">Chq/Credit</th>
-                                <th style="text-align:right;">Avg Bill</th>
-                                <th style="text-align:right;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ana-counter-tbody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cheques Master Tab Content -->
-        <div class="admin-content" id="admin-cheques-content"
-            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
-
-            <!-- Cheques KPI Summary Strip -->
-            <div class="bento-kpi-grid">
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Total Cheques</span><span class="kpi-badge" id="chq-kpi-all-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:20px;" id="chq-kpi-all-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>In Hand</span><span class="kpi-badge" id="chq-kpi-hand-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:20px; color:var(--ui-text-soft);" id="chq-kpi-hand-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Sent to Bank</span><span class="kpi-badge" style="color:var(--ui-info);" id="chq-kpi-bank-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:20px; color:var(--ui-info);" id="chq-kpi-bank-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Cleared</span><span class="kpi-badge" style="color:var(--ui-pos);" id="chq-kpi-clr-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:20px; color:var(--ui-pos);" id="chq-kpi-clr-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:14px 16px !important;">
-                    <div class="kpi-label"><span>Bounced / Returned</span><span class="kpi-badge" style="color:var(--ui-neg);" id="chq-kpi-ret-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:20px; color:var(--ui-neg);" id="chq-kpi-ret-amt">NPR 0</div>
-                </div>
-            </div>
-
-            <!-- Filter & Action Bar -->
-            <div class="glass-card" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; padding:14px 16px !important;">
-                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; flex:1;">
-                    <select id="chq-filter-status" onchange="renderAdminCheques()" style="padding:8px 12px; font-size:12.5px; min-width:185px;">
-                        <option value="all">All Statuses</option>
-                        <option value="received">Received (In Hand)</option>
-                        <option value="sent_to_bank">Sent to Bank (EBL)</option>
-                        <option value="cleared">Cashed into EBL</option>
-                        <option value="returned_from_bank">Returned from Bank</option>
-                        <option value="bounced">Bounced</option>
-                        <option value="returned_to_customer_cash">Returned → Cash</option>
-                        <option value="returned_to_customer_qr">Returned → QR</option>
-                        <option value="returned_to_customer_credit">Returned → Credit</option>
-                        <option value="canceled">Canceled</option>
-                    </select>
-                    <input type="text" id="chq-search" oninput="renderAdminCheques()" placeholder="Search party, bank, cheque #, remarks..." style="padding:8px 12px; font-size:12.5px; flex:1; min-width:180px;">
-                </div>
-                <button class="glass-btn-primary" onclick="openChequeModal(null)" style="padding:8px 14px !important; font-size:12px !important;">
-                    <span class="material-icons" style="font-size:15px;">add</span> Add Cheque
-                </button>
-            </div>
-
-            <!-- Master Cheques Table (4-column mobile-first 100% fit) -->
-            <div class="table-shell">
-                <table class="eod-table" style="width:100%; font-size:12px;">
-                    <thead>
-                        <tr>
-                            <th style="text-align:left; width:34%;">Party / Bank</th>
-                            <th style="text-align:right; width:19%;">Amount</th>
-                            <th style="text-align:left; width:35%;">Status</th>
-                            <th style="text-align:right; width:12%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="chq-master-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Credits Master Tab Content (Party Details, Bill Image, Main-Book Verification & Settlement) -->
-        <div class="admin-content" id="admin-credits-content"
-            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
-
-            <div class="bento-kpi-grid">
-                <div class="kpi-tile" style="padding:12px 14px !important;">
-                    <div class="kpi-label"><span>Total Credit</span><span class="kpi-badge" id="cr-kpi-all-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:19px;" id="cr-kpi-all-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:12px 14px !important;">
-                    <div class="kpi-label"><span>Pending</span><span class="kpi-badge" style="color:var(--ui-warn);" id="cr-kpi-pend-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:19px; color:var(--ui-warn);" id="cr-kpi-pend-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:12px 14px !important;">
-                    <div class="kpi-label"><span>In Main Books</span><span class="kpi-badge" style="color:var(--ui-info);" id="cr-kpi-book-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:19px; color:var(--ui-info);" id="cr-kpi-book-amt">NPR 0</div>
-                </div>
-                <div class="kpi-tile" style="padding:12px 14px !important;">
-                    <div class="kpi-label"><span>Paid / Settled</span><span class="kpi-badge" style="color:var(--ui-pos);" id="cr-kpi-paid-cnt">0</span></div>
-                    <div class="kpi-value" style="font-size:19px; color:var(--ui-pos);" id="cr-kpi-paid-amt">NPR 0</div>
-                </div>
-            </div>
-
-            <div class="glass-card" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:space-between; padding:12px 14px !important;">
-                <select id="cr-filter-status" onchange="renderAdminCredits()" style="padding:8px 10px; font-size:12.5px; min-width:165px;">
-                    <option value="all">All Statuses</option>
-                    <option value="pending">Pending / Open</option>
-                    <option value="matched_books">✓ Good with Main Books</option>
-                    <option value="paid_cash">Paid — Cash</option>
-                    <option value="paid_qr">Paid — QR</option>
-                    <option value="paid_bank">Paid — Bank / EBL</option>
-                    <option value="partial">Partial Paid</option>
-                    <option value="disputed">Disputed</option>
-                </select>
-                <input type="text" id="cr-search" oninput="renderAdminCredits()" placeholder="Search party, phone, address, bill..." style="padding:8px 10px; font-size:12.5px; flex:1; min-width:160px;">
-            </div>
-
-            <div class="table-shell">
-                <table class="eod-table" style="width:100%; font-size:12px;">
-                    <thead>
-                        <tr>
-                            <th style="text-align:left; width:36%;">Party / Bill</th>
-                            <th style="text-align:right; width:18%;">Amount</th>
-                            <th style="text-align:left; width:34%;">Status</th>
-                            <th style="text-align:right; width:12%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="cr-master-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Devices & Access Management Tab Content (Admin Full Only) -->
-        <div class="admin-content" id="admin-devices-content"
-            style="display: none; flex-direction: column; gap: 14px; width: 100%; box-sizing: border-box; padding-bottom: 36px;">
-
-            <!-- Pending Device Approvals -->
-            <div class="glass-card" id="dev-pending-card" style="display:none; flex-direction:column; gap:10px; border-color:rgba(245, 158, 11, 0.45) !important;">
-                <div class="section-kicker" style="margin:0;">
-                    <span style="color:var(--ui-warn);">⏳ Pending Human Approval</span>
-                    <span class="kpi-badge" id="dev-pending-cnt" style="color:var(--ui-warn);">0</span>
-                </div>
-                <div id="dev-pending-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-            </div>
-
-            <!-- Temporary Guest & Verifier Calc Codes -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:12px;">
-                <div class="section-kicker" style="margin:0;">
-                    <span>Temporary Guest &amp; Verifier Calc Codes</span>
-                    <span class="kpi-badge">EXPIRING</span>
-                </div>
-                <div style="font-size:11.5px; color:var(--ui-muted);">
-                    Define a custom 4–8 digit code. Person types <strong>&lt;code&gt;..=</strong> on the calculator. <strong>Verifier</strong> can only verify/flag invoices; <strong>View-Only</strong> cannot change anything.
-                </div>
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px; align-items:end;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Code (4–8 digits)</label>
-                        <input type="text" id="temp-code-inp" class="input-field" placeholder="e.g. 7744" inputmode="numeric" maxlength="8" style="padding:8px 10px; font-size:13px; font-weight:700;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Person / Label</label>
-                        <input type="text" id="temp-label-inp" class="input-field" placeholder="e.g. Checker Hari" style="padding:8px 10px; font-size:13px;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Role</label>
-                        <select id="temp-role-sel" style="padding:8px 10px; font-size:12.5px; border-radius:9px; width:100%;">
-                            <option value="VERIFIER">Verifier (Recheck Only)</option>
-                            <option value="ADMIN_VIEW">View-Only Guest</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10px; color:var(--ui-muted);">Expires</label>
-                        <select id="temp-dur-sel" style="padding:8px 10px; font-size:12.5px; border-radius:9px; width:100%;">
-                            <option value="2">2 Hours</option>
-                            <option value="eod">Today Only</option>
-                            <option value="24" selected>24 Hours</option>
-                            <option value="168">7 Days</option>
-                        </select>
-                    </div>
-                    <button class="glass-btn-primary" onclick="submitCreateTempCode()" style="padding:9px 12px !important; font-size:12px !important;" title="Create expiring calc code pass">
-                        <span class="material-icons" style="font-size:15px;">add</span> Create Pass
-                    </button>
-                </div>
-                <div id="dev-temp-codes-list" style="display:flex; flex-direction:column; gap:6px;"></div>
-            </div>
-
-            <!-- Active Session Leases & Registered Devices -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                    <div class="section-kicker" style="margin:0;">
-                        <span>Registered Devices &amp; Active Leases</span>
-                    </div>
-                    <button class="glass-btn" onclick="renderAdminDevices()" style="padding:5px 10px !important; font-size:11.5px !important;" title="Reload devices &amp; security logs">
-                        <span class="material-icons" style="font-size:14px;">refresh</span> Refresh
-                    </button>
-                </div>
-                <div id="dev-leases-strip" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
-                <div id="dev-all-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-            </div>
-
-            <!-- Security & Privacy Audit Log (Red alerts for screenshot / download / suspicious events) -->
-            <div class="glass-card" style="display:flex; flex-direction:column; gap:10px;">
-                <div class="section-kicker" style="margin:0;">
-                    <span>🛡 Security &amp; Privacy Audit Log</span>
-                    <span class="kpi-badge" id="sec-alert-cnt" style="color:var(--ui-neg);">0 ALERTS</span>
-                </div>
-                <div style="font-size:11px; color:var(--ui-muted);">
-                    Logs logins (with optional location), session takeovers, and red-flagged screenshot / download / print attempts.
-                </div>
-                <div id="dev-security-logs" style="display:flex; flex-direction:column; gap:6px; max-height:320px; overflow-y:auto;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Isolated Cash / QR & Individual Counter Ledger Reconciliation Modal -->
-    <div id="ledger-tally-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeIsolatedLedger()">
-        <div class="ledger-modal-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border); gap:10px; flex-wrap:wrap;">
-                <div>
-                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="ledger-modal-subtitle">Reconciliation Tally</div>
-                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="ledger-modal-title">Ledger</div>
-                </div>
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                    <button class="glass-btn ledger-mode-tab" data-mode="all" onclick="switchLedgerModalTab('all')" style="padding:6px 11px !important; font-size:11.5px !important;">All</button>
-                    <button class="glass-btn ledger-mode-tab" data-mode="cash" onclick="switchLedgerModalTab('cash')" style="padding:6px 11px !important; font-size:11.5px !important;">Cash Only</button>
-                    <button class="glass-btn ledger-mode-tab" data-mode="qr" onclick="switchLedgerModalTab('qr')" style="padding:6px 11px !important; font-size:11.5px !important;">QR Only</button>
-                    <button class="glass-btn" onclick="closeIsolatedLedger()" style="padding:6px 10px !important;" title="Close">
-                        <span class="material-icons" style="font-size:16px;">close</span>
-                    </button>
-                </div>
-            </div>
-            <div class="ledger-modal-scroll">
-                <table class="ledger-modal-table ledger-v6">
-                    <thead id="ledger-modal-thead"></thead>
-                    <tbody id="ledger-modal-tbody"></tbody>
-                </table>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-top:1px solid var(--ui-border-strong); background:var(--ui-card-inner); gap:12px; flex-wrap:wrap; font-variant-numeric:tabular-nums;">
-                <div style="font-size:12px; font-weight:700; color:var(--ui-muted);" id="ledger-modal-count">0 invoices</div>
-                <div style="font-size:17px; font-weight:800; color:var(--ui-pos);" id="ledger-modal-sum">Total: NPR 0</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Cheque Master Details & Status Modal -->
-    <div id="cheque-edit-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeChequeModal()">
-        <div class="ledger-modal-card" style="max-width:520px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border);">
-                <div>
-                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="chq-modal-sub">Cheque Master</div>
-                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="chq-modal-title">Edit Cheque Details</div>
-                </div>
-                <button class="glass-btn" onclick="closeChequeModal()" style="padding:6px 10px !important;">
-                    <span class="material-icons" style="font-size:16px;">close</span>
-                </button>
-            </div>
-            <div style="padding:16px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Party / Customer Name</label>
-                        <input type="text" id="chq-inp-party" class="input-field" placeholder="e.g. Himalaya Garments" style="padding:9px 11px; font-size:13px;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Amount (NPR)</label>
-                        <input type="number" id="chq-inp-amount" class="input-field" placeholder="0" style="padding:9px 11px; font-size:13px; font-weight:700;">
-                    </div>
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Bank Name</label>
-                        <input type="text" id="chq-inp-bank" class="input-field" placeholder="e.g. Nabil / NIC Asia / Global IME" style="padding:9px 11px; font-size:13px;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Number</label>
-                        <input type="text" id="chq-inp-number" class="input-field" placeholder="e.g. 00458219" style="padding:9px 11px; font-size:13px;">
-                    </div>
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Date (PD / Issue)</label>
-                        <input type="date" id="chq-inp-date" class="input-field" style="padding:9px 11px; font-size:13px;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Status Date</label>
-                        <input type="date" id="chq-inp-status-date" class="input-field" style="padding:9px 11px; font-size:13px;">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Cheque Status</label>
-                    <select id="chq-inp-status" style="padding:9px 11px; font-size:13px; width:100%; border-radius:9px;">
-                        <option value="received">Received (In Hand)</option>
-                        <option value="sent_to_bank">Sent to Bank (EBL)</option>
-                        <option value="cleared">Cashed into EBL (Default Bank Deposit)</option>
-                        <option value="returned_from_bank">Returned from Bank</option>
-                        <option value="bounced">Bounced</option>
-                        <option value="returned_to_customer_cash">Returned to Customer — Cash</option>
-                        <option value="returned_to_customer_qr">Returned to Customer — QR</option>
-                        <option value="returned_to_customer_credit">Returned to Customer — Credit</option>
-                        <option value="canceled">Canceled</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Reason / Bank Remarks</label>
-                    <input type="text" id="chq-inp-reason" class="input-field" placeholder="e.g. Signature mismatch, insufficient funds, cleared in EBL..." style="padding:9px 11px; font-size:13px;">
-                </div>
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:10px; padding:12px 18px; border-top:1px solid var(--ui-border); background:var(--ui-card-inner);">
-                <button class="glass-btn" onclick="closeChequeModal()">Cancel</button>
-                <button class="glass-btn-primary" onclick="saveChequeDetails()">Save Cheque</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Universal Change Log & Version Restore Modal -->
-    <div id="entry-history-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeEntryHistoryModal()">
-        <div class="ledger-modal-card" style="max-width:540px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border);">
-                <div>
-                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="hist-modal-sub">Audit Log &amp; Version History</div>
-                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="hist-modal-title">Change History</div>
-                </div>
-                <button class="glass-btn" onclick="closeEntryHistoryModal()" style="padding:6px 10px !important;">
-                    <span class="material-icons" style="font-size:16px;">close</span>
-                </button>
-            </div>
-            <div id="hist-modal-body" style="padding:14px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; max-height:65vh;"></div>
-        </div>
-    </div>
-
-    <!-- Credit Master Details Modal -->
-    <div id="credit-edit-modal" class="ledger-modal-overlay" onclick="if(event.target===this) closeCreditModal()">
-        <div class="ledger-modal-card" style="max-width:500px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--ui-border);">
-                <div>
-                    <div style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--ui-muted);" id="cr-modal-sub">Credit Master</div>
-                    <div style="font-size:16px; font-weight:800; color:var(--ui-text);" id="cr-modal-title">Edit Credit Details</div>
-                </div>
-                <button class="glass-btn" onclick="closeCreditModal()" style="padding:6px 10px !important;" title="Close">
-                    <span class="material-icons" style="font-size:16px;">close</span>
-                </button>
-            </div>
-            <div style="padding:14px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Customer / Party Name</label>
-                        <input type="text" id="cr-inp-party" class="input-field" placeholder="e.g. Himalaya Garments" style="padding:8px 10px; font-size:13px;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Phone Number</label>
-                        <input type="tel" id="cr-inp-phone" class="input-field" placeholder="98XXXXXXXX" style="padding:8px 10px; font-size:13px;">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Address / Shop Location</label>
-                    <input type="text" id="cr-inp-address" class="input-field" placeholder="e.g. New Road, Kathmandu" style="padding:8px 10px; font-size:13px;">
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Main Book Ref / Bill #</label>
-                        <input type="text" id="cr-inp-ref" class="input-field" placeholder="e.g. Ledger #104" style="padding:8px 10px; font-size:13px;">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Status</label>
-                        <select id="cr-inp-status" style="padding:8px 10px; font-size:12.5px; width:100%; border-radius:9px;">
-                            <option value="pending">Pending / Open</option>
-                            <option value="matched_books">✓ Good with Main Books</option>
-                            <option value="paid_cash">Paid — Cash (+Today Cash)</option>
-                            <option value="paid_qr">Paid — QR (+Today QR)</option>
-                            <option value="paid_bank">Paid — Bank / EBL (+Today EBL)</option>
-                            <option value="partial">Partial Paid</option>
-                            <option value="disputed">Disputed / Issue</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label class="input-label" style="font-size:10.5px; color:var(--ui-muted);">Notes / Remarks</label>
-                    <input type="text" id="cr-inp-note" class="input-field" placeholder="e.g. Promised payment next Friday" style="padding:8px 10px; font-size:13px;">
-                </div>
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:10px; padding:12px 18px; border-top:1px solid var(--ui-border); background:var(--ui-card-inner);">
-                <button class="glass-btn" onclick="closeCreditModal()">Cancel</button>
-                <button class="glass-btn-primary" onclick="saveCreditDetails()">Save Credit</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Undo Toast -->
-    <div id="admin-undo-toast">
-        <span id="admin-undo-msg">Change saved</span>
-        <button class="glass-btn-primary" onclick="performAdminUndo()" style="padding:5px 11px !important; font-size:11.5px !important;">Undo</button>
-    </div>
-
-    <!-- Android-style Long-Press Tooltip Pill -->
-    <div id="android-longpress-tip"></div>
-
+    <!-- Admin workspace excluded from Counter build -->
     <!-- Collection Entry Edit Modal (Counter 0) -->
     <div id="coll-edit-modal"
         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; flex-direction:column; align-items:center; justify-content:flex-end; padding:0;">
@@ -4452,8 +3321,10 @@
         </div>
     </div>
 
+    <script>window.__APP_ROLE__ = "counter";</script>
+    <script src="shared.js"></script>
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxu_xJtq3VWTCtwu9erZONgU4evkPLpSYWnmMgo-1mHA_Bl63gvZYKvAwiNTJjEIlXufA/exec";
+        
 
         let isViewOnly = false;
         let isVerifier = false;
@@ -4562,90 +3433,18 @@
             });
         }
 
-        function escapeHtml(str) {
-            return String(str == null ? '' : str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
+        
 
         // Human-readable entry reference: <counter>-<modes>-<MMDD>-<serial> (e.g. 1-CsQr-1120-1, 4-CsCh-1119-22)
-        function formatEntryRef(entry, serialNum) {
-            if (!entry) return '';
-            const cid = entry.counterId != null ? String(entry.counterId) : '0';
-            let modes = '';
-            if (Number(entry.cash || 0) > 0) modes += 'Cs';
-            if (Number(entry.qr || 0) > 0) modes += 'Qr';
-            if (Number(entry.online || 0) > 0) modes += 'On';
-            if (Number(entry.pos || 0) > 0) modes += 'Ps';
-            if (Number(entry.ips || 0) > 0) modes += 'Ip';
-            if (Number(entry.esewa || 0) > 0) modes += 'Es';
-            if (Number(entry.cheque || 0) > 0) modes += 'Ch';
-            if (Number(entry.credit || 0) > 0) modes += 'Cr';
-            if (!modes) modes = entry.isVoid ? 'Vd' : 'Pd';
-            const dStr = String(entry.date || getLocalTodayStr());
-            const parts = dStr.split('-');
-            const mmdd = parts.length === 3 ? (parts[1] + parts[2]) : dStr.replace(/\D/g, '').slice(-4);
-            const sn = serialNum || 1;
-            return `${cid}-${modes}-${mmdd}-${sn}`;
-        }
+        
 
         // Canonical 24-hour timestamp: "HH:mm dd/MM/yy"
-        function formatCanonicalTimestamp(d = new Date()) {
-            const hh = String(d.getHours()).padStart(2, '0');
-            const min = String(d.getMinutes()).padStart(2, '0');
-            const dd = String(d.getDate()).padStart(2, '0');
-            const mm = String(d.getMonth() + 1).padStart(2, '0');
-            const yy = String(d.getFullYear()).slice(-2);
-            return `${hh}:${min} ${dd}/${mm}/${yy}`;
-        }
+        
 
         // Deterministic chronological sort key from actual (date + HH:mm) + sub-minute creation order
-        function getEntrySortKey(entry) {
-            if (!entry) return 0;
-            let dateStr = String(entry.date || '');
-            const ts = String(entry.timestamp || '').trim();
-            if (!dateStr && ts) {
-                const mDate = ts.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
-                if (mDate) {
-                    const dd = mDate[1].padStart(2, '0');
-                    const mm = mDate[2].padStart(2, '0');
-                    const yy = mDate[3].length === 2 ? ('20' + mDate[3]) : mDate[3];
-                    dateStr = `${yy}-${mm}-${dd}`;
-                }
-            }
-            const dp = dateStr.split('-');
-            if (dp.length === 3) {
-                const y = parseInt(dp[0], 10), m = parseInt(dp[1], 10), d = parseInt(dp[2], 10);
-                let hh = 0, min = 0;
-                const mTime = ts.match(/^(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i);
-                if (mTime) {
-                    hh = parseInt(mTime[1], 10) || 0;
-                    min = parseInt(mTime[2], 10) || 0;
-                    if (mTime[3]) {
-                        const ap = mTime[3].toUpperCase();
-                        if (ap === 'PM' && hh < 12) hh += 12;
-                        if (ap === 'AM' && hh === 12) hh = 0;
-                    }
-                }
-                if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
-                    const baseMs = Date.UTC(y, m - 1, d, hh, min, 0, 0);
-                    const idNum = Number(entry.id);
-                    const subMin = (!isNaN(idNum) && idNum > 0) ? (idNum % 60000) : 0;
-                    return baseMs + subMin;
-                }
-            }
-            const fallback = Number(entry.id);
-            return isNaN(fallback) ? 0 : fallback;
-        }
+        
 
-        function compareEntriesChrono(a, b) {
-            const diff = getEntrySortKey(a) - getEntrySortKey(b);
-            if (diff !== 0) return diff;
-            return String(a && a.id || '').localeCompare(String(b && b.id || ''));
-        }
+        
 
         function getPendingDeletes() {
             try {
@@ -5861,14 +4660,19 @@
         }
 
         function getRegisteredBiometricsList() {
+            const role = window.__APP_ROLE__ || 'all';
             const list = [];
-            for (let i = 1; i <= 2; i++) {
-                const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
-                if (cred) list.push({ targetId: i.toString(), type: 'admin', credId: cred });
+            if (role !== 'counter') {
+                for (let i = 1; i <= 2; i++) {
+                    const cred = localStorage.getItem(`biometric_cred_admin_${i}`);
+                    if (cred) list.push({ targetId: i.toString(), type: 'admin', credId: cred });
+                }
             }
-            for (let i = 0; i <= 5; i++) {
-                const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
-                if (cred) list.push({ targetId: i.toString(), type: 'counter', credId: cred });
+            if (role !== 'admin') {
+                for (let i = 0; i <= 5; i++) {
+                    const cred = localStorage.getItem(`biometric_cred_counter_${i}`);
+                    if (cred) list.push({ targetId: i.toString(), type: 'counter', credId: cred });
+                }
             }
             return list;
         }
@@ -6189,52 +4993,6 @@
                 const hasAdminCred = !!(localStorage.getItem('biometric_cred_admin_1') || localStorage.getItem('biometric_cred_admin_2'));
                 const isKilledState = (localStorage.getItem('killSwitchActive') === '1');
 
-                // Disguised Emergency Kill Switch (911= on approved Admin device ONLY, when NOT already killed)
-                if (currentSequence === '911' && hasAdminCred && !isKilledState) {
-                    display.innerText = "";
-                    currentSequence = "";
-                    setCalcDotState('pending');
-                    callGas('TRIGGER_KILL_SWITCH', {})
-                        .then((res) => {
-                            if (res && res.killed) {
-                                localStorage.setItem('killSwitchActive', '1');
-                                setCalcDotState('ok');
-                                setTimeout(() => executeLocalEmergencyWipe(true), 600);
-                            } else {
-                                setCalcDotState('err');
-                            }
-                        })
-                        .catch(() => {
-                            setCalcDotState('err');
-                        });
-                    return;
-                }
-
-                // Disguised System Resume (100%= on initiating Admin device ONLY, and ONLY when kill switch is active!)
-                if (justPressed100Pct && hasAdminCred && isKilledState) {
-                    justPressed100Pct = false;
-                    display.innerText = "";
-                    currentSequence = "";
-                    setCalcDotState('pending');
-                    callGas('RESUME_SYSTEM', {})
-                        .then((res) => {
-                            if (res && res.resumed) {
-                                localStorage.removeItem('killSwitchActive');
-                                setCalcDotState('ok');
-                                showMsg("System resumed for this Admin device.\nLog in using ..=");
-                            } else {
-                                setCalcDotState('err');
-                            }
-                        })
-                        .catch((err) => {
-                            if (err && /not active/i.test(err.message || '')) {
-                                localStorage.removeItem('killSwitchActive');
-                            }
-                            setCalcDotState('err');
-                            showMsg(err.message || "Unable to resume system.");
-                        });
-                    return;
-                }
                 justPressed100Pct = false;
                 // Biometrics Login trigger
                 if (currentSequence === '..') {
@@ -6245,7 +5003,8 @@
                 }
 
                 // Admin Passcodes: Register if new, or targeted login strictly as that Admin if already registered
-                if (currentSequence === '1111' || currentSequence === '2222') {
+                const _appRole = (typeof window !== 'undefined' && window.__APP_ROLE__) || 'all';
+                if (_appRole !== 'counter' && (currentSequence === '1111' || currentSequence === '2222')) {
                     let adminId = currentSequence === '1111' ? '1' : '2';
                     const hasBiometrics = localStorage.getItem(`biometric_cred_admin_${adminId}`);
                     display.innerText = "";
@@ -6263,7 +5022,7 @@
                 }
 
                 // Cashier Passcodes: Register if new, or targeted login strictly as that Counter if already registered
-                let match = currentSequence.match(/^([0-5])\.\.$/);
+                let match = _appRole !== 'admin' ? currentSequence.match(/^([0-5])\.\.$/) : null;
                 if (match) {
                     let counterId = match[1];
                     const hasBiometrics = localStorage.getItem(`biometric_cred_counter_${counterId}`);
@@ -6304,26 +5063,9 @@
             display.innerText = formatDisplay(currentSequence);
         }
 
-        function formatDisplay(seq) {
-            return seq.replace(/\*/g, ' × ').replace(/\//g, ' ÷ ').replace(/\+/g, ' + ').replace(/-/g, ' - ');
-        }
+        
 
-        function safeEval(str) {
-            if (/^[0-9+\-*/.]*$/.test(str)) {
-                try {
-                    let result = new Function(`return (${str})`)();
-                    if (typeof result === 'number' && !isNaN(result)) {
-                        if (result % 1 !== 0) {
-                            return parseFloat(result.toFixed(8));
-                        }
-                        return result;
-                    }
-                } catch (e) {
-                    return "Error";
-                }
-            }
-            return "Error";
-        }
+        
 
         const video = document.getElementById('camera-feed');
         const canvas = document.getElementById('camera-canvas');
@@ -6349,7 +5091,7 @@
             isReadOnly = false;
 
             // Close all secondary modals & overlays on lock/kick
-            ['msg-modal', 'bio-role-modal', 'close-modal', 'delete-confirm-modal', 'opening-cash-modal'].forEach(id => {
+            ['msg-modal', 'bio-role-modal', 'till-cash-modal', 'close-modal', 'delete-confirm-modal', 'opening-cash-modal'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.remove('active');
             });
@@ -8597,7 +7339,8 @@
 
             // Closing physical cash counted - Opening Cash = today's actual cash Sales
             const actClosingCash = parseFloat(localStorage.getItem('eod_out_' + dateKey + '_total_c')) || 0;
-            const actTotalC = actClosingCash - openingCash;
+            const netTill = getNetTillAdjustment(dateKey);
+            const actTotalC = actClosingCash - openingCash - netTill;
 
             // Main Total actual = Total C + Total QR + Total IPS/EBL + ESewa + POS
             const actMainTotal = actTotalC + actTotalQr + actTotalIps + actEsewa + actPos;
@@ -9548,8 +8291,110 @@
                 dotEl.style.boxShadow = isRed ? '0 0 7px #ef4444' : '0 0 6px var(--ui-pos)';
             }
             if (btnEl) {
-                btnEl.title = `Today ${todayStr} · Opening Cash: Rs ${amt.toLocaleString()}${openedAt ? ' (opened ' + openedAt + ')' : ''}${unclosed.length ? ' · ' + unclosed.length + ' unclosed past day(s) in Archived Logs' : ''} — Tap to edit Opening Cash`;
+                const netTill = getNetTillAdjustment(todayStr);
+                btnEl.title = `Shift Till (${todayStr}) · Opening: Rs ${amt.toLocaleString()}${openedAt ? ' at ' + openedAt : ''} · Net Pay In/Out: Rs ${netTill.toLocaleString()} — Tap for Cash In / Cash Out`;
             }
+        }
+
+        // Loyverse-Style Shift Till Cash In / Cash Out (Opening stays locked once set)
+        function getTillMovements(dateStr = getLocalTodayStr()) {
+            try {
+                return JSON.parse(localStorage.getItem('tillMovements_' + dateStr) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function getNetTillAdjustment(dateStr = getLocalTodayStr()) {
+            return getTillMovements(dateStr).reduce((sum, m) => sum + (m.type === 'out' ? -Number(m.amount || 0) : Number(m.amount || 0)), 0);
+        }
+
+        function openTillCashModal() {
+            const modal = document.getElementById('till-cash-modal');
+            if (!modal) return;
+            renderTillCashModal();
+            modal.classList.add('active');
+        }
+
+        function closeTillCashModal() {
+            const modal = document.getElementById('till-cash-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function renderTillCashModal() {
+            const todayStr = getLocalTodayStr();
+            const opening = parseFloat(localStorage.getItem('adminOpeningCash_' + todayStr) || '0') || 0;
+            let openedAt = '';
+            try {
+                const meta = JSON.parse(localStorage.getItem('adminOpeningCashMeta_' + todayStr) || 'null');
+                if (meta && meta.openedAt) openedAt = meta.openedAt;
+            } catch (e) {}
+            const list = getTillMovements(todayStr);
+            const net = getNetTillAdjustment(todayStr);
+
+            const subEl = document.getElementById('till-modal-sub');
+            if (subEl) subEl.innerText = `${todayStr}${openedAt ? ' · Opened ' + openedAt : ''}`;
+            const opEl = document.getElementById('till-opening-val');
+            if (opEl) opEl.innerText = `Rs ${opening.toLocaleString()}`;
+            const netEl = document.getElementById('till-net-val');
+            if (netEl) {
+                netEl.innerText = `${net >= 0 ? '+' : '−'}Rs ${Math.abs(net).toLocaleString()}`;
+                netEl.style.color = net < 0 ? 'var(--ui-neg)' : 'var(--ui-pos)';
+            }
+
+            const listEl = document.getElementById('till-movements-list');
+            if (listEl) {
+                if (!list.length) {
+                    listEl.innerHTML = `<div style="font-size:12px; color:var(--ui-muted); text-align:center; padding:12px;">No Pay In / Pay Out recorded today.</div>`;
+                } else {
+                    listEl.innerHTML = list.slice().reverse().map(m => {
+                        const isOut = m.type === 'out';
+                        return `<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; padding:7px 9px; border-radius:8px; background:var(--ui-sheet-bg); border:1px solid var(--ui-sheet-border); font-size:12px;">
+                            <div style="min-width:0;">
+                                <div style="font-weight:700; color:${isOut ? 'var(--ui-neg)' : 'var(--ui-pos)'};">${isOut ? '− PAY OUT' : '+ PAY IN'} · Rs ${Number(m.amount || 0).toLocaleString()}</div>
+                                <div style="font-size:10.5px; color:var(--ui-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${m.time || ''} · ${escapeHtml(m.note || 'No note')}</div>
+                            </div>
+                            <button class="btn-cancel" onclick="deleteTillMovement('${m.id}')" style="padding:3px 7px; font-size:11px; color:var(--ui-neg);" title="Remove entry">✕</button>
+                        </div>`;
+                    }).join('');
+                }
+            }
+        }
+
+        function recordTillMovement(type) {
+            const amtEl = document.getElementById('till-inp-amount');
+            const noteEl = document.getElementById('till-inp-note');
+            const amt = parseFloat(amtEl ? amtEl.value : '');
+            if (isNaN(amt) || amt <= 0) {
+                showMsg('Enter a valid amount greater than 0.');
+                return;
+            }
+            const todayStr = getLocalTodayStr();
+            const list = getTillMovements(todayStr);
+            const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+            list.push({
+                id: `${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+                type: type === 'out' ? 'out' : 'in',
+                amount: amt,
+                note: (noteEl ? noteEl.value : '').trim(),
+                time: nowTime
+            });
+            localStorage.setItem('tillMovements_' + todayStr, JSON.stringify(list));
+            if (amtEl) amtEl.value = '';
+            if (noteEl) noteEl.value = '';
+            renderTillCashModal();
+            renderTodaySessionBadge();
+            if (activeAdminTab === 'eod') renderAdminEOD();
+            showToast(type === 'out' ? `Till Pay Out −Rs ${amt.toLocaleString()} saved` : `Till Pay In +Rs ${amt.toLocaleString()} saved`);
+        }
+
+        function deleteTillMovement(id) {
+            const todayStr = getLocalTodayStr();
+            const list = getTillMovements(todayStr).filter(m => String(m.id) !== String(id));
+            localStorage.setItem('tillMovements_' + todayStr, JSON.stringify(list));
+            renderTillCashModal();
+            renderTodaySessionBadge();
+            if (activeAdminTab === 'eod') renderAdminEOD();
         }
 
         async function togglePastDayCounterAccess(dateStr, counterId, currentOpen) {
